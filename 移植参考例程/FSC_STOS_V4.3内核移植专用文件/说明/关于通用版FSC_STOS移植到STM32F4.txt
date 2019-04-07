@@ -1,0 +1,12 @@
+移植通用版FSC_STOS到STM32F4xx，通用版是不支持FPU参与运算的，所以需要关闭FPU功能，否则
+浮点运算会导致系统死机。关闭FPU方法如下：
+
+MDK工程设置(点击魔法棒)
+
+1.Target处 Floating Point Hardware: 设为  Not Used
+
+2.C/C++处 Defiine:如有以下代码，请将以下部分删除(注意不要删除到前面其他代码)
+   
+ARM_MATH_CM4,__CC_ARM,ARM_MATH_MATRIX_CHECK,ARM_MATH_ROUNDING,__FPU_PRESENT=1
+
+3.如需要FPU功能，请参考《通用版FSC_STOS支持STM32F4 FPU设置》txt
