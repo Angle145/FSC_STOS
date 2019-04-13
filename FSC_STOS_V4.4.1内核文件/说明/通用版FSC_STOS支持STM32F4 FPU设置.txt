@@ -1,6 +1,6 @@
 通用版FSC_STOS支持STM32F4 FPU设置：
 
-STM32F4 FPU浮点运器，为支持FPU参与运算，将通用版的FSC_STOS作以下修改
+STM32F4 FPU浮点运算器，为支持FPU参与运算，将通用版的FSC_STOS作以下修改
 
 一、MDK工程设置(点击魔法棒)
 
@@ -20,103 +20,39 @@ STM32F4 FPU浮点运器，为支持FPU参与运算，将通用版的FSC_STOS作以下修改
 2.FSC_STOS.c文件：
 
 原文件处：
-OS_STK* OSTaskStkInit(void (*task),OS_STK *p_tos)
+STK32U* OSTaskStkInit(void (*task),STK32U *p)
 {
-	  //只要产生中断,跳转中断处理函数前 xPSR,PC,LR,R12,R3-R0被自动保存到芯片的栈内存中(此步聚是芯片自动完成的)，而R4-R11需要手动保存到其他内存
-    OS_STK *stk;
-    stk = p_tos;
+    STK32U *stk;
+    stk = p;
     *(stk)    = (INT32U)0x01000000L;   // xPSR                                               
     *(--stk)  = (INT32U)task;          // Entry Point   空间保存任务函数入口地址             
-    *(--stk)  = (INT32U)0xFFFFFFFEL;   // R14 (LR)         
-    *(--stk)  = (INT32U)0x12121212L;   // R12                                                   
-    *(--stk)  = (INT32U)0x03030303L;   // R3                                                   
-    *(--stk)  = (INT32U)0x02020202L;   // R2                                                    
-    *(--stk)  = (INT32U)0x01010101L;   // R1                                                     
-    *(--stk)  = (INT32U)0;             // R0 : argument   	
-    *(--stk)  = (INT32U)0x11111111L;   // R11          
-    *(--stk)  = (INT32U)0x10101010L;   // R10         
-    *(--stk)  = (INT32U)0x09090909L;   // R9         
-    *(--stk)  = (INT32U)0x08080808L;   // R8         
-    *(--stk)  = (INT32U)0x07070707L;   // R7         
-    *(--stk)  = (INT32U)0x06060606L;   // R6         
-    *(--stk)  = (INT32U)0x05050505L;   // R5          
-    *(--stk)  = (INT32U)0x04040404L;   // R4     
-	  //以上不考虑可读性可改为 :  stk -= 8;   // space for R4-R11	
+    *(--stk)  = (INT32U)0xFFFFFFFEL;   // R14 (LR)          
+	    stk  -= 13; //R0-R12
     return stk;
 }
 
 修改：用以下内容替换上面内容
-OS_STK* OSTaskStkInit(void (*task),OS_STK *p_tos)
+STK32U* OSTaskStkInit(void (*task),STK32U *p)
 {
-	  //只要产生中断,跳转中断处理函数前 xPSR,PC,LR,R12,R3-R0被自动保存到芯片的栈内存中(此步聚是芯片自动完成的)，而R4-R11需要手动保存到其他内存
-    OS_STK *stk;
-    stk = p_tos;
-	
+    STK32U *stk;
+    stk = p;
 #if (__FPU_PRESENT == 1)&&(__FPU_USED == 1) 
-		*(stk)   = (INT32U)0x00000000u;                        /*unknow register */ 
-		*(--stk) = (INT32U)0x00000000u;                        /*FPSCR           */ 
-		*(--stk) = (INT32U)0x15151515u;                        /*S15             */ 
-		*(--stk) = (INT32U)0x14141414u;                        /*S14             */ 
-		*(--stk) = (INT32U)0x13131313u;                        /*S13             */ 
-		*(--stk) = (INT32U)0x12121212u;                        /*S12             */ 
-		*(--stk) = (INT32U)0x11111111u;                        /*S11             */ 
-		*(--stk) = (INT32U)0x10101010u;                        /*S10             */ 
-		*(--stk) = (INT32U)0x09090909u;                        /*S09             */ 
-		*(--stk) = (INT32U)0x08080808u;                        /*S08             */ 
-		*(--stk) = (INT32U)0x07070707u;                        /*S07             */ 
-		*(--stk) = (INT32U)0x06060606u;                        /*S06             */ 
-		*(--stk) = (INT32U)0x05050505u;                        /*S05             */ 
-		*(--stk) = (INT32U)0x04040404u;                        /*S04             */ 
-		*(--stk) = (INT32U)0x03030303u;                        /*S03             */ 
-		*(--stk) = (INT32U)0x02020202u;                        /*S02             */ 
-		*(--stk) = (INT32U)0x01010101u;                        /*S01             */ 
-		*(--stk) = (INT32U)0x00000000u;                        /*S00             */ 
+        stk  -= 17;
 #endif
-	
 #if (__FPU_PRESENT == 1)&&(__FPU_USED == 1) 
     *(--stk)  = (INT32U)0x01000000L;   // xPSR   
 #else
     *(  stk)  = (INT32U)0x01000000L;   // xPSR  
 #endif
-    *(--stk)  = (INT32U)task;          // Entry Point   空间保存任务函数入口地址             
+    *(--stk)  = (INT32U)task;          // R15 (PC)             
     *(--stk)  = (INT32U)0xFFFFFFFEL;   // R14 (LR)         
-    *(--stk)  = (INT32U)0x12121212L;   // R12                                                   
-    *(--stk)  = (INT32U)0x03030303L;   // R3                                                   
-    *(--stk)  = (INT32U)0x02020202L;   // R2                                                    
-    *(--stk)  = (INT32U)0x01010101L;   // R1                                                     
-    *(--stk)  = (INT32U)0;             // R0 : argument  
-
+        stk  -= 5;
 #if (__FPU_PRESENT == 1)&&(__FPU_USED == 1) 
-		*(--stk) = (INT32U)0x31313131u;                        /*S31         */ 
-		*(--stk) = (INT32U)0x30303030u;                        /*S30         */ 
-		*(--stk) = (INT32U)0x29292929u;                        /*S29         */ 
-		*(--stk) = (INT32U)0x28282828u;                        /*S28         */ 
-		*(--stk) = (INT32U)0x27272727u;                        /*S27         */ 
-		*(--stk) = (INT32U)0x26262626u;                        /*S26         */ 
-		*(--stk) = (INT32U)0x25252525u;                        /*S25         */ 
-		*(--stk) = (INT32U)0x24242424u;                        /*S24         */ 
-		*(--stk) = (INT32U)0x23232323u;                        /*S23         */ 
-		*(--stk) = (INT32U)0x22222222u;                        /*S22         */ 
-		*(--stk) = (INT32U)0x21212121u;                        /*S21         */ 
-		*(--stk) = (INT32U)0x20202020u;                        /*S20         */ 
-		*(--stk) = (INT32U)0x19191919u;                        /*S19         */ 
-		*(--stk) = (INT32U)0x18181818u;                        /*S18         */ 
-		*(--stk) = (INT32U)0x17171717u;                        /*S17         */ 
-		*(--stk) = (INT32U)0x16161616u;                        /*S16         */ 
+        stk  -= 16;
 #endif    
-		
-    *(--stk)  = (INT32U)0x11111111L;   // R11          
-    *(--stk)  = (INT32U)0x10101010L;   // R10         
-    *(--stk)  = (INT32U)0x09090909L;   // R9         
-    *(--stk)  = (INT32U)0x08080808L;   // R8         
-    *(--stk)  = (INT32U)0x07070707L;   // R7         
-    *(--stk)  = (INT32U)0x06060606L;   // R6         
-    *(--stk)  = (INT32U)0x05050505L;   // R5          
-    *(--stk)  = (INT32U)0x04040404L;   // R4     
-	  //R4-R11不考虑可读性可改为 :  stk -= 8;   // space for R4-R11	
+	    stk  -=  8;
     return stk;
 }
-
 
 
 3.startup_stm32f429_439x.s启动文件(可以为其他型号F4的启动文件)
