@@ -202,11 +202,8 @@ void USART1_IRQHandler(void)
   /* USER CODE BEGIN USART1_IRQn 0 */
   uint8_t UsartRxdata;
 	UsartRxdata=USART1->DR;
-	UsartRxdata=UsartRxdata;//·ÂÖ¹¾¯¸æ
 	
-	#if (OS_CMD_ALL_ENABLE == 1)
 	OSCmdUsartReceiveByte(UsartRxdata);
-	#endif
 	
   /* USER CODE END USART1_IRQn 0 */
   HAL_UART_IRQHandler(&huart1);

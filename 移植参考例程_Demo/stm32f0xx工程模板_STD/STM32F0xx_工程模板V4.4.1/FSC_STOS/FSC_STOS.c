@@ -292,7 +292,7 @@ void OSCmdUsartReceiveByte(INT8U UsartRxByte)
 	}
 #else
   UsartRxByte=UsartRxByte;//防止警告
-#endif		
+#endif	
 }
 #if (OS_CMD_ALL_ENABLE == 1)
 INT32U OS_GetStringLength(char* p)//获取字符串p的长度
@@ -561,7 +561,7 @@ INT8U* OSFlagGroupPendTableGet(INT16U FGNum) //获取群等待成员
 	return (INT8U*)0;
 #endif	
 }
-INT16U OSMutexBlockTaskGet(INT16U MNum)//获取Mutex状态阻塞的任务
+INT16U OSMutexBlockTaskGet(INT16U MNum)//获取Mutex当前阻塞的任务
 {
 #if (OS_SIGN_PP_ENABLE == 1)	
 	return OS_System.MutexTaskNum[MNum];

@@ -95,15 +95,25 @@ OS_TCB *OSTCBRun;
 OS_TCB *OSTCBCur; 
 OS_TCB *OSTCBNext;
 
-
 STK32U* OSTaskStkInit(void (*task),STK32U *p)
 {
     STK32U *stk;
     stk = p;
-    *(stk)    = (INT32U)0x01000000L;   // xPSR                                               
-    *(--stk)  = (INT32U)task;          // Entry Point   空间保存任务函数入口地址             
-    *(--stk)  = (INT32U)0xFFFFFFFEL;   // R14 (LR)          
-	  stk -= 13; //R0-R12
+#if (__FPU_PRESENT == 1)&&(__FPU_USED == 1) 
+        stk  -= 17;
+#endif
+#if (__FPU_PRESENT == 1)&&(__FPU_USED == 1) 
+    *(--stk)  = (INT32U)0x01000000L;   // xPSR   
+#else
+    *(  stk)  = (INT32U)0x01000000L;   // xPSR  
+#endif
+    *(--stk)  = (INT32U)task;          // R15 (PC)             
+    *(--stk)  = (INT32U)0xFFFFFFFEL;   // R14 (LR)         
+        stk  -= 5;
+#if (__FPU_PRESENT == 1)&&(__FPU_USED == 1) 
+        stk  -= 16;
+#endif    
+	    stk  -=  8;
     return stk;
 }
 
