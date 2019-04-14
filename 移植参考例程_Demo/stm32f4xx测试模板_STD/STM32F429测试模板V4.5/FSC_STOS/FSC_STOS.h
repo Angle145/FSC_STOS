@@ -3,6 +3,7 @@
 #define _FSC_STOS_H_
 
 /*****************头文件选择*****************/
+//#include "stm32f0xx.h"  //stm32f0  STD库
 //#include "stm32f1xx_hal.h"//stm32f1  HAL库
 //#include "stm32f10x.h"  //stm32f1  STD库
 #include "stm32f4xx.h"  //stm32f4  STD库
@@ -22,12 +23,12 @@
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 #define OS_CMD_DISP_NSY_ENABLE  1        //剪裁系统状态信息以外无关的指令显示(0-剪裁，1-不剪裁,下同)
 #define OS_CMD_DISP_SYS_ENABLE  1        //剪裁系统状态信息指令显示(关闭显示能节省大量内存)
-#define OS_CMD_NSY_ENABLE       1        //剪裁系统无关的指令
+#define OS_CMD_NSY_ENABLE       0        //剪裁系统无关的指令
 #define OS_CMD_ALL_ENABLE       1        //剪裁全部系统指令
-#define OS_GET_SET_SW_ENABLE    1        //剪裁任务设置、获取、跳转
+#define OS_GET_SET_SW_ENABLE    0        //剪裁任务设置、获取、跳转
 #define OS_SIGN_PP_ENABLE       1        //剪裁信号量
-#define OS_TIM_SYS_ENABLE       1        //剪裁系统虚拟定时器
-#define OS_REMOTE_ENABLE        1        //剪裁不常用函数
+#define OS_TIM_SYS_ENABLE       0        //剪裁系统虚拟定时器
+#define OS_REMOTE_ENABLE        0        //剪裁不常用函数
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 #define TASK_NAME_SIZE          32       //任务名       字符最大长度(如任务名超过32个字符请修改)
 #define OS_PERIP_USART_BUFF_LEN 32       //系统指令     字符最大长度
@@ -118,6 +119,12 @@ typedef struct
 	INT32U    TaskCPUOccRateCnt;
 	char      TaskStr[TASK_NAME_SIZE];	
 #endif	
+#if (OS_SIGN_PP_ENABLE == 1)	
+	INT16U    FlagName;
+	INT16U    FlagGroupName;
+	INT16U    MutexName;
+	INT16U    MBoxName;
+#endif	
   INT32U    TaskAdd;	
 	INT32U    TaskDelayMs;     
 	INT16U    TaskNum; 
@@ -171,8 +178,10 @@ void OSFlagPost(INT16U FNum);                   //发送标志量
 INT8U OSFlagPend(INT16U FNum,INT32U timeout);   //等待标志量带超时时间
 void OSFlagAddToGroup(INT16U FGNum,INT16U FNum);//添加标志量成员至标志群
 INT8U OSFlagGroupPend(INT16U FGNum,INT32U timeout);//标志量群等待
+INT8U* OSFlagGroupPendTableGet(INT16U FGNum);   //获取群等待成员
 void OSMutexPost(INT16U MNum);                  //发送互斥量
 INT8U OSMutexPend(INT16U MNum,INT32U timeout);  //等待互斥量带超时时间
+INT16U OSMutexBlockTaskGet(INT16U MNum);        //获取Mutex当前阻塞的任务
 void OSMboxPost(INT16U MNum,void* fp);          //发送邮件(地址)
 void* OSMboxPend(INT16U MNum,INT32U timeout);   //等待邮箱带超时时间
 INT32U OSTimeSliceGet(void);                    //获取OS节拍数

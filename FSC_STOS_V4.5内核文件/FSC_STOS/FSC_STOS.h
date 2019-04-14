@@ -3,13 +3,14 @@
 #define _FSC_STOS_H_
 
 /*****************头文件选择*****************/
+//#include "stm32f0xx.h"  //stm32f0  STD库
 //#include "stm32f1xx_hal.h"//stm32f1  HAL库
 #include "stm32f10x.h"  //stm32f1  STD库
 //#include "stm32f4xx.h"  //stm32f4  STD库
 /********************************************/
       
 /****************************************用户可自定义***********************************************************/
-#define OS_RINNING_MODE         0        //OS运行模式：0 -- 可打断的顺序运行   1 -- 抢断的优先级运行
+#define OS_RINNING_MODE         1        //OS运行模式：0 -- 可打断的顺序运行   1 -- 抢断的优先级运行
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 #define OS_CLOCK_TIME           1000     //任务时间切片,每个任务持续运行的时间，单位:微秒 us  
 #define OS_MAX_TASKS            8        //任务数=用户任务数+2  任务数:3-65535  用户根据实际需要的任务数量修改
@@ -22,12 +23,12 @@
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 #define OS_CMD_DISP_NSY_ENABLE  1        //剪裁系统状态信息以外无关的指令显示(0-剪裁，1-不剪裁,下同)
 #define OS_CMD_DISP_SYS_ENABLE  1        //剪裁系统状态信息指令显示(关闭显示能节省大量内存)
-#define OS_CMD_NSY_ENABLE       1        //剪裁系统无关的指令
+#define OS_CMD_NSY_ENABLE       0        //剪裁系统无关的指令
 #define OS_CMD_ALL_ENABLE       1        //剪裁全部系统指令
-#define OS_GET_SET_SW_ENABLE    1        //剪裁任务设置、获取、跳转
+#define OS_GET_SET_SW_ENABLE    0        //剪裁任务设置、获取、跳转
 #define OS_SIGN_PP_ENABLE       1        //剪裁信号量
-#define OS_TIM_SYS_ENABLE       1        //剪裁系统虚拟定时器
-#define OS_REMOTE_ENABLE        1        //剪裁不常用函数
+#define OS_TIM_SYS_ENABLE       0        //剪裁系统虚拟定时器
+#define OS_REMOTE_ENABLE        0        //剪裁不常用函数
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 #define TASK_NAME_SIZE          32       //任务名       字符最大长度(如任务名超过32个字符请修改)
 #define OS_PERIP_USART_BUFF_LEN 32       //系统指令     字符最大长度
@@ -117,6 +118,12 @@ typedef struct
 	INT32U    StkUsedMax;
 	INT32U    TaskCPUOccRateCnt;
 	char      TaskStr[TASK_NAME_SIZE];	
+#endif	
+#if (OS_SIGN_PP_ENABLE == 1)	
+	INT16U    FlagName;
+	INT16U    FlagGroupName;
+	INT16U    MutexName;
+	INT16U    MBoxName;
 #endif	
   INT32U    TaskAdd;	
 	INT32U    TaskDelayMs;     

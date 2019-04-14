@@ -1,10 +1,14 @@
 FSC_STOS   
+V4.5更新内容：
+        (1)增加顺序运行模式下对OSFlagGroup和Mutex的支持，修复信号量已知问题。
+        (2)更新FSC_STOS说明及例程PDF文档。
+                      
+历史版本：
+
 V4.4.1更新内容：
         (1)优化移植，同步更新移植PDF文档。(优化移植串口指令系统，去除宏定义移植，简化移植)
         (2)增加ARM Cortex-M0支持，对应STM32的STM32F0系列。
         (3)增加STM32F0xx_STD工程Demo，MDK Device默认为STM32F030。
-                      
-历史版本：
 
 V4.4更新内容：
         (1)修复delay_us()函数。

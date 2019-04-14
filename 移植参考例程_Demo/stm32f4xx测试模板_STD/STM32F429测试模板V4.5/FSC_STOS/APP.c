@@ -45,49 +45,37 @@ void OS_MAIN(void)
     OSStartUp();//OS开始运行
 }
 
-
-
 /****************************************用户全局变量及宏定义区*****************************************/
-//#define OSTIMER_LED  0  //第0个系统虚拟定时器用作LED0的定时    //示例代码，使用时删除
-
 
 
 
 /*******************************************************************************************************/
-
-
 /*********************************用户任务实体代码区************************************/
-
-
-void Task1(void)  //任务1
+void Task1(void) //任务1
+{
+	LED_Init();//反客F429核心板LED
+	while(1) 
+	 {
+		 	LED1_ON;	OS_delayMs(500);  //点亮LED1  //示例代码，使用时删除		
+		  LED1_OFF; OS_delayMs(500);  //关闭LED1
+		  OSprintf("Task1 is runng \r\n");	//示例代码，使用时删除			 
+	 }			
+}
+void Task2(void)  //任务2
 { 	
 	u16 a = 128;   //测试变量
 	float b = 9.123456; //测试变量
 	
-	LED_Init();			//LED初始化
-	
-	OSprintf("STM32F429串口实验\r\n");//示例代码，使用时删除		
-	OSprintf("使用OSprintf函数发送数据\r\n");
+	OSprintf("   浮点数测试  \r\n\r\n");//示例代码，使用时删除		
 	while (1)
 	{		
-		LED1_ON;	delay_ms(500);  //点亮LED1  //示例代码，使用时删除		
-		LED1_OFF; delay_ms(500);  //关闭LED1
-
 		OSprintf("十进制格式：  %d\r\n",a); //示例代码，使用时删除		
 		OSprintf("十六进制格式：0x%x\r\n",a);
-		OSprintf("小数格式：    %f\r\n\r\n",b);		
+		OSprintf("小数格式：    %f\r\n",b);	
+    OSprintf("Task2 is runng \r\n");	//示例代码，使用时删除		
+		OS_delayMs(1000);
 	}	
 }
-
-void Task2(void) //任务2
-{
-	while(1) 
-	 {
-		 //OSprintf("Task2 is runng \r\n");	//示例代码，使用时删除			 
-  	 OS_delayDHMS(0,0,0,2);	//示例代码，使用时删除		 
-	 }			
-}
-
 void Task3(void) //任务3
 {	
 	while(1) 
