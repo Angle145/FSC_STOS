@@ -1,8 +1,8 @@
-;******************** (C) COPYRIGHT 2014 STMicroelectronics ********************
+;******************** (C) COPYRIGHT 2015 STMicroelectronics ********************
 ;* File Name          : startup_stm32f40_41xxx.s
 ;* Author             : MCD Application Team
-;* @version           : V1.4.0
-;* @date              : 04-August-2014
+;* @version           : V1.5.0
+;* @date              : 06-March-2015
 ;* Description        : STM32F40xxx/41xxx devices vector table for MDK-ARM toolchain. 
 ;*                      This module performs:
 ;*                      - Set the initial SP
@@ -38,7 +38,7 @@
 ;   <o> Stack Size (in Bytes) <0x0-0xFFFFFFFF:8>
 ; </h>
 
-Stack_Size      EQU     0x00001000
+Stack_Size      EQU     0x00000400
 
                 AREA    STACK, NOINIT, READWRITE, ALIGN=3
 Stack_Mem       SPACE   Stack_Size
@@ -49,7 +49,7 @@ __initial_sp
 ;   <o>  Heap Size (in Bytes) <0x0-0xFFFFFFFF:8>
 ; </h>
 
-Heap_Size       EQU     0x00000800
+Heap_Size       EQU     0x00000200
 
                 AREA    HEAP, NOINIT, READWRITE, ALIGN=3
 __heap_base
@@ -176,28 +176,8 @@ __Vectors_Size  EQU  __Vectors_End - __Vectors
 ; Reset handler
 Reset_Handler    PROC
                  EXPORT  Reset_Handler             [WEAK]
-				IMPORT  SystemInit
-				IMPORT  __main
-
-                ;IF {FPU} != "SoftVFP"
-                                                ; Enable Floating Point Support at reset for FPU
-                LDR.W   R0, =0xE000ED88         ; Load address of CPACR register
-                LDR     R1, [R0]                ; Read value at CPACR
-                ORR     R1,  R1, #(0xF <<20)    ; Set bits 20-23 to enable CP10 and CP11 coprocessors
-                                                ; Write back the modified CPACR value
-                STR     R1, [R0]                ; Wait for store to complete
-                DSB
-                
-                                                ; Disable automatic FP register content
-                                                ; Disable lazy context switch
-                LDR.W   R0, =0xE000EF34         ; Load address to FPCCR register
-                LDR     R1, [R0]
-                AND     R1,  R1, #(0x3FFFFFFF)  ; Clear the LSPEN and ASPEN bits
-                STR     R1, [R0]
-                ISB                             ; Reset pipeline now the FPU is enabled
-               ; ENDIF
-
-
+        IMPORT  SystemInit
+        IMPORT  __main
 
                  LDR     R0, =SystemInit
                  BLX     R0
