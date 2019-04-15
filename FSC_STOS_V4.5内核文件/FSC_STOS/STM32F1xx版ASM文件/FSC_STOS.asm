@@ -1,4 +1,4 @@
-;asm for M0 ( stm32f1 ) 
+;asm for M3 ( stm32f1 ) 
 
     IMPORT    OSTCBRun
     IMPORT    OSTCBCur            
