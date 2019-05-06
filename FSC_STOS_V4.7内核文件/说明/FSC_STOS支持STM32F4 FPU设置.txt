@@ -1,4 +1,4 @@
-通用版FSC_STOS支持STM32F4 FPU设置：
+FSC_STOS支持STM32F4 FPU设置：
 
 STM32F4 FPU浮点运算器，为支持FPU参与运算，将通用版的FSC_STOS作以下修改
 
@@ -14,48 +14,9 @@ STM32F4 FPU浮点运算器，为支持FPU参与运算，将通用版的FSC_STOS作以下修改
 
 1.FSC_STOS.asm文件:
 
-将STM32F4xx_FPU版ASM文件复制替换掉通用版的文件。
+  选择   Kernel    EQU Cortex_M4_FPU
 
-
-2.FSC_STOS.c文件：
-
-原文件处：
-STK32U* OSTaskStkInit(void (*task),STK32U *p)
-{
-    STK32U *stk;
-    stk = p;
-    *(stk)    = (INT32U)0x01000000L;   // xPSR                                               
-    *(--stk)  = (INT32U)task;          // Entry Point   空间保存任务函数入口地址             
-    *(--stk)  = (INT32U)0xFFFFFFFEL;   // R14 (LR)          
-	    stk  -= 13; //R0-R12
-    return stk;
-}
-
-修改：用以下内容替换上面内容
-STK32U* OSTaskStkInit(void (*task),STK32U *p)
-{
-    STK32U *stk;
-    stk = p;
-#if (__FPU_PRESENT == 1)&&(__FPU_USED == 1) 
-        stk  -= 17;
-#endif
-#if (__FPU_PRESENT == 1)&&(__FPU_USED == 1) 
-    *(--stk)  = (INT32U)0x01000000L;   // xPSR   
-#else
-    *(  stk)  = (INT32U)0x01000000L;   // xPSR  
-#endif
-    *(--stk)  = (INT32U)task;          // R15 (PC)             
-    *(--stk)  = (INT32U)0xFFFFFFFEL;   // R14 (LR)         
-        stk  -= 5;
-#if (__FPU_PRESENT == 1)&&(__FPU_USED == 1) 
-        stk  -= 16;
-#endif    
-	    stk  -=  8;
-    return stk;
-}
-
-
-3.startup_stm32f429_439x.s启动文件(可以为其他型号F4的启动文件)
+3.启动文件(startup_stm32f429_439x.s，可以为其他型号F4的启动文件)
 
 原文件处：
 ; Reset handler
@@ -77,7 +38,8 @@ Reset_Handler   PROC
                 IMPORT  SystemInit
                 IMPORT  __main
 
-                ;IF {FPU} != "SoftVFP"
+                ;----------------------------增加内容-----------------------------;
+                IF {FPU} != "SoftVFP"
                                                 ; Enable Floating Point Support at reset for FPU
                 LDR.W   R0, =0xE000ED88         ; Load address of CPACR register
                 LDR     R1, [R0]                ; Read value at CPACR
@@ -93,10 +55,10 @@ Reset_Handler   PROC
                 AND     R1,  R1, #(0x3FFFFFFF)  ; Clear the LSPEN and ASPEN bits
                 STR     R1, [R0]
                 ISB                             ; Reset pipeline now the FPU is enabled
-               ; ENDIF
+                ENDIF
+           ;---------------------------------------------------------------------;				 
 				 
-				 
-				 LDR     R0, =SystemInit
+	LDR     R0, =SystemInit
                  BLX     R0
                  LDR     R0, =__main
                  BX      R0
