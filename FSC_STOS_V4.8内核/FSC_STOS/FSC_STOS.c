@@ -1257,7 +1257,7 @@ INT32U OSTimerValGet(void) //获取系统定时器当前计数值(默认为9MHz，每次计数用时1/
 {
    return SysTick->VAL;  //返回系统定时器当前计数值(用于用户us级精确延时，计数单位为系统定时器主频，此处使用嘀嗒定时器，主频为72Mhz时为9MHz，其他主频时，按8分频计算)
 }
-void OSTaskSwitchBack(void* Taskx) //任务跳转 带返回  (不带时间切片计数器清0)
+void OSTaskSwitchBack(void* Taskx) //任务跳转 带返回
 {
 	 OS_INT_ENTER(); 
    INT16U i;	
@@ -1278,29 +1278,7 @@ void OSTaskSwitchBack(void* Taskx) //任务跳转 带返回  (不带时间切片计数器清0)
 	 }
 	 OS_INT_EXIT(); 
 }
-void OSTaskSwitchBackClean(void* Taskx) //任务跳转 带返回  (带时间切片计数器清0)
-{
-	 OS_INT_ENTER(); 
-   INT16U i;	
-	 if(OSTCBCur->TaskAdd!=(INT32U)Taskx) 
-	 {
-		 for(i = 0; i < OS_MAX_TASKS; i++) {  
-				 if( OSTCBTbl[i].TaskAdd == (INT32U)Taskx ) 
-				 {  
-					 if(OSTCBTbl[i].TaskState==TASK_RUNNING)
-					 {
-						 OS_System.TimeSliceCnt=0; //时间切片计数器清0，准备重新计数
-						 OS_System.TaskSwitchBackNum=OSTCBCur->TaskNum;
-						 OSTCBCur=&OSTCBTbl[i]; 
-             OSContextExchange();				 
-						 break;
-					 }
-				 }
-		 }
-	 }
-	 OS_INT_EXIT(); 
-}
-void OSTaskSwitch(void* Taskx) //任务跳转  不带返回  (不带时间切片计数器清0)
+void OSTaskSwitch(void* Taskx) //任务跳转  不带返回
 {
 	 OS_INT_ENTER(); 
    INT16U i;	
@@ -1310,33 +1288,10 @@ void OSTaskSwitch(void* Taskx) //任务跳转  不带返回  (不带时间切片计数器清0)
 				 if( OSTCBTbl[i].TaskAdd == (INT32U)Taskx ) 
 				 { 
            if(OSTCBTbl[i].TaskState==TASK_RUNNING)
-					 {									 
+					 {					 
 						 OS_System.TaskNext=i;
 						 OSTCBNext = &OSTCBTbl[OS_System.TaskNext];
-						 OSTCBCur=&OSTCBTbl[i]; 	
-				     OSContextExchange();
-						 break;
-					 }
-				 }
-		 }
-	 }
-	 OS_INT_EXIT(); 
-}
-void OSTaskSwitchClean(void* Taskx) //任务跳转  不带返回  (带时间切片计数器清0)
-{
-	 OS_INT_ENTER(); 
-   INT16U i;	
-	 if(OSTCBCur->TaskAdd!=(INT32U)Taskx) 
-	 {
-		 for(i = 0; i < OS_MAX_TASKS; i++) {  
-				 if( OSTCBTbl[i].TaskAdd == (INT32U)Taskx ) 
-				 { 
-           if(OSTCBTbl[i].TaskState==TASK_RUNNING)
-					 {			
-             OS_System.TimeSliceCnt=0; //时间切片计数器清0，准备重新计数						 
-						 OS_System.TaskNext=i;
-						 OSTCBNext = &OSTCBTbl[OS_System.TaskNext];
-						 OSTCBCur=&OSTCBTbl[i]; 	
+						 OSTCBCur=&OSTCBTbl[i]; 					 
 				     OSContextExchange();
 						 break;
 					 }
@@ -1995,16 +1950,7 @@ void OSSchedSwitch(void) //任务调度并切换任务
 		OSContextExchange();  
 	}
 }
-void OSSchedSwitchClean(void) //任务调度并切换任务(时间切片计数器清0)
-{
-	OSScheduler_Process();
-	OS_System.TimeSliceCnt=0; //时间切片计数器清0，准备重新计数
-	if(OSTCBRun!=OSTCBCur) 
-	{
-		OSContextExchange();  
-	}
-}
-void OSContextExchangeToTask(OS_TCB* tcb)//切换到指定任务(不带时间切片计数器清0)
+void OSContextExchangeToTask(OS_TCB* tcb)//切换到指定任务
 {
 	OSTCBCur=tcb;
   OSContextExchange(); 

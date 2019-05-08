@@ -285,18 +285,15 @@ INT8U CompareCmdDig(char ch,char* p);           //比较字符串OS_Perip.OS_USART_RX
 INT32 GrabCmdDig(INT8U n);                      //获取字符串p中的第n个数字(n=0开始)
 /*-------------------------------------用户可调用与系统有关函数-------------------------------------------------*/
 /*--------------常用系统功能函数-------------*/
-void OSTimeSliceCounterReset(void);             //时间切片计数器清0(手动切换任务时，可选择需要将时间切片计数清0,如不将时间切片清0，切换后的任务运行可能少于完整时间片时间)
-void OSSchedSwitch(void);                       //任务调度并切换任务(==OSScheduler_Process()+OSContextExchange())(不带时间片计数清0)
-void OSSchedSwitchClean(void);                  //任务调度并切换任务(时间切片计数器清0,清0后任务将重新得到一个时间切片时间运行)
-void OSContextExchangeToTask(OS_TCB* tcb);      //切换到指定任务,不带时间切片计数器清0(该函数效率比OSTaskSwitch高)
-void OSScheduler_Process(void);                 //任务调度器（只调度不切换,调度之后OSTCBCur指向系统计算得出的下个任务的控制块）
-void OSContextExchange(void);                   //上下文切换(切换任务环境,将OSTCBCur指向的任务装载到系统运行,改变OSTCBCur的指向就能改变任务运行方向)
+void OSTimeSliceCounterReset(void);             //时间切片计数器清0(手动切换任务时，可选择需要将时间切片计数清0)
+void OSSchedSwitch(void);                       //任务调度并切换任务(如不将时间切片清0，切换后的任务运行可能少于完整时间片时间)
+void OSContextExchangeToTask(OS_TCB* tcb);      //切换到指定任务,输入参数，任务控制块 (该函数效率比OSTaskSwitch高)
+void OSScheduler_Process(void);                 //任务调度器（只调度不切换）
+void OSContextExchange(void);                   //上下文切换(切换任务环境,下个任务运行OSTCBCur指向的任务)
 void OSSchedLock(void);                         //任务切换上锁函数(进入半裸机模式，OS部分功能失效)
 void OSSchedUnlock(void);                       //任务切换解锁函数
-void OSTaskSwitchBack(void* Taskx);             //任务跳转(不带时间切片计数器清0)  带返回(在带优先模式中返回取决于优先级)
-void OSTaskSwitch(void* Taskx);                 //任务跳转(不带时间切片计数器清0)  不带返回
-void OSTaskSwitchBackClean(void* Taskx);        //任务跳转(时间片重新计数)  带返回(在带优先模式中返回取决于优先级)
-void OSTaskSwitchClean(void* Taskx);            //任务跳转(时间片重新计数)  不带返回
+void OSTaskSwitchBack(void* Taskx);             //任务跳转  带返回
+void OSTaskSwitch(void* Taskx);                 //任务跳转  不带返回
 void OSTaskPrioSet(void* Taskx,INT16U Taskprio);//任务优先级设置函数(每调用一次就会自动备份一次)
 void OSTaskPrioBackup(void* Taskx);             //任务优先级备份函数
 void OSTaskPrioBackupSet(void* Taskx,INT16U Taskprio);//任务备份优先级设置函数
