@@ -1595,7 +1595,7 @@ INT8U OSFlagGroupPend(INT8U pendtype,INT16U FGNum,INT32U timeout_ms) //µ»¥˝±Í÷æ¡
 	return result;
 }
 
-void OSMutexPost(INT16U MNum) //∑¢ÀÕª•≥‚¡ø £®÷˜“™”√”⁄Ω‚≥˝mutexÀ¯∂®◊¥Ã¨,Ω‚≥˝∫ÛÀ˘”–mutexµ»¥˝»ŒŒÒΩ´÷ÿ–¬æ∫’˘mutex»®œﬁ£©
+void OSMutexUnlockPost(INT16U MNum) //∑¢ÀÕª•≥‚¡ø £®÷˜“™”√”⁄Ω‚≥˝mutexÀ¯∂®◊¥Ã¨,Ω‚≥˝∫ÛÀ˘”–mutexµ»¥˝»ŒŒÒΩ´÷ÿ–¬æ∫’˘mutex»®œﬁ£©
 {
 	OSSchedLock();
 	if(OSTCBCur->TaskNum==OS_System.MutexTaskNum[MNum])//≈–∂œµ±«∞»ŒŒÒ «∑Òæﬂ”–Post»®œﬁ
@@ -1611,7 +1611,7 @@ void OSMutexPost(INT16U MNum) //∑¢ÀÕª•≥‚¡ø £®÷˜“™”√”⁄Ω‚≥˝mutexÀ¯∂®◊¥Ã¨,Ω‚≥˝∫ÛÀ˘”
 	}
 	OSSchedUnlock();
 }
-INT8U OSMutexPend(INT16U MNum,INT32U timeout_ms) //µ»¥˝ª•≥‚¡ø ¥¯≥¨ ± ±º‰  £¨∑µªÿOS_TRUE£∫µ»¥˝Œ¥≥¨ ±  OS_FALSE£∫µ»¥˝≥¨ ±
+INT8U OSMutexLockPend(INT16U MNum,INT32U timeout_ms) //µ»¥˝ª•≥‚¡ø ¥¯≥¨ ± ±º‰  £¨∑µªÿOS_TRUE£∫µ»¥˝Œ¥≥¨ ±  OS_FALSE£∫µ»¥˝≥¨ ±
 {
 	OSSchedLock();
 	OSTCBCur->MutexName=MNum;
@@ -1890,6 +1890,7 @@ void OSRunTimeCount_Process(void) //œµÕ≥‘À–– ±º‰Õ≥º∆(”√ªß≤ªø…”√)
 				(OS_System.ShutDownTime_mouth ==0)&&\
 				(OS_System.ShutDownTime_year  ==0))
 			{
+				OS_System.ShutDownTime_second=0;
 				OS_System.Running=OS_FALSE;	
 				OSprintf("∂® ±πÿ±’ÕÍ≥…£¨œµÕ≥Õ£÷π‘À––\r\n");
 			}
