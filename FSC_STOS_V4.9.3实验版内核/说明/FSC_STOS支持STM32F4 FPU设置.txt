@@ -1,0 +1,65 @@
+FSC_STOS支持STM32F4 FPU设置：
+
+STM32F4 FPU浮点运算器，为支持FPU参与运算，将通用版的FSC_STOS作以下修改
+
+一、MDK工程设置(点击魔法棒)
+
+1.Target处 Floating Point Hardware: 设为  Use Single Precision
+
+2.C/C++处 Defiine:(复制以下填到Define处)
+    USE_STDPERIPH_DRIVER,STM32F429_439xx,ARM_MATH_CM4,__CC_ARM,ARM_MATH_MATRIX_CHECK,ARM_MATH_ROUNDING,__FPU_PRESENT=1
+
+
+二、修改3个文件
+
+1.FSC_STOS.asm文件:
+
+  选择   Kernel    EQU Cortex_M4_FPU
+
+3.启动文件(startup_stm32f429_439x.s，可以为其他型号F4的启动文件)
+
+原文件处：
+; Reset handler
+Reset_Handler    PROC
+                 EXPORT  Reset_Handler             [WEAK]
+                 IMPORT  SystemInit
+                 IMPORT  __main
+
+                 LDR     R0, =SystemInit
+                 BLX     R0
+                 LDR     R0, =__main
+                 BX      R0
+                 ENDP
+
+修改：用以下内容替换上面内容
+; Reset handler
+Reset_Handler   PROC
+                EXPORT  Reset_Handler             [WEAK]
+                IMPORT  SystemInit
+                IMPORT  __main
+
+                ;----------------------------增加内容-----------------------------;
+                IF {FPU} != "SoftVFP"
+                                                ; Enable Floating Point Support at reset for FPU
+                LDR.W   R0, =0xE000ED88         ; Load address of CPACR register
+                LDR     R1, [R0]                ; Read value at CPACR
+                ORR     R1,  R1, #(0xF <<20)    ; Set bits 20-23 to enable CP10 and CP11 coprocessors
+                                                ; Write back the modified CPACR value
+                STR     R1, [R0]                ; Wait for store to complete
+                DSB
+                
+                                                ; Disable automatic FP register content
+                                                ; Disable lazy context switch
+                LDR.W   R0, =0xE000EF34         ; Load address to FPCCR register
+                LDR     R1, [R0]
+                AND     R1,  R1, #(0x3FFFFFFF)  ; Clear the LSPEN and ASPEN bits
+                STR     R1, [R0]
+                ISB                             ; Reset pipeline now the FPU is enabled
+                ENDIF
+           ;---------------------------------------------------------------------;				 
+				 
+	LDR     R0, =SystemInit
+                 BLX     R0
+                 LDR     R0, =__main
+                 BX      R0
+                 ENDP

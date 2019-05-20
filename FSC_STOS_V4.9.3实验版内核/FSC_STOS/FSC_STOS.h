@@ -1,4 +1,4 @@
-/*--------------------------------------------版本: V4.9.1--------------------------------------------*/
+/*--------------------------------------------版本: V4.9.3--------------------------------------------*/
 #ifndef _FSC_STOS_H_
 #define _FSC_STOS_H_
 
@@ -98,8 +98,6 @@
 #define OS_FALSE                 0        //假
 #define OS_TRUE                  1        //真
 /*-------------------------------------------------------------------------------------------------------------*/
-/*---------------------------------------------OSprintf-------------------------------------------------------*/
-#define OSprintf(fmt, ...) { OSSchedLock(); printf( fmt, ##__VA_ARGS__); OSSchedUnlock();}//OS提供的打印输出函数
 /***************************************************************************************************************/
 #define  FSC_STOS   //用于嵌入FSC_STOS的标识(在其他文件中判断FSC_STOS是否已定义来判断是否嵌入了FSC_STOS)
 #include <stdlib.h>
@@ -119,14 +117,21 @@ typedef  INT8  OSMEM;
 #if (OS_CMD_ALL_ENABLE == 1) 
 typedef struct
 {
+	INT8U  Enter_Flag;
 	INT8U  RXOK_Flag;
 	INT8U  RX_COUNT;
 	char   RX_BUFF[OS_CMD_STR_LEN];	
 	INT32  Rx_Dig_Buff[OS_CMD_NUM_LEN];
 }OS_CMD;
 extern OS_CMD OS_Cmd; //系统指令数据接收(用户不可用)  
+/*--------------------------------------------OSCMDprintf-----------------------------------------------------*/
+#define OSCMDprintf(fmt, ...) { OSSchedLock(); printf( fmt, ##__VA_ARGS__); OSSchedUnlock();}//OSCMD专用的打印输出函数
+/*---------------------------------------------OSprintf-------------------------------------------------------*/ 
+#define OSprintf(fmt, ...) { OSSchedLock(); if(OS_Cmd.Enter_Flag==OS_FALSE) printf( fmt, ##__VA_ARGS__); OSSchedUnlock();}//OS提供的用户打印输出函数
+#else
+#define OSprintf(fmt, ...) { OSSchedLock(); printf( fmt, ##__VA_ARGS__); OSSchedUnlock();}//OS提供的用户打印输出函数
 #endif
-
+/*---------------------------------------------OSprintf-------------------------------------------------------*/
 typedef struct
 {
 	INT8U  Error;
@@ -196,8 +201,8 @@ typedef struct
 {
 	STK32U    *StkPtr;//任务栈指针必须是第一个 
   STK32U    *StkAdd;	
-#if (OS_CMD_ALL_ENABLE == 1) 	
 	INT32U    StkSize;
+#if (OS_CMD_ALL_ENABLE == 1) 	
 	INT32U    StkFree;
 	INT32U    StkUsed;
 	INT32U    StkUsedMax;
