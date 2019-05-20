@@ -1,4 +1,4 @@
-/*--------------------------------------------°æ±¾: V4.8--------------------------------------------*/
+/*--------------------------------------------°æ±¾: V4.9.1--------------------------------------------*/
 #include "fsc_stos.h" 
 
 /**********************************************¿ÉĞŞ¸Ä²¿·Ö(Page Up)*********************************************/
@@ -12,7 +12,7 @@ extern u8 RTC_SetTimes(u16 syear,u8 smon,u8 sday,u8 hour,u8 min,u8 sec);//ÉèÖÃÊ±
 
 /*--------------------------------------------------------------------------------*/
 /*---------------------------------×Ô¶¨ÒåÏµÍ³Ö¸Áî-----------------------------------*/
-//ÈçÈÎÎñ³¬¹ı5¸ö£¬Çë×ÔĞĞÔö¼ÓÖ¸Áî,²¢µ½Cmd_Process()ÈÎÎñ¹ÜÀíÆ÷ÈÎÎñÖĞÔö¼ÓÏàÓ¦µÄ´úÂë(ÔÚ±¾Ò³Ô¼222ĞĞ)¡£
+//ÈçÈÎÎñ³¬¹ı5¸ö£¬Çë×ÔĞĞÔö¼ÓÖ¸Áî,²¢µ½Cmd_Process()ÈÎÎñ¹ÜÀíÆ÷ÈÎÎñÖĞÔö¼ÓÏàÓ¦µÄ´úÂë(ÔÚ±¾Ò³Ô¼325ĞĞ)¡£
 #if (OS_CMD_ALL_ENABLE == 1)
 #if (OS_CMD_NSY_ENABLE == 1)
 /*---------------ÈÎÎñ¿ª¹Ø----------------*/
@@ -88,22 +88,18 @@ char cmd_hardreset[]={"cmd/hardreset//"};        //Ó²¼şÖØÆô
 #define OSTIMER_CONT_1us   (SystemCoreClock/8/1000000)//ÏµÍ³¶¨Ê±Æ÷1us¼ÆÊı´ÎÊı 
 #define OSTIMER_LOAD       SysTick->LOAD              //ÏµÍ³¶¨Ê±Æ÷ÖØ×°ÔØÖµ¼Ä´æÆ÷
 #define OSTIMER_VAL        SysTick->VAL               //ÏµÍ³¶¨Ê±Æ÷µ±Ç°Öµ¼Ä´æÆ÷
-void OSTimerInit(void)//ÓÃ×÷OSµÄ¼ÆÊ±Âö³å
+void OSSysTickInit(void)//ÓÃ×÷OSµÄ¼ÆÊ±Âö³å
 { 
-	OS_INT_ENTER();
-	
 	//Systick¶¨Ê±Æ÷³õÊ¹»¯(Ê¹ÓÃÆäËû¶¨Ê±Æ÷Ê±£¬ÇëĞŞ¸ÄÎªÆäËû¶¨Ê±Æ÷)
-	char * Systick_priority = (char *)0xe000ed23;     //SystickÖĞ¶ÏÓÅÏÈ¼¶¼Ä´æÆ÷
-	SysTick->LOAD  = OSTIMER_CONT_1us* 1000;           //Systick¶¨Ê±Æ÷ÖØ×°ÔØ¼ÆÊıÖµ:1ms(¹Ì¶¨Öµ)
-	*Systick_priority = 0x00;                         //Systick¶¨Ê±Æ÷ÖĞ¶ÏÓÅÏÈ¼¶
-	SysTick->VAL   = 0;                               //Systick¶¨Ê±Æ÷¼ÆÊıÆ÷Çå0
+	char * Systick_priority = (char *)0xe000ed23;       //SystickÖĞ¶ÏÓÅÏÈ¼¶¼Ä´æÆ÷
+	SysTick->LOAD  = OSTIMER_CONT_1us* 1000;            //Systick¶¨Ê±Æ÷ÖØ×°ÔØ¼ÆÊıÖµ:1ms(¹Ì¶¨Öµ)
+	*Systick_priority = 0x00;                           //Systick¶¨Ê±Æ÷ÖĞ¶ÏÓÅÏÈ¼¶
+	SysTick->VAL   = 0;                                 //Systick¶¨Ê±Æ÷¼ÆÊıÆ÷Çå0
 	SysTick->CTRL = 0x3;//Systick´ò¿ª²¢Ê¹ÄÜÖĞ¶ÏÇÒÊ¹ÓÃÍâ²¿¾§ÕñÊ±ÖÓ,8·ÖÆµ  72MHz/8=9MHz  ¼ÆÊı9000´Î=1ms  ¼ÆÊı9´Î=1us
-	
-	OS_INT_EXIT();
 }
 void SysTick_Handler(void) //Systick¶¨Ê±Æ÷ÖĞ¶Ïº¯Êı(Ê¹ÓÃÆäËû¶¨Ê±Æ÷Ê±,ÇëĞŞ¸ÄÎªÆäËû¶¨Ê±Æ÷µÄÖĞ¶Ïº¯ÊıÃû)
 {
-  OS_Timer_Handler();
+  OS_SysTick_Handler();
 }
 /*----------------------------------------------------------------------------------*/
 /*2.ÈÎÎñµ÷¶È*/
@@ -131,7 +127,141 @@ void HardReset(void) //Ó²¼şÖØÆô
 
 
 
+/*-------------------------------------------ÄÚ´æ¹ÜÀí(Pageup)----------------------------------------------*/
+/*
+ÄÚ´æ¹ÜÀíÉè¼Æ£º
+½«ÄÚ´æ³ØÊÓÎªÒ»¸öÏßĞÔÇø¿é£¬Çø¿éµÄ¿ªÍ·4byte(32bit)*4=16byteÓÃÓÚ¼ÇÂ¼¸ÃÇø¿éµÄĞÅÏ¢,ÆäÖĞµÚ¶ş¸öÊı¾İÓÃÓÚ±êÖ¾¸ÃÇø¿éÊÇ·ñ¿ÕÏĞ£¬ÈçÏÂÍ¼£º
+Block:[byte0][byte1][byte2][byte3][byte4]--[byte7][byte8]--[byte11][byte12]--[byte15][byte16]--[byteN-2][byteN-1][byteN]
+      {        4byte(32bit)      }{ 4byte(32bit) }{  4byte(32bit) }{  4byte(32bit)  }{  address:(N-16)byte(=struct+1)  }
+                 size(N)            1(==1¿ÕÏĞ±êÖ¾)        last             next                     data
+Ò»¡¢ÉêÇëÄÚ´æÊ±£¬´ÓÄÚ´æ³Ø¿ªÊ¼µØÖ·¿ªÊ¼²éÕÒ¿ÕÏĞÄÚ´æÇø¿é£¬Èç²éÕÒµ½µÄ¿ÕÏĞÄÚ´æÇø¿ésize´óÓÚËùÉêÇëµÄÄÚ´æsize£¬Ôò·Ö¸î³öËùÉêÇëÄÚ´æ´óĞ¡ÄÚ´æÇø¿é(´ÓÇ°Ãæ¿ªÊ¼·Ö)£¬
+           ·Ö¸î³öÈ¥µÄÄÚ´æ¿Õ¼ä=Çø¿éĞÅÏ¢³¤¶È+ÉêÇëÄÚ´æ´óĞ¡¡£ÈçÉêÇë4*64byte=256byteÄÚ´æ£¬Ôò·Ö¸î³öÈ¥µÄÄÚ´æ=16+256=272¡£Àı£º
 
+1.µÚÒ»´ÎÉêÇë4*64byteÄÚ´æ£¬·Ö¸î³öÈ¥µÄÄÚ´æ=16+256=272£¬µÃµ½µÄÄÚ´æÇø¿é£º
+						[byte0][byte1][byte2][byte3][byte4]--[byte7][byte8]--[byte11][byte12]--[byte15][byte16]         --       [byte271]
+						{        4byte(32bit)      }{ 4byte(32bit) }{  4byte(32bit) }{  4byte(32bit)  }{  address:(N-12)byte(=struct+1)  }
+												256                0(==0Ê¹ÓÃ±êÖ¾)       last             next                      data
+Ê£ÓàÄÚ´æÇø¿é£º[byte272]--[byte275][byte276]--[byte279][byte280]--[byte283][byte284]--[byte287][byte288]   --   [byteN-(16+256)]
+            {   4byte(32bit)   }{   4byte(32bit)    }{    4byte(32bit) } {  4byte(32bit)  }{  address:(N-12)byte(=struct+1)  }
+             size(N-(16+256))       1(==1¿ÕÏĞ±êÖ¾)            last               next                      data
+
+2.µÚ¶ş´ÎÉêÇë4*32byteÄÚ´æ£¬·Ö¸î³öÈ¥µÄÄÚ´æ=16+128=144£¬µÃµ½µÄÄÚ´æÇø¿é£º
+						[byte272]--[byte275][byte276]--[byte279][byte280]--[byte283][byte284]--[byte287][byte288]         --       [byte415]
+						{   4byte(32bit)    }{   4byte(32bit)   }{    4byte(32bit) }{   4byte(32bit)   }{   address:(N-16)byte(=struct+1)  }
+								   256              0(==0Ê¹ÓÃ±êÖ¾)            last               next                     data
+Ê£ÓàÄÚ´æÇø¿é£º[byte416]--[byte419][byte420]--[byte423][byte424]--[byte427][byte428]--[byte431][byte432]--[byteN-(16+256)-(16+128)]
+            {   4byte(32bit)   }{   4byte(32bit)    }{    4byte(32bit)  }{   4byte(32bit)   }{  address:(N-16)byte(=struct+1)  }
+       size(N-(16+256)-(16+128))    1(==1¿ÕÏĞ±êÖ¾)            last                next                       data
+			 
+¶ş¡¢ÄÚ´æÊÍ·ÅÊ±£¬Ö»ÊÇ½«¸ÃÄÚ´æÇø¿éµÄ±êÖ¾Î»ÖÃ1(¿ÕÏĞ)£¬²¢Ã»ÓĞÕûÀí°Ñ¸ÃÇøÓòÓëËùÓĞ¿ÕÏĞÇø¿éºÏ²¢ÔÚÒ»Æğ¡£ÊÍ·ÅÄÚ´æºóÔÙÉêÇëÄÚ´æÈİÒ×Ôì³ÉÄÚ´æËéÆ¬¡£
+              OSÓĞÌá¹©×¨ÃÅµÄÄÚ´æËéÆ¬ÕûÀíº¯Êı¡£
+
+Èı¡¢ÓÉÓÚÃ»ÓĞ¶ÔÄÚ´æ³Ø½øĞĞÊÂÏÈ·ÖÇø£¬µ±ÉêÇëµÄÄÚ´æ¹ı¶àÊ±£¬ÉêÇëµÄËÙ¶È»áÔ½À´Ô½Âı£¬²»¹ı¶Ôµ¥Æ¬»úĞ¡ÈİÁ¿ÄÚ´æ³ØÀ´ËµÓ°Ïì²»´ó£¬Èç¹ûÄÚ´æ³Ø±È½Ï´ó
+             Ôò±ØĞëÊÂÏÈ¶ÔÄÚ´æ³Ø½øĞĞ·ÖÇø£¬ÕâÑùÉêÇëÄÚ´æÊ±¸ßĞ§¿ì½İ£¬Ò²Ò×ÓÚÄÚ´æ¹ÜÀí¡£
+*/        
+struct memblock{  
+    INT32U size;                  //ÄÚ´æÇø¿é´óĞ¡  
+    INT32U free;                  //ÊÇ·ñÒÑÊ¹ÓÃ 
+    struct memblock *last;        //Ö¸ÏòÉÏÒ»¸öÄÚ´æÇø¿é	
+    struct memblock *next;        //Ö¸ÏòÏÂÒ»¸öÄÚ´æÇø¿é  
+};
+OSMEM memorypool[OS_MEMORYPOOL_SIZE];
+struct memblock *memblockList = (void *)memorypool; 
+INT32U FSC_MemoryFreeSizeGet(void)
+{
+	INT32U addsize=0;
+	struct memblock *curr;
+	curr=memblockList;
+	while(curr!=NULL)
+	{
+		if(curr->free) addsize+=curr->size;
+		curr=curr->next;
+	}
+	return addsize;
+}
+void FSC_MemoryInit(void)  
+{          
+    memblockList->size=OS_MEMORYPOOL_SIZE-sizeof(struct memblock);//¿ÉÓÃÄÚ´æ¿Õ¼ä´óĞ¡  
+    memblockList->free=1;                                      //1£ºÄÚ´æ¿ÕÏĞ 0£ºÄÚ´æÒÑÊ¹ÓÃ 
+    memblockList->last=NULL;                                   //Ö¸Ïò¿ÕÄÚ´æ 	
+    memblockList->next=NULL;                                   //Ö¸Ïò¿ÕÄÚ´æ  
+}
+void FSC_FragMerge(void)//ÄÚ´æËéÆ¬ÕûÀí
+{
+  
+}
+void split(struct memblock *fitting_slot,size_t size)//ÄÚ´æ·Ö¸î(´Ó´óÇø¿é·Ö¸î³öÒ»²¿·Ö×÷ÎªÉêÇëµ½µÄÄÚ´æ£¬ÊµÖÊÊÇ°Ñ¿ÕÏĞĞÅÏ¢½á¹¹ÌåÍùºóÒÆ¶¯,ÔÙ½«Ç°ÃæµÄĞÅÏ¢½á¹¹ÌåµÄ±êÖ¾¸ÄÎªÊ¹ÓÃ)
+{
+    struct memblock *new=(void*)((u8*)fitting_slot+size+sizeof(struct memblock));  //ÖØĞÂ¶¨Î»Ê£Óà¿ÕÏĞµÄµØÖ·
+    new->size=(fitting_slot->size)-size-sizeof(struct memblock);                   //ÖØĞÂ¶¨ÒåÊ£Óà¿ÕÏĞsize´óĞ¡
+    new->free=1;                                                        //ÉèÖÃ¿ÕÏĞ
+    new->last=fitting_slot;
+   	new->next=fitting_slot->next;                                       //²åÈëµ½fitting_slotÓëfitting_slot->nextÖĞ¼ä
+    fitting_slot->size=size;
+    fitting_slot->free=0;
+    fitting_slot->next=new;                                             //²åÈëµ½fitting_slotÓëfitting_slot->nextÖĞ¼ä
+}
+void *FSC_Malloc(size_t noOfBytes)//ÄÚ´æÉêÇë(Ã¿¸öÄÚ´æ¿éµÄ¿ªÊ¼12¸ö×Ö½ÚÓÃÀ´±£´æ¸Ã¿éÄÚ´æÊ¹ÓÃĞÅÏ¢µÄ½á¹¹ÌåÊı¾İ)
+{   
+	  struct memblock *curr;
+    void *result;
+    if(!(memblockList->size))
+    {
+        FSC_MemoryInit();
+    }
+    curr=memblockList;
+    while((((curr->size)<noOfBytes)||((curr->free)==0))&&(curr->next!=NULL))//´ÓÄÚ´æ³Ø¿ªÊ¼µØÖ·²éÕÒ¿ÕÏĞÄÚ´æ¿é
+    {
+        curr=curr->next;
+    }
+    if((curr->size)==noOfBytes) //Ê£ÓàÄÚ´æÇ¡ºÃÏàµÈ
+    {
+        curr->free=0;
+        result=(void*)(++curr);//·µ»ØÖ¸ÏòÊı¾İ(dataÇø)ÆğÊ¼µØÖ·
+    }
+    else if((curr->size)>(noOfBytes+sizeof(struct memblock)))         //Ê£ÓàÄÚ´æ³ä×ã
+    {
+        split(curr,noOfBytes);                                        //·Ö¸îËùĞèµÄÄÚ´æ³öÈ¥
+        result=(void*)(++curr);                                       //·µ»ØÖ¸ÏòÊı¾İ(dataÇø)ÆğÊ¼µØÖ·
+    }
+    else  //Ê£ÓàÄÚ´æ²»×ã
+    {
+        result=NULL;
+    }
+		return result;
+}
+
+void FSC_Merge(void)//ºÏ²¢ÏàÁÚ¿ÕÏĞÄÚ´æÇø¿é(Ğ¡ÓÅ»¯)
+{
+	  struct memblock *curr;//*prev;
+    curr=memblockList;
+	  if(curr!=NULL)
+		{
+			while((curr->next)!=NULL)
+			{ 
+					if((curr->free) && (curr->next->free)) 
+					{                                     
+							curr->size += (curr->next->size)+sizeof(struct memblock);
+							curr->next = curr->next->next;
+						  curr->next->next->last=curr;
+					}
+					curr=curr->next;
+			}
+		}
+}
+void FSC_Free(void* ptr)//ÊÍ·ÅÄÚ´æ(ÊäÈëĞÎ²ÎµØÖ·±ØĞëÊÇFSC_Mallocº¯Êı·µ»ØµÄµØÖ·)
+{   
+    if(((void*)memorypool<=ptr)&&(ptr<=(void*)(memorypool+OS_MEMORYPOOL_SIZE)))//¼ì²éÒªÊÍ·ÅµÄµØÖ·ÊÇ·ñÔÚÄÚ´æ³Ø·¶Î§ÄÚ
+    {
+        struct memblock* curr=ptr;
+        --curr;   //´ÓdataÇø»ØÍËµ½Çø¿éĞÅÏ¢Çø
+        curr->free=1;//ÖÃ¿ÕÏĞ
+        FSC_Merge();//ºÏ²¢ÏàÁÚ¿ÕÏĞÇø¿é(Ğ¡ÓÅ»¯£¬´óÓÅ»¯ĞèÒªÄÚ´æËéÆ¬ÕûÀí)
+     }
+     else return;
+}
+
+/*-------------------------------------------ÄÚ´æ¹ÜÀí(Pagedown)----------------------------------------------*/
 
 
 
@@ -406,6 +536,8 @@ void OS_Information_Process(void)
 																						 0); 
 #endif	
 	OSprintf("  CPUÕ¼ÓÃÂÊ£º%04.1f%%                          CPU×î´óÕ¼ÓÃÂÊ£º%04.1f%% \r\r\n",100-(OSTCBTbl[0].TaskCPUOccRateCnt*100.0/OS_System.TaskTimeSliceCnt),OS_System.TaskCPUOccRateMax/10.0);
+	OSprintf("  ÄÚ´æÈİÁ¿ £º%dByte\r\r\n",OS_MEMORYPOOL_SIZE);      
+	OSprintf("  ÒÑÓÃÄÚ´æ £º%dByte                       Ê£ÓàÄÚ´æ£º%dByte \r\r\n",OS_MEMORYPOOL_SIZE-FSC_MemoryFreeSizeGet(),FSC_MemoryFreeSizeGet());
 	OSprintf("-----------------------------------------------------------------------------------\r\n");
 	OSprintf("ÀûÓÃÂÊ   »îÔ¾¶È   Ê¹ÓÃÕ»   ¿ÕÏĞÕ»   °Ù·Ö±È   Ê±¼äÆ¬    ÓÅÏÈ¼¶    ×´Ì¬    ÈÎÎñÃû    \r\n");
 	OSprintf("  CPU    Active    Used     Free     Per    TimeSlice   Prio    State   Taskname   \r\n\r\n");
@@ -413,7 +545,7 @@ void OS_Information_Process(void)
 	{
 		if(OSTCBTbl[TaskCount].StkPtr!=(STK32U*)0)
 		{	
-			OSprintf(" %04.1f%%    %03d       %-3d      %-3d    %04.1f%%     %04d     %05d     %d:%d    %s \r\n",\
+			OSprintf(" %04.1f%%    %03d       %-3d     %-3d     %04.1f%%     %04d     %05d     %d:%d    %s \r\n",\
 									OSTCBTbl[TaskCount].TaskCPUOccRateCnt*100.0/OS_System.TaskTimeSliceCnt,\
 			            OSTCBTbl[TaskCount].TaskCPUOccRateCnt*1000/OS_System.ClockCnt,\
 									OSTCBTbl[TaskCount].StkUsed,\
@@ -802,6 +934,9 @@ void FSC_FAULT_SYSTEM_OS_Timer_Handler(INT16U tasknum)
 #endif
 /*-----------------------------------FSCÖÇÄÜ¾À´íÏµÍ³º¯Êı£¨Page Down£©------------------------------------------*/
 /********************************************************************************************************/
+//Ö»Òª²úÉúPendSVÖĞ¶Ï,Ìø×ªÖĞ¶Ï´¦Àíº¯ÊıÇ° xPSR,PC,LR,R12,R3-R0±»×Ô¶¯±£´æµ½ÏµÍ³»òÈÎÎñÕ»ÖĞ(´Ë²½¾ÛÊÇPendSVÖĞ¶ÏÓ²¼ş»úÖÆ)£¬
+//±£´æÔÚÄÄ¸öÕ»È¡¾öÓÚµ±Ç°µÄSPÀàĞÍ£¬ÈçÊÇMSPÔò±£´æµ½ÏµÍ³Õ»£¬ÈçÊÇPSPÔò±£´æµ½ÈÎÎñÕ»¡£±¾OSÊÇ±£´æÓÚÈÎÎñÕ»¡£¶øR11-R4ĞèÒªÊÖ¶¯±£´æµ½ÈÎÎñÕ»ÖĞ
+//ÈëÕ»Ë³Ğò£ºÕ»¶¥->Õ»Î² xPSR,PC,LR,R12,R3-R0,R11-R4¡£
 STK32U* OSTaskStkInit(void (*task),STK32U *p)
 {
     STK32U *stk;
@@ -812,21 +947,21 @@ STK32U* OSTaskStkInit(void (*task),STK32U *p)
 #if (__FPU_PRESENT == 1)&&(__FPU_USED == 1) 
     *(--stk)  = (INT32U)0x01000000L;   // xPSR   
 #else
-    *(  stk)  = (INT32U)0x01000000L;   // xPSR  
+    *(  stk)  = (INT32U)0x01000000L;   // xPSR bit[24]±ØĞëÖÃ1£¬·ñÔòÉÏµç»áÖ±½Ó½øÈëFaultÖĞ¶Ï  
 #endif
     *(--stk)  = (INT32U)task;          // R15 (PC)             
-    *(--stk)  = (INT32U)0xFFFFFFFEL;   // R14 (LR)         
-        stk  -= 5;
+    *(--stk)  = (INT32U)0xFFFFFFFEL;   // R14 (LR)³õÊ¹»¯Îª×îµÍ4Î»ÎªE£¬ÊÇÒ»¸ö·Ç·¨Öµ£¬Ö÷ÒªÄ¿µÄÊÇ²»ÈÃÊ¹ÓÃR14£¬¼´ÈÎÎñÊÇ²»ÄÜ·µ»ØµÄ         
+        stk  -= 4;                     //(R12¡¢R3-R1)
+	  *(--stk)  = (INT32U)0;             // R0(ÈÎÎñÕ»³õÊ¹»¯R0±ØĞëÖÃ0,SP´ÓR0»Ö¸´)
 #if (__FPU_PRESENT == 1)&&(__FPU_USED == 1) 
         stk  -= 16;
 #endif    
-	    stk  -=  8;
+	    stk  -=  8;                      // R11-R4
     return stk;
 }
 
 void OSInit(void) //ÏµÍ³³õÊ¹»¯£¬³õÊ¹»¯¸÷¸öÈÎÎñµÄÈÎÎñ¿ØÖÆ¿é±äÁ¿µÄ²ÎÊı
 { 
-	  OS_INT_ENTER();             //¹Ø±Õ×ÜÖĞ¶Ï
     INT32U i;	
 #if (OS_TIM_SYS_ENABLE == 1)	
 	  for(i = 0; i < TIMER_SIZE; i++) {
@@ -909,22 +1044,23 @@ void OSInit(void) //ÏµÍ³³õÊ¹»¯£¬³õÊ¹»¯¸÷¸öÈÎÎñµÄÈÎÎñ¿ØÖÆ¿é±äÁ¿µÄ²ÎÊı
 		OS_System.RunLastTask=0;//³õÊ¹»¯ÎªÈÎÎñ0
 		OS_System.TaskHighestPrioLast=0;//³õÊ¹»¯×î¸ßÈÎÎñÓÅ¼¶ÎªÈÎÎñ0µÄÓÅÏÈ¼¶
 		OS_System.TaskNext=0;    //NextÈÎÎñ¼ÆÊı³õÊ¹»¯
+		
+    OS_System.LockNesting=0;
+		OS_System.IntNesting=0;
+    OS_System.Running=OS_TRUE;//ÔËĞĞ±êÖ¾
+		
 		OS_CreatTaskIdle();      //´´½¨ÈÎÎñ0  -¿ÕÏĞÈÎÎñ
-    OSCreatTaskManager();    //´´½¨ÈÎÎñ1  -ÈÎÎñ¹ÜÀíÆ÷ÈÎÎñ		
+    OSCreatTaskManager();    //´´½¨ÈÎÎñ1  -ÈÎÎñ¹ÜÀíÆ÷ÈÎÎñ
+		
 		OSTCBRun = OSTCBCur;     //ÔËĞĞTCBÖ¸ÏòCur
 		OSTCBCur = &OSTCBTbl[0]; //´ÓÈÎÎñ0¿ªÊ¼ÔËĞĞ
 		OSTCBNext = &OSTCBTbl[1];//ÏÂÒ»ÈÎÎñ¸³¸øNext
-		OS_System.Running=OS_TRUE;//OS´ò¿ªÔËĞĞ
-			
-		OSPendSVInit();//PendSV³õÊ¹»¯
-		OSTimerInit(); //ÏµÍ³¶¨Ê±Æ÷³õÊ¹»¯(1ms)
-		OSScheduler_Process();
-		OS_INT_EXIT();      //´ò¿ª×ÜÖĞ¶Ï
+		
+		OSScheduler_Process();//µ÷¶È			
 }
 
 void OS_CreatTaskIdle(void)//´´½¨¿ÕÏĞÈÎÎñ(¶ÀÁ¢´´½¨)
-{
-    OS_INT_ENTER(); 
+{ 
 #if (OS_CMD_ALL_ENABLE== 1)
     INT8U i;	
 	  char taskstr[]={"Task_Idle"};
@@ -944,11 +1080,9 @@ void OS_CreatTaskIdle(void)//´´½¨¿ÕÏĞÈÎÎñ(¶ÀÁ¢´´½¨)
 		  OSTCBTbl[0].TaskStr[i]=taskstr[i];
 		}
 #endif			
-    OS_INT_EXIT();
 }
 void OSCreatTaskManager(void)//´´½¨ÈÎÎñ¹ÜÀíÆ÷ÈÎÎñ(¶ÀÁ¢´´½¨)
 {
-    OS_INT_ENTER(); 
 #if (OS_CMD_ALL_ENABLE== 1)	
     INT8U i;	
 		char taskstr[]={"Task_Manage"};
@@ -968,12 +1102,40 @@ void OSCreatTaskManager(void)//´´½¨ÈÎÎñ¹ÜÀíÆ÷ÈÎÎñ(¶ÀÁ¢´´½¨)
 		  OSTCBTbl[1].TaskStr[i]=taskstr[i];
 		}
 #endif		
-    OS_INT_EXIT();
 }
-
-void OSTaskCreate(char* taskstr,void (*task),STK32U *stkptr,INT32U stksize,INT8U taskstate,INT32U tasktimeslice,INT16U taskprio)//ÈÎÎñ´´½¨º¯Êı(´´½¨´æ·ÅÄÚ´æÇøÓò(¶ÑÕ»)µÈ)
+void OSTaskCreate(char* taskstr,void (*task),INT32U stksize,INT32U tasktimeslice,INT16U taskprio,INT8U taskstate)//¶¯Ì¬´´½¨ÈÎÎñº¯Êı
 {
-	  OS_INT_ENTER();
+	  STK32U *stk;
+	  STK32U *stkptr;
+    INT16U i;
+#if (OS_CMD_ALL_ENABLE== 1)		
+	  INT16U j; 
+#endif	
+	  stkptr=(u32*)FSC_Malloc(4*stksize);
+    stk=stkptr+stksize-1;  
+	  i=2;         //Ìø¹ı¿ÕÏĞÈÎÎñºÍÈÎÎñ¹ÜÀíÆ÷ÈÎÎñ´´½¨ÓÃ»§º¯Êı
+		while(OSTCBTbl[i].StkPtr != (STK32U*)0) {   //²éÕÒ¿ÕTCB
+        i++;
+    }	 		
+		OSTCBTbl[i].StkAdd=stkptr;
+		OSTCBTbl[i].StkPtr = OSTaskStkInit(task,stk);
+    OSTCBTbl[i].TaskState = taskstate;
+		OSTCBTbl[i].TaskAdd=(INT32U)task;
+		OSTCBTbl[i].TaskNum=i;
+		OSTCBTbl[i].TaskPrio=taskprio;
+		OSTCBTbl[i].TaskPrioBackup=OSTCBTbl[i].TaskPrio;
+		OSTCBTbl[i].TaskTimeSlice=tasktimeslice;
+		OSTCBTbl[i].StkSize=stksize;
+#if (OS_CMD_ALL_ENABLE== 1)	
+		for(j=0;j<TASK_NAME_LEN;j++)
+		{
+			if(*taskstr=='\0') break;
+		  OSTCBTbl[i].TaskStr[j]=*taskstr++;
+		}
+#endif			
+}
+void OSTaskCreateStatic(char* taskstr,void (*task),STK32U *stkptr,INT32U stksize,INT32U tasktimeslice,INT16U taskprio,INT8U taskstate)//¾²Ì¬´´½¨ÈÎÎñº¯Êı(´´½¨´æ·ÅÄÚ´æÇøÓò(¶ÑÕ»)µÈ)
+{
     INT16U i;
 #if (OS_CMD_ALL_ENABLE== 1)		
 	  INT16U j; 
@@ -1000,7 +1162,58 @@ void OSTaskCreate(char* taskstr,void (*task),STK32U *stkptr,INT32U stksize,INT8U
 		  OSTCBTbl[i].TaskStr[j]=*taskstr++;
 		}
 #endif		
-    OS_INT_EXIT();
+}
+void OSTaskDelete(void (*Taskx))//¶¯Ì¬É¾³ıÈÎÎñº¯Êı
+{  
+	  INT16U i;
+	  if(OSTCBCur->TaskAdd==(INT32U)Taskx) 
+		{
+			OS_INT_ENTER();
+		  FSC_Free(OSTCBCur->StkAdd);
+			OSTCBCur->StkPtr = (void*)0;
+			OSTCBCur->TaskState = TASK_DELETING;
+			OSSchedSwitch();
+			OS_INT_EXIT();
+		}
+		else
+		{
+			for(i = 0; i < OS_MAX_TASKS; i++) {  
+			 if( OSTCBTbl[i].TaskAdd == (INT32U)Taskx )				 
+			 {
+				 if((OSTCBTbl[i].StkPtr != (void*)0)&&(OSTCBTbl[i].TaskState != TASK_DELETING))
+				 {
+					 OS_INT_ENTER();
+					 FSC_Free(OSTCBTbl[i].StkAdd);
+					 OSTCBTbl[i].StkPtr = (void*)0;
+					 OSTCBTbl[i].TaskState = TASK_DELETING;  
+					 OS_INT_EXIT();
+					 break;
+				 }
+			 }	
+		  }
+	  }   
+}
+void OSTaskResume(void (*Taskx),INT8U taskstate)//¶¯Ì¬»Ö¸´ÒÑÉ¾³ıµÄÈÎÎñº¯Êı
+{ 
+	  STK32U *stkptr;
+	  STK32U *stk;
+	  INT16U i; 
+		for(i = 0; i < OS_MAX_TASKS; i++) {  
+		 if( OSTCBTbl[i].TaskAdd == (INT32U)Taskx ) 
+		 {
+			 if((OSTCBTbl[i].StkPtr == (void*)0)&&(OSTCBTbl[i].TaskState == TASK_DELETING))
+				 {
+					 OS_INT_ENTER();
+					 stkptr=FSC_Malloc(4*OSTCBTbl[i].StkSize);
+					 stk=stkptr+OSTCBTbl[i].StkSize-1;
+					 OSTCBTbl[i].StkPtr = OSTaskStkInit((void*)OSTCBTbl[i].TaskAdd,stk);
+					 OSTCBTbl[i].StkAdd = stkptr;
+					 OSTCBTbl[i].TaskState = taskstate; 
+           OS_INT_EXIT();					 
+					 break;
+				 }
+		 }	
+		}  
 }
 
 void OSTaskCPUOccRateCounter_Process(void)
@@ -1033,7 +1246,7 @@ void OS_TaskIdle(void) //¿ÕÏĞÈÎÎñÄÚÈİº¯Êı(½ûÖ¹µ÷ÓÃOS_delayMsº¯Êı)  (ÓÃÒÔ·ÀÖ¹0¸öÈ
 void OS_TaskManager(void) //ÈÎÎñ¹ÜÀíÆ÷ÈÎÎñÄÚÈİº¯Êı
 {	
 	u32 i;
-	OSprintf("-@FSC_STOS_V4.8 Inside\r\n");
+	OSprintf("-@FSC_STOS_V4.9.1 Inside\r\n");
 	OSprintf("OS Information£¬Please Send: cmd/osmanage//\r\n\r\n");
   while(1) 
 	{
@@ -1396,15 +1609,18 @@ void OSFlagPost(INT16U FNum) //·¢ËÍ±êÖ¾Á¿
 	OSSchedLock();
 	INT16U i,j;
 	for(i=0;i<OS_MAX_TASKS;i++)
-	{
+	{ 
     if(OSTCBTbl[i].TaskFlagBit&(1<<_BIT_Flag))//µ¥¸öOSFlag´¦ÓÚµÈ´ıĞÅºÅ±êÖ¾×´Ì¬
-		{
+		{ 
 			if(OSTCBTbl[i].FlagName==FNum)//ÅĞ¶Ï¸ÃµÈ´ıÈÎÎñµÈ´ıµÄOSFlagÊÇ·ñÊÇµ±Ç°×¼±¸·¢ËÍµÄOSFlag
-			{
-				OSTCBTbl[i].TaskFlagBit&=~(1<<_BIT_Flag);//Çå³ıĞÅºÅ±êÖ¾×´Ì¬
+			{ 
 				OS_System.FLAG[FNum][i]=OS_TRUE; //¸øµÈ´ıOSFlagµÄÈÎÎñ·¢ËÍ±êÖ¾Á¿
 				OS_System.POST_FLAG_COUNT[FNum]++;//µÈ´ı´¦ÀíĞÅºÅ´ÎÊıÀÛ¼Ó
-				OSTCBTbl[i].TaskDelayMs=1;  //µÈ´ıÑÓÊ±ÖÃ1£¬È¡ÏûµÈ´ıOSFlagÈÎÎñµÄµÈ´ıÑÓÊ± 
+				if((OS_System.FLAGPendType[FNum][i]!=OSFlag_NBPC)&&(OS_System.FLAGPendType[FNum][i]!=OSFlag_NBPN))
+				{
+					OSTCBTbl[i].TaskFlagBit&=~(1<<_BIT_Flag);//Çå³ıĞÅºÅ±êÖ¾×´Ì¬
+				  OSTCBTbl[i].TaskDelayMs=1;  //µÈ´ıÑÓÊ±ÖÃ1£¬È¡ÏûµÈ´ıOSFlagÈÎÎñµÄµÈ´ıÑÓÊ± 
+				}
 			}
 		}
 		if(OSTCBTbl[i].TaskFlagBit&(1<<_BIT_FlagGroup))//ÈºOSFlag´¦ÓÚµÈ´ıĞÅºÅ±êÖ¾×´Ì¬
@@ -1427,6 +1643,7 @@ INT8U OSFlagPend(INT8U pendtype,INT16U FNum,INT32U timeout_ms) //µÈ´ı±êÖ¾Á¿ ´ø³¬
 	OSSchedLock();
 	OSTCBCur->FlagName=FNum;
 	OSTCBCur->TaskFlagBit|=(1<<_BIT_Flag);
+	OS_System.FLAGPendType[FNum][OSTCBCur->TaskNum]=pendtype;
 	OSSchedUnlock();
 	switch(pendtype)
 	{
@@ -1529,8 +1746,8 @@ INT8U OSFlagPend(INT8U pendtype,INT16U FNum,INT32U timeout_ms) //µÈ´ı±êÖ¾Á¿ ´ø³¬
 		{
 			if(OS_System.POST_FLAG_COUNT[FNum]>0)
 			{
-		    OS_System.POST_FLAG_COUNT[FNum]--;//µÈ´ı´¦ÀíĞÅºÅ´ÎÊı-1(ÒÑ´¦Àí)
 				result=OS_System.POST_FLAG_COUNT[FNum];//·µ»ØÊ£ÓÚµÈ´ı´¦Àí´ÎÊı
+				OS_System.POST_FLAG_COUNT[FNum]--;//µÈ´ı´¦ÀíĞÅºÅ´ÎÊı-1(ÒÑ´¦Àí)
 			}
 			else
 			{
@@ -1648,8 +1865,11 @@ void OSMboxPost(INT16U MNum,void* fp)  //·¢ËÍÓÊ¼ş
 				OS_System.POST_MBOX_COUNT[MNum]++;
 				OS_System.MBQueue[OS_System.POST_MBQ_COUNT[MNum]+MNum*MBQ_SIZE]=fp;
 				if(OS_System.POST_MBQ_COUNT[MNum]<MBQ_SIZE-1) OS_System.POST_MBQ_COUNT[MNum]++;
-				else OS_System.POST_MBQ_COUNT[MNum]=0;
-				OSTCBTbl[i].TaskDelayMs=0;//µÈ´ıÑÓÊ±Çå0
+				if((OS_System.MBOXPendType[MNum][i]!=OSMBox_NBPN)&&(OS_System.MBOXPendType[MNum][i]!=OSMBox_NBPQ))
+				{
+					OSTCBCur->TaskFlagBit&=~(1<<_BIT_MBox);
+				  OSTCBTbl[i].TaskDelayMs=0;//µÈ´ıÑÓÊ±Çå0
+				}
 			}
 		}
 	}
@@ -1663,6 +1883,7 @@ void* OSMboxPend(INT8U pendtype,INT16U MNum,INT32U timeout_ms) //µÈ´ıÓÊÏä ´ø³¬Ê±
 	INT32U* _mbox;	
 	OSTCBCur->MBoxName=MNum;
 	OSTCBCur->TaskFlagBit|=(1<<_BIT_MBox);
+	OS_System.MBOXPendType[MNum][OSTCBCur->TaskNum]=pendtype;
 	OSSchedUnlock();
 	switch(pendtype)
 	{
@@ -2237,7 +2458,7 @@ void OSTaskTimeDelayCount_Process(void) //ÈÎÎñÑÓÊ±¼ÆÊı³ÌĞò
 		 }
 	 }	
 }
-void OS_Timer_Handler(void) //ÈÎÎñÇĞ»»ºËĞÄº¯Êı
+void OS_SysTick_Handler(void) //ÈÎÎñÇĞ»»ºËĞÄº¯Êı
 {
 	 if(OS_System.Running==OS_TRUE)//ÏµÍ³×´Ì¬¼ì²â
 	 {

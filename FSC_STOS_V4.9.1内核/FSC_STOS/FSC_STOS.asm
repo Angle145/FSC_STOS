@@ -1,3 +1,4 @@
+;FSC_STOS_V4.9->>
 Cortex_M0     EQU   0              ;can be used to M0°¢M3°¢M4  (without FPU in M4)
 Cortex_M0_FPU EQU   1	 
 Cortex_M3     EQU   2              ;can be used to M3°¢M4  (without FPU in M4)
@@ -6,18 +7,19 @@ Cortex_M4     EQU   4              ;can be used to M4  (with FPU in M4)
 Cortex_M4_FPU EQU   5	
 	
 ;*---------------------ƒ⁄∫À…Ë÷√(Kernel Set)-------------------*	
-Kernel    EQU Cortex_M0	            ;for stm32f0xx
+;Kernel    EQU Cortex_M0	            ;for stm32f0xx
 ;Kernel    EQU Cortex_M0_FPU	        ;for stm32f0xx	
-;Kernel    EQU Cortex_M3	            ;for stm32f1xx
+Kernel    EQU Cortex_M3	            ;for stm32f1xx
 ;Kernel    EQU Cortex_M3_FPU	        ;for stm32f1xx
 ;Kernel    EQU Cortex_M4	            ;for stm32f4xx 	
 ;Kernel    EQU Cortex_M4_FPU	        ;for stm32f4xx 
 ;*------------------------------------------------------------*
 
-
+    IMPORT    OSPendSVInit
+	IMPORT	  OSSysTickInit
     IMPORT    OSTCBRun
     IMPORT    OSTCBCur            
-	IMPORT    OSPendSVPulse 
+	IMPORT    OSPendSVPulse	
     EXPORT    OS_INT_ENTER        
     EXPORT    OS_INT_EXIT
     EXPORT    PendSV_Handler
@@ -32,7 +34,11 @@ OS_INT_EXIT
     CPSIE    I   
     BX    LR                                 
 OSStartUp                            
-    CPSID    I                                    
+    CPSID    I  
+    LDR     R0,=OSPendSVInit      
+	BLX     R0
+    LDR     R0,=OSSysTickInit      
+	BLX     R0	
     LDR R4,=0x0                  
     MSR    PSP, R4                 
     LDR     R0,=OSPendSVPulse      
@@ -42,7 +48,9 @@ OSStartPending
     B    OSStartPending  
 PendSV_Handler
     CPSID    I                     
-    MRS     R0, PSP                  
+    MRS     R0, PSP   
+;+++++++++++++++++++++Save Context Code(PageUp)+++++++++++++++++++;
+
 	IF ((Kernel == Cortex_M0)||(Kernel == Cortex_M0_FPU))	
 ;------------------------Cortex_M0 Code	Start---------------------;
 	CMP     R0 , #0x00
@@ -114,6 +122,7 @@ PendSV_Handler
 	ENDIF
 	ENDIF
 	ENDIF
+;+++++++++++++++++++Save Context Code(PageDown)+++++++++++++++++++;		
 	
     LDR     R1, =OSTCBRun          
     LDR     R1, [R1]               
@@ -121,6 +130,8 @@ PendSV_Handler
 OSFirstEnter    
     LDR     R0, =OSTCBRun          
     LDR     R1, =OSTCBCur    
+
+;+++++++++++++++++++++Read Context Code(PageUp)+++++++++++++++++++;
 
     IF ((Kernel == Cortex_M0)||(Kernel == Cortex_M0_FPU))	
 ;------------------------Cortex_M0 Code	Start---------------------;
@@ -206,7 +217,8 @@ OSFirstEnter
     ENDIF	
     ENDIF
     ENDIF		
-						   
+;+++++++++++++++++++Read Context Code(PageDown)+++++++++++++++++++;
+
     CPSIE     I                    
     BX    LR                       
     align 4   

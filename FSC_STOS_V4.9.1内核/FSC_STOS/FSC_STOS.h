@@ -1,4 +1,4 @@
-/*--------------------------------------------°æ±¾: V4.8--------------------------------------------*/
+/*--------------------------------------------°æ±¾: V4.9.1--------------------------------------------*/
 #ifndef _FSC_STOS_H_
 #define _FSC_STOS_H_
 
@@ -20,6 +20,8 @@
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/  
 #define OS_MAX_TASKS             8        //ÈÎÎñÊı=ÓÃ»§ÈÎÎñÊı+2  ÈÎÎñÊı:3-65535  ÓÃ»§¸ù¾İÊµ¼ÊĞèÒªµÄÈÎÎñÊıÁ¿ĞŞ¸Ä
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+#define OS_MEMORYPOOL_SIZE       4*1024   //ÄÚ´æ³Ø´óĞ¡,µ¥Î»£ºByte(ÓÃ»§Ö»ĞèĞŞ¸Ä1024µÄ´óĞ¡)
+/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 #define TIMER_SIZE               4        //ÏµÍ³ĞéÄâ¶¨Ê±Æ÷ÊıÁ¿ (¸ù¾İĞèÒªÅäÖÃ£¬1-65535£¬ÒÔÏÂÍ¬)
 #define FLAG_SIZE                2        //±êÖ¾ÊıÁ¿            
 #define FLAG_GROUP_SIZE          2        //±êÖ¾ÈºÊıÁ¿         
@@ -27,11 +29,11 @@
 #define MBOX_SIZE                2        //ÓÊÏäÊıÁ¿  
 #define MBQ_SIZE                 2        //ÓÊÏä¶ÓÁĞ»º´æÊıÁ¿
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-#define OS_CMD_ALL_ENABLE        1        //¼ô²ÃÈ«²¿ÏµÍ³Ö¸Áî
+#define OS_CMD_ALL_ENABLE        1        //¼ô²ÃÈ«²¿ÏµÍ³Ö¸Áî(0-¼ô²Ã£¬1-²»¼ô²Ã,ÏÂÍ¬)
 #define OS_CMD_NSY_ENABLE        1        //¼ô²ÃÏµÍ³ÎŞ¹ØµÄÖ¸Áî
 #define OS_CMD_DISP_SYS_ENABLE   1        //¼ô²ÃÏµÍ³×´Ì¬ĞÅÏ¢Ö¸ÁîÏÔÊ¾(¹Ø±ÕÏÔÊ¾ÄÜ½ÚÊ¡´óÁ¿ÄÚ´æ)
-#define OS_CMD_DISP_NSY_ENABLE   1        //¼ô²ÃÏµÍ³×´Ì¬ĞÅÏ¢ÒÔÍâÎŞ¹ØµÄÖ¸ÁîÏÔÊ¾(0-¼ô²Ã£¬1-²»¼ô²Ã,ÏÂÍ¬)
-#define OS_TIMECOUNTSYS_ENABLE   1        //¼ô²ÃÏµÍ³Ê±¼äÍ³¼ÆÏµÍ³(¿ÉÌá¸ßÄÚºËÇĞ»»ËÙ¶È)
+#define OS_CMD_DISP_NSY_ENABLE   1        //¼ô²ÃÏµÍ³×´Ì¬ĞÅÏ¢ÒÔÍâÎŞ¹ØµÄÖ¸ÁîÏÔÊ¾
+#define OS_TIMECOUNTSYS_ENABLE   1        //¼ô²ÃÏµÍ³Ê±¼äÍ³¼ÆÏµÍ³(¼ô²Ã¿ÉÌá¸ßÊ±¼äÆ¬Ä£Ê½ÏÂµÄÄÚºËÇĞ»»ËÙ¶È)
 #define OS_GET_SET_SW_ENABLE     1        //¼ô²ÃÈÎÎñÉèÖÃ¡¢»ñÈ¡¡¢Ìø×ª
 #define OS_SIGN_PP_ENABLE        1        //¼ô²ÃĞÅºÅÁ¿(¿ÉÌá¸ßÄÚºËÇĞ»»ËÙ¶È)
 #define OS_TIM_SYS_ENABLE        1        //¼ô²ÃÏµÍ³ĞéÄâ¶¨Ê±Æ÷(¿ÉÌá¸ßÄÚºËÇĞ»»ËÙ¶È)
@@ -71,20 +73,20 @@
 //State->MSB:
 #define TASK_UNLOCK              0        //ÎŞËøÌ¬
 #define TASK_LOCK                1        //Ëø¶¨Ì¬
-/*-------------------ĞÅºÅÁ¿µÈ´ı×´Ì¬(ÓÃ»§¿ÉÓÃ)------------------*/
+/*--------ĞÅºÅÁ¿Pendº¯ÊıµÚÒ»¸ö²ÎÊı£ºµÈ´ıÀàĞÍ(ÓÃ»§¿ÉÓÃ)---------*/
 #define OSFlag_BPN               0        //×èÈûµÈ´ıĞÂĞÅºÅÁ¿(Ö»ÏìÓ¦PendÖ®ºóµÄĞÅºÅ)
 #define OSFlag_BPO               1        //×èÈûµÈ´ıº¬¾ÉĞÅºÅÁ¿(º¬ÏìÓ¦ÔÚPendÖ®Ç°Post¹ıµÄĞÅºÅ)
 #define OSFlag_BPC               2        //×èÈûµÈ´ıÏìÓ¦ÀÛ¼ÆĞÅºÅÁ¿(ÀÛ¼ÆPostËùÓĞ´ÎÊı£¬Pend¶ÁÈ¡Ò»´Î£¬ÀÛ¼Æ½«¼õ1´Î£¬ÓĞÖúÓÚÍ¬²½ÏìÓ¦È«²¿PostĞÅºÅ)
-#define OSFlag_NBPC              3        //·Ç×èÈûµÈ´ıÏìÓ¦ÀÛ¼ÆĞÅºÅÁ¿(Í¬ÉÏ)
-#define OSFlag_NBPN              4        //·Ç×èÈûµÈ´ıĞÂĞÅºÅÁ¿(Í¬ÉÏ)
+#define OSFlag_NBPC              3        //·Ç×èÈûµÈ´ıÏìÓ¦ÀÛ¼ÆĞÅºÅÁ¿(ÀÛ¼ÆPostËùÓĞ´ÎÊı£¬Pend¶ÁÈ¡Ò»´Î£¬ÀÛ¼Æ½«¼õ1´Î£¬ÓĞÖúÓÚÍ¬²½ÏìÓ¦È«²¿PostĞÅºÅ)(·Ç×èÈûÊ±³¬Ê±Ê±¼äÎŞĞ§)
+#define OSFlag_NBPN              4        //·Ç×èÈûµÈ´ıĞÂĞÅºÅÁ¿(Ö»ÏìÓ¦PendÖ®ºóµÄĞÅºÅ)(·Ç×èÈûÊ±³¬Ê±Ê±¼äÎŞĞ§)
 																				 
 #define OSFGroup_BPN             0        //×èÈûµÈ´ıĞÂĞÅºÅÁ¿(Pend¶ÁÈ¡×îĞÂµÄFlagGroupÈ«²¿½ÓÊÕÍê³ÉĞÅºÅ)
-#define OSFGroup_NBPN            1        //·Ç×èÈûµÈ´ıĞÂĞÅºÅÁ¿(Pend¶ÁÈ¡×îĞÂµÄFlagGroupÈ«²¿½ÓÊÕÍê³ÉĞÅºÅ)
+#define OSFGroup_NBPN            1        //·Ç×èÈûµÈ´ıĞÂĞÅºÅÁ¿(Pend¶ÁÈ¡×îĞÂµÄFlagGroupÈ«²¿½ÓÊÕÍê³ÉĞÅºÅ)(·Ç×èÈûÊ±³¬Ê±Ê±¼äÎŞĞ§)
 																				 
 #define OSMBox_BPN               0        //×èÈûµÈ´ıĞÂĞÅºÅÁ¿(¶ÁÈ¡PendÖ®ºóPostµÄÓÊ¼ş)
 #define OSMBox_BPQ               1        //×èÈûµÈ´ıÏìÓ¦¶ÓÁĞĞÅºÅÁ¿(ËùÓĞPostµÄÓÊ¼ş°´¶ÓÁĞ±£´æÆğÀ´£¬Pend¶ÁÈ¡Ê±¶ÁÈ¡ÏÈ·¢ËÍµÄ£¬ÏÈ·¢ÏÈ¶Á£¬ºó·¢ºó¶Á)
-#define OSMBox_NBPN              2        //·Ç×èÈûµÈ´ıĞÂĞÅºÅÁ¿(Í¬ÉÏ)
-#define OSMBox_NBPQ              3        //·Ç×èÈûµÈ´ıÏìÓ¦¶ÓÁĞĞÅºÅÁ¿(Í¬ÉÏ)
+#define OSMBox_NBPN              2        //·Ç×èÈûµÈ´ıÏìÓ¦ĞÂĞÅºÅÁ¿(·Ç¶ÓÁĞ)(¶ÁÈ¡PendÖ®ºóPostµÄÓÊ¼ş)(·Ç×èÈûÊ±³¬Ê±Ê±¼äÎŞĞ§)
+#define OSMBox_NBPQ              3        //·Ç×èÈûµÈ´ıÏìÓ¦¶ÓÁĞĞÅºÅÁ¿(ËùÓĞPostµÄÓÊ¼ş°´¶ÓÁĞ±£´æÆğÀ´£¬Pend¶ÁÈ¡Ê±¶ÁÈ¡ÏÈ·¢ËÍµÄ£¬ÏÈ·¢ÏÈ¶Á£¬ºó·¢ºó¶Á)(·Ç×èÈûÊ±³¬Ê±Ê±¼äÎŞĞ§)
 /*-----------------ĞÅºÅÁ¿ÏµÍ³±êÖ¾Î»(ÓÃ»§²»¿ÉÓÃ)------------------*/												     
 #define _BIT_TimeOut             0        //±êÖ¾Î»0£ºÑÓÊ±Ê±¼ä³¬Ê±
 #define _BIT_TimeLess            1        //±êÖ¾Î»1£ºÎŞÏŞµÈ´ı
@@ -111,7 +113,8 @@ typedef unsigned char  INT8U;
 typedef unsigned short INT16U;           
 typedef unsigned int   INT32U; 
 typedef unsigned int   STK32U;
-#define OSSTK __align(8) STK32U
+typedef  INT8  OSMEM;
+#define  OSSTK __align(8) STK32U
 
 #if (OS_CMD_ALL_ENABLE == 1) 
 typedef struct
@@ -174,6 +177,7 @@ typedef struct
 	INT32U  POST_MBOX_COUNT[MBOX_SIZE];
 	INT16U  POST_MBQ_COUNT[MBOX_SIZE];
 	INT16U  FLAG[FLAG_SIZE][OS_MAX_TASKS];//²»Í¬ÈÎÎñ¿ÉÒÔµÈ´ıÏàÍ¬µÄFlag
+	INT16U  FLAGPendType[FLAG_SIZE][OS_MAX_TASKS];//OSFlagµÈ´ıÀàĞÍ
 	INT16U  GROUPRXFLAG[FLAG_GROUP_SIZE][OS_MAX_TASKS];//±êÖ¾Á¿ÈºÈ«²¿½ÓÊÕ±êÖ¾
 	INT8U   FlagGroupTable[FLAG_GROUP_SIZE][FLAG_SIZE];
 	INT16U  FlagGroupNameInTask[OS_MAX_TASKS];
@@ -181,6 +185,7 @@ typedef struct
   INT16U  MUTEX[MUTEX_SIZE]; 	
 	INT16U  MutexTaskNum[MUTEX_SIZE];
 	INT16U  MutexNameInTask[MUTEX_SIZE];
+	INT16U  MBOXPendType[MBOX_SIZE][OS_MAX_TASKS];
 	INT32U *MBOX[OS_MAX_TASKS*MBOX_SIZE];
 	INT32U *MBQueue[MBQ_SIZE*MBOX_SIZE];
 #endif	
@@ -260,7 +265,6 @@ void OS_INT_EXIT(void);  //´ò¿ª×ÜÖĞ¶Ï  (»ã±à½Ó¿Ú)
 void HardReset(void);    //Ó²¼şÖØÆô
 void OSPendSVPulse(void);
 void OSPendSVInit(void);
-void OSSysTickInit(INT16U Nms);
 STK32U* OSTaskStkInit(void (*task),STK32U *p_tos);
 void OS_CreatTaskIdle(void);
 void OS_TaskIdle(void);
@@ -273,9 +277,12 @@ INT16U OSRdyHighestPrioTaskNumGet(void);        //»ñÈ¡×¼±¸ÔËĞĞ¾ÍĞ÷×î¸ßÓÅÏÈ¼¶ÈÎÎñ
 INT16U OSNextRdyHighestPrioTaskNumGet(void);    //»ñÈ¡×¼±¸ÔËĞĞ¾ÍĞ÷×î¸ßÓÅÏÈ¼¶ÈÎÎñ(·µ»ØÎ´ÔËĞĞ¹ıµÄ×î¸ßÓÅÏÈ¼¶ÈÎÎñ(¸ÃÓÅÏÈ¼¶Ò»¸öÂÖÑ¯ÖÜÆÚÄÚ))
 void OSStartUp(void); 
 void OSInit(void); 
-void OSTimerInit(void);
-void OS_Timer_Handler(void);
-void OSTaskCreate(char* taskstr,void (*task),STK32U *stkptr,INT32U stksize,INT8U taskstate,INT32U tasktimeslice,INT16U taskprio);//ÈÎÎñ´´½¨º¯Êı
+void OSSysTickInit(void);
+void OS_SysTick_Handler(void);
+void OSTaskCreate(char* taskstr,void (*task),INT32U stksize,INT32U tasktimeslice,INT16U taskprio,INT8U taskstate);//¶¯Ì¬´´½¨ÈÎÎñº¯Êı
+void OSTaskDelete(void (*Taskx));               //¶¯Ì¬É¾³ıÈÎÎñº¯Êı
+void OSTaskResume(void (*Taskx),INT8U taskstate);//¶¯Ì¬»Ö¸´ÒÑÉ¾³ıµÄÈÎÎñº¯Êı
+void OSTaskCreateStatic(char* taskstr,void (*task),STK32U *stkptr,INT32U stksize,INT32U tasktimeslice,INT16U taskprio,INT8U taskstate);//¾²Ì¬´´½¨ÈÎÎñº¯Êı
 /*--------------------------------------ÓÃ»§¿Éµ÷ÓÃµÄÓëÏµÍ³ÎŞ¹Øº¯Êı----------------------------------------------*/
 INT32U OS_GetStringLength(char* p);             //»ñÈ¡×Ö·û´®pµÄ³¤¶È
 INT8U CompareCmd(char* p);                      //±È½Ï×Ö·û´®OS_Perip.OS_USART_RX_BUFFºÍ×Ö·û´®pÄÚÈİÊÇ·ñÒ»ÖÂ
@@ -318,6 +325,11 @@ INT32U OSTimeSliceValGet(void);                 //»ñÈ¡OS½ÚÅÄ¼ÆÊıÆ÷¼ÆÊıÖµ(½ÚÅÄ¹Ì¶
 void OSTimeSliceValSet(INT32U time);            //ÉèÖÃÊ±¼äÇĞÆ¬½ÚÅÄ¼ÆÊıÆ÷¼ÆÊıÖµ
 INT32U OSClockValGet(void);                     //»ñÈ¡ÏµÍ³½ÚÅÄ¼ÆÊıÖµ
 void OSClockValSet(INT32U time);                //ÉèÖÃÏµÍ³½ÚÅÄ¼ÆÊıÖµ
+
+/*-----------=--¶¯Ì¬ÄÚ´æ¹ÜÀíº¯Êı--------------*/
+void *FSC_Malloc(size_t noOfBytes);//ÄÚ´æÉêÇë(µ¥Î»:byte)
+void FSC_Free(void* ptr);//ÄÚ´æÊÍ·Å(ÊäÈëµØÖ·±ØĞëÊÇÉêÇëµÃµ½µÄµØÖ·)
+INT32U FSC_MemoryFreeSizeGet(void);//»ñÈ¡ÄÚ´æ³ØÊ£ÓàÄÚ´æ(µ¥Î»£ºByte)
 
 /*--------------ĞéÄâ¶¨Ê±Æ÷º¯Êı---------------*/
 void OSTimerReloadSet(INT16U TNum,INT32U time); //ÉèÖÃĞéÄâÏµÍ³¶¨Ê±Æ÷×Ô¶¯ÖØ×°ÔØ¶¨Ê±Öµ(ĞéÄâÏµÍ³¶¨Ê±Æ÷ÖĞ¶ÏÖĞ²»¿ÉÓÃ)
