@@ -1,4 +1,4 @@
-/*--------------------------------------------版本: V4.9.3--------------------------------------------*/
+/*--------------------------------------------版本: V4.9.4--------------------------------------------*/
 #ifndef _FSC_STOS_H_
 #define _FSC_STOS_H_
 
@@ -22,7 +22,7 @@
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 #define OS_MEMORYPOOL_SIZE       4*1024   //内存池大小,单位：Byte(用户只需修改1024的大小)
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-#define TIMER_SIZE               4        //系统虚拟定时器数量 (根据需要配置，1-65535，以下同)
+#define TIMER_SIZE               2        //系统虚拟定时器数量 (根据需要配置，1-65535，以下同)
 #define FLAG_SIZE                2        //标志数量            
 #define FLAG_GROUP_SIZE          2        //标志群数量         
 #define MUTEX_SIZE               2        //互斥数量           
@@ -82,7 +82,10 @@
 																				 
 #define OSFGroup_BPN             0        //阻塞等待新信号量(Pend读取最新的FlagGroup全部接收完成信号)
 #define OSFGroup_NBPN            1        //非阻塞等待新信号量(Pend读取最新的FlagGroup全部接收完成信号)(非阻塞时超时时间无效)
-																				 
+				
+#define OSMutex_BPN              0        //阻塞等待信号量
+#define OSMutex_NBPN             1        //非阻塞等待信号量(非阻塞时超时时间无效)
+
 #define OSMBox_BPN               0        //阻塞等待新信号量(读取Pend之后Post的邮件)
 #define OSMBox_BPQ               1        //阻塞等待响应队列信号量(所有Post的邮件按队列保存起来，Pend读取时读取先发送的，先发先读，后发后读)
 #define OSMBox_NBPN              2        //非阻塞等待响应新信号量(非队列)(读取Pend之后Post的邮件)(非阻塞时超时时间无效)
@@ -189,6 +192,7 @@ typedef struct
 	INT8U   ReturnFlagGroupTable[FLAG_SIZE];//查询FlagGroup成员情况的缓存数组
   INT16U  MUTEX[MUTEX_SIZE]; 	
 	INT16U  MutexTaskNum[MUTEX_SIZE];
+	INT16U  MutexPendType[MUTEX_SIZE][OS_MAX_TASKS];//OSMutex等待类型
 	INT16U  MutexNameInTask[MUTEX_SIZE];
 	INT16U  MBOXPendType[MBOX_SIZE][OS_MAX_TASKS];
 	INT32U *MBOX[OS_MAX_TASKS*MBOX_SIZE];
@@ -350,8 +354,8 @@ INT8U OSFlagPend(INT8U pendtype,INT16U FNum,INT32U timeout);//等待标志量,返回OS_
 void OSFlagAddToGroup(INT16U FGNum,INT16U FNum);//添加标志量成员至标志群
 INT8U OSFlagGroupPend(INT8U pendtype,INT16U FGNum,INT32U timeout);//标志量群等待,返回OS_FALSE-等待超时，OS_TRUE-接收到所有成员Post
 INT8U* OSFlagGroupPendTableGet(INT16U FGNum);   //获取群等待成员
-void OSMutexUnlockPost(INT16U MNum);            //发送放弃互斥量--解锁
-INT8U OSMutexLockPend(INT16U MNum,INT32U timeout);//等待获取互斥量--锁定,返回OS_FALSE-等待超时，OS_TRUE-得到互斥使用权
+void OSMutexPost(INT16U MNum);            //发送放弃互斥量--解锁
+INT8U OSMutexPend(INT8U pendtype,INT16U MNum,INT32U timeout);//等待获取互斥量--锁定,返回OS_FALSE-等待超时，OS_TRUE-得到互斥使用权
 INT16U OSMutexBlockTaskGet(INT16U MNum);        //获取Mutex当前阻塞的任务
 void OSMboxPost(INT16U MNum,void* fp);          //发送邮件(地址)
 void* OSMboxPend(INT8U pendtype,INT16U MNum,INT32U timeout);//等待邮件,返回OS_FALSE-等待超时，OS_TRUE-接收到Post

@@ -1,4 +1,4 @@
-/*--------------------------------------------°æ±¾: V4.9.2--------------------------------------------*/
+/*--------------------------------------------°æ±¾: V4.9.4--------------------------------------------*/
 #include "fsc_stos.h" 
 
 /**********************************************¿ÉĞŞ¸Ä²¿·Ö(Page Up)*********************************************/
@@ -16,47 +16,53 @@ extern u8 RTC_SetTimes(u16 syear,u8 smon,u8 sday,u8 hour,u8 min,u8 sec);//ÉèÖÃÊ±
 #if (OS_CMD_ALL_ENABLE == 1)
 #if (OS_CMD_NSY_ENABLE == 1)
 /*---------------ÈÎÎñ¿ª¹Ø----------------*/
-char cmd_task_open_01[]={"cmd/Task1/open//"};//ÈÎÎñ1´ò¿ª  Ö»Òª±£Ö¤Ö¸ÁîÒÔ//½áÎ²¼´¿É£¬Èç{"´ò¿ªÈÎÎñ1//"}
-char cmd_task_open_02[]={"cmd/Task2/open//"};//ÈÎÎñ2´ò¿ª 
-char cmd_task_open_03[]={"cmd/Task3/open//"};//ÈÎÎñ3´ò¿ª 
-char cmd_task_open_04[]={"cmd/Task4/open//"};//ÈÎÎñ4´ò¿ª 
-char cmd_task_open_05[]={"cmd/Task5/open//"};//ÈÎÎñ5´ò¿ª 
+char cmd_task_open_01[]={"Task1/open//"};//ÈÎÎñ1´ò¿ª  Ö»Òª±£Ö¤Ö¸ÁîÒÔ//½áÎ²¼´¿É£¬Èç{"´ò¿ªÈÎÎñ1//"}
+char cmd_task_open_02[]={"Task2/open//"};//ÈÎÎñ2´ò¿ª 
+char cmd_task_open_03[]={"Task3/open//"};//ÈÎÎñ3´ò¿ª 
+char cmd_task_open_04[]={"Task4/open//"};//ÈÎÎñ4´ò¿ª 
+char cmd_task_open_05[]={"Task5/open//"};//ÈÎÎñ5´ò¿ª 
 
-char cmd_task_close_01[]={"cmd/Task1/close//"};//ÈÎÎñ1¹Ø±Õ
-char cmd_task_close_02[]={"cmd/Task2/close//"};//ÈÎÎñ2¹Ø±Õ
-char cmd_task_close_03[]={"cmd/Task3/close//"};//ÈÎÎñ3¹Ø±Õ
-char cmd_task_close_04[]={"cmd/Task4/close//"};//ÈÎÎñ4¹Ø±Õ
-char cmd_task_close_05[]={"cmd/Task5/close//"};//ÈÎÎñ5¹Ø±Õ
+char cmd_task_close_01[]={"Task1/close//"};//ÈÎÎñ1¹Ø±Õ
+char cmd_task_close_02[]={"Task2/close//"};//ÈÎÎñ2¹Ø±Õ
+char cmd_task_close_03[]={"Task3/close//"};//ÈÎÎñ3¹Ø±Õ
+char cmd_task_close_04[]={"Task4/close//"};//ÈÎÎñ4¹Ø±Õ
+char cmd_task_close_05[]={"Task5/close//"};//ÈÎÎñ5¹Ø±Õ
 /*-------------------------------------------*/
 /*-----------------ÈÎÎñÓÅÏÈ¼¶-----------------*/
-char cmd_task_prio_01[]={"cmd/Task1/prio=%d//"};//%d±íÊ¾ÕûĞÍÊı×Ö,Àı£ºcmd/Task1/prio=8//
-char cmd_task_prio_02[]={"cmd/Task2/prio=%d//"};
-char cmd_task_prio_03[]={"cmd/Task3/prio=%d//"};
-char cmd_task_prio_04[]={"cmd/Task4/prio=%d//"};
-char cmd_task_prio_05[]={"cmd/Task5/prio=%d//"};
+char cmd_task_prio_01[]={"Task1/prio=%d//"};//%d±íÊ¾ÕûĞÍÊı×Ö,Àı£ºcmd/Task1/prio=8//
+char cmd_task_prio_02[]={"Task2/prio=%d//"};
+char cmd_task_prio_03[]={"Task3/prio=%d//"};
+char cmd_task_prio_04[]={"Task4/prio=%d//"};
+char cmd_task_prio_05[]={"Task5/prio=%d//"};
 /*-------------------------------------------*/
 /*---------------ÈÎÎñÊ±¼äÇĞÆ¬-----------------*/
-char cmd_task_timeslice_01[]={"cmd/Task1/timeslice=%d//"}; //ÉèÖÃÈÎÎñ1Ê±¼äÇĞÆ¬Ê±¼ä(Ò»¸öÈÎÎñÁ¬ĞøÔËĞĞµÄÊ±¼ä)
-char cmd_task_timeslice_02[]={"cmd/Task2/timeslice=%d//"}; //
-char cmd_task_timeslice_03[]={"cmd/Task3/timeslice=%d//"}; //
-char cmd_task_timeslice_04[]={"cmd/Task4/timeslice=%d//"}; //
-char cmd_task_timeslice_05[]={"cmd/Task5/timeslice=%d//"}; //
+char cmd_task_timeslice_01[]={"Task1/timeslice=%d//"}; //ÉèÖÃÈÎÎñ1Ê±¼äÇĞÆ¬Ê±¼ä(Ò»¸öÈÎÎñÁ¬ĞøÔËĞĞµÄÊ±¼ä)
+char cmd_task_timeslice_02[]={"Task2/timeslice=%d//"}; //
+char cmd_task_timeslice_03[]={"Task3/timeslice=%d//"}; //
+char cmd_task_timeslice_04[]={"Task4/timeslice=%d//"}; //
+char cmd_task_timeslice_05[]={"Task5/timeslice=%d//"}; //
 /*-------------------------------------------*/
+#if (OS_SYSTIME_ENABLE ==1 )
 /*----------------ÉèÖÃÏµÍ³Ê±¼ä----------------*/
-char cmd_systime_set[]={"cmd/setsystime=%d/%d/%d/%d.%d.%d//"};//Äê/ÔÂ/ÈÕ/Ê±.·Ö.Ãë
+char cmd_systime_set[]={"setsystime=%d/%d/%d/%d.%d.%d//"};//Äê/ÔÂ/ÈÕ/Ê±.·Ö.Ãë
 /*------------------------------------------*/
 #endif
+#endif
 /*------------------ÏµÍ³ÓĞ¹Ø-----------------*/
-char cmd_osmanager[]={"cmd/osmanage//"};         //²é¿´ÏµÍ³×´Ì¬
-char cmd_runmode_order[]={"cmd/runmode/order//"};//Ê±¼äÆ¬ÔËĞĞÄ£Ê½
-char cmd_runmode_prio[]={"cmd/runmode/prio//"};  //ÓÅÏÈ¼¶ÔËĞĞÄ£Ê½
-char cmd_runmode_order_prio[]={"cmd/runmode/order+prio//"};//Ê±¼äÆ¬+ÓÅÏÈ¼¶ÔËĞĞÄ£Ê½
-char cmd_oson[]={"cmd/oson//"};                  //ÏµÍ³¹Ø±Õ
-char cmd_osoff[]={"cmd/osoff//"};                //ÏµÍ³´ò¿ª
-char cmd_hardreset[]={"cmd/hardreset//"};        //Ó²¼şÖØÆô
+char cmd_help[]={"cmd/help//"};                  //Ö¸Áî°ïÖú
+char cmd_enter[]={"cmd/enter//"};//½øÈëÖ¸ÁîÏµÍ³
+char cmd_exit[]={"cmd/exit//"};  //ÍË³öÖ¸ÁîÏµÍ³
+
+char cmd_osinformation[]={"osinformation//"};//²é¿´ÏµÍ³×´Ì¬
+char cmd_runmode_order[]={"runmode/order//"};//Ê±¼äÆ¬ÔËĞĞÄ£Ê½
+char cmd_runmode_prio[]={"runmode/prio//"};  //ÓÅÏÈ¼¶ÔËĞĞÄ£Ê½
+char cmd_runmode_order_prio[]={"runmode/order+prio//"};//Ê±¼äÆ¬+ÓÅÏÈ¼¶ÔËĞĞÄ£Ê½
+char cmd_oson[]={"oson//"};                  //ÏµÍ³¹Ø±Õ
+char cmd_osoff[]={"osoff//"};                //ÏµÍ³´ò¿ª
+char cmd_hardreset[]={"hardreset//"};        //Ó²¼şÖØÆô
 /*------------------------------------------*/
 /*--------------ÉèÖÃÏµÍ³¹Ø±ÕÊ±¼ä--------------*/
-char cmd_osoff_delaytime_set[]={"cmd/setosofftime=%d/%d/%d/%d.%d.%d//"};//Äê/ÔÂ/ÈÕ/Ê±.·Ö.Ãë
+char cmd_osoff_delaytime_set[]={"setosofftime=%d/%d/%d/%d.%d.%d//"};//Äê/ÔÂ/ÈÕ/Ê±.·Ö.Ãë
 /*------------------------------------------*/
 /*-----------------×Ô¶¨ÒåÖ¸ÁîÇø--------------*/
 
@@ -277,7 +283,6 @@ OS_FAULT OS_Fault;
 #endif
 
 OS_SYSTEM OS_System;
-OS_TASKPRIOGROUP TaskPrioGroup[OS_MAX_TASKS];
 OS_TCB OSTCBTbl[OS_MAX_TASKS];    
 OS_TCB *OSTCBRun; 
 OS_TCB *OSTCBCur; 
@@ -295,31 +300,31 @@ void OSDispMsg(void){}  //¿Õº¯Êı
 	
 #if (OS_CMD_NSY_ENABLE == 1)	
 #if (OS_CMD_DISP_NSY_ENABLE == 1)
-#define OSDisp_task1open()   OSprintf("\r\n Task1 = RUNNUNG\r\n\r\n");
-#define OSDisp_task2open()   OSprintf("\r\n Task2 = RUNNUNG\r\n\r\n");
-#define OSDisp_task3open()   OSprintf("\r\n Task3 = RUNNUNG\r\n\r\n");
-#define OSDisp_task4open()   OSprintf("\r\n Task4 = RUNNUNG\r\n\r\n");
-#define OSDisp_task5open()   OSprintf("\r\n Task5 = RUNNUNG\r\n\r\n");
+#define OSDisp_task1open()   OSCMDprintf("\r\n Task1 = RUNNUNG\r\n\r\n");
+#define OSDisp_task2open()   OSCMDprintf("\r\n Task2 = RUNNUNG\r\n\r\n");
+#define OSDisp_task3open()   OSCMDprintf("\r\n Task3 = RUNNUNG\r\n\r\n");
+#define OSDisp_task4open()   OSCMDprintf("\r\n Task4 = RUNNUNG\r\n\r\n");
+#define OSDisp_task5open()   OSCMDprintf("\r\n Task5 = RUNNUNG\r\n\r\n");
 														 
-#define OSDisp_task1close()  OSprintf("\r\n Task1 = PAUSING\r\n\r\n");
-#define OSDisp_task2close()  OSprintf("\r\n Task2 = PAUSING\r\n\r\n");
-#define OSDisp_task3close()  OSprintf("\r\n Task3 = PAUSING\r\n\r\n");
-#define OSDisp_task4close()  OSprintf("\r\n Task4 = PAUSING\r\n\r\n");
-#define OSDisp_task5close()  OSprintf("\r\n Task5 = PAUSING\r\n\r\n");
+#define OSDisp_task1close()  OSCMDprintf("\r\n Task1 = PAUSING\r\n\r\n");
+#define OSDisp_task2close()  OSCMDprintf("\r\n Task2 = PAUSING\r\n\r\n");
+#define OSDisp_task3close()  OSCMDprintf("\r\n Task3 = PAUSING\r\n\r\n");
+#define OSDisp_task4close()  OSCMDprintf("\r\n Task4 = PAUSING\r\n\r\n");
+#define OSDisp_task5close()  OSCMDprintf("\r\n Task5 = PAUSING\r\n\r\n");
 	
-#define OSTask1PrioSet()     OSprintf("\r\n Task1 Prio Set OK!\r\n\r\n");
-#define OSTask2PrioSet()     OSprintf("\r\n Task2 Prio Set OK!\r\n\r\n");
-#define OSTask3PrioSet()     OSprintf("\r\n Task3 Prio Set OK!\r\n\r\n");
-#define OSTask4PrioSet()     OSprintf("\r\n Task4 Prio Set OK!\r\n\r\n");
-#define OSTask5PrioSet()     OSprintf("\r\n Task5 Prio Set OK!\r\n\r\n");
+#define OSTask1PrioSet()     OSCMDprintf("\r\n Task1 Prio Set OK!\r\n\r\n");
+#define OSTask2PrioSet()     OSCMDprintf("\r\n Task2 Prio Set OK!\r\n\r\n");
+#define OSTask3PrioSet()     OSCMDprintf("\r\n Task3 Prio Set OK!\r\n\r\n");
+#define OSTask4PrioSet()     OSCMDprintf("\r\n Task4 Prio Set OK!\r\n\r\n");
+#define OSTask5PrioSet()     OSCMDprintf("\r\n Task5 Prio Set OK!\r\n\r\n");
 	
-#define OSDisp_Task1TimeSlice()	 OSprintf("\r\n -----   %s TimeSlice = %dms   -----\r\n\r\n",OSTCBTbl[2].TaskStr,OSTCBTbl[2].TaskTimeSlice);
-#define OSDisp_Task2TimeSlice()	 OSprintf("\r\n -----   %s TimeSlice = %dms   -----\r\n\r\n",OSTCBTbl[3].TaskStr,OSTCBTbl[3].TaskTimeSlice);
-#define OSDisp_Task3TimeSlice()	 OSprintf("\r\n -----   %s TimeSlice = %dms   -----\r\n\r\n",OSTCBTbl[4].TaskStr,OSTCBTbl[4].TaskTimeSlice);
-#define OSDisp_Task4TimeSlice()	 OSprintf("\r\n -----   %s TimeSlice = %dms   -----\r\n\r\n",OSTCBTbl[5].TaskStr,OSTCBTbl[5].TaskTimeSlice);
-#define OSDisp_Task5TimeSlice()	 OSprintf("\r\n -----   %s TimeSlice = %dms   -----\r\n\r\n",OSTCBTbl[6].TaskStr,OSTCBTbl[6].TaskTimeSlice);
+#define OSDisp_Task1TimeSlice()	 OSCMDprintf("\r\n -----   %s TimeSlice = %dms   -----\r\n\r\n",OSTCBTbl[2].TaskStr,OSTCBTbl[2].TaskTimeSlice);
+#define OSDisp_Task2TimeSlice()	 OSCMDprintf("\r\n -----   %s TimeSlice = %dms   -----\r\n\r\n",OSTCBTbl[3].TaskStr,OSTCBTbl[3].TaskTimeSlice);
+#define OSDisp_Task3TimeSlice()	 OSCMDprintf("\r\n -----   %s TimeSlice = %dms   -----\r\n\r\n",OSTCBTbl[4].TaskStr,OSTCBTbl[4].TaskTimeSlice);
+#define OSDisp_Task4TimeSlice()	 OSCMDprintf("\r\n -----   %s TimeSlice = %dms   -----\r\n\r\n",OSTCBTbl[5].TaskStr,OSTCBTbl[5].TaskTimeSlice);
+#define OSDisp_Task5TimeSlice()	 OSCMDprintf("\r\n -----   %s TimeSlice = %dms   -----\r\n\r\n",OSTCBTbl[6].TaskStr,OSTCBTbl[6].TaskTimeSlice);
 
-#define OSDisp_systimeset()	     OSprintf("\r\n SetSysTime OK!\r\n\r\n");
+#define OSDisp_systimeset()	     OSCMDprintf("\r\n SetSysTime OK!\r\n\r\n");
 #else 
 #define OSDisp_task1open()      OSDispMsg();
 #define OSDisp_task2open()      OSDispMsg(); 
@@ -350,13 +355,13 @@ void OSDispMsg(void){}  //¿Õº¯Êı
 #endif
 
 #if (OS_CMD_DISP_SYS_ENABLE == 1)
-#define OSDisp_runmode_order()       OSprintf("\r\n -----$$ OS RUNNING MODE : ORDER $$-----\r\n\r\n");
-#define OSDisp_runmode_prio()        OSprintf("\r\n -----$$ OS RUNNING MODE : PRIO  $$-----\r\n\r\n");
-#define OSDisp_runmode_order_prio()  OSprintf("\r\n -----$$ OS RUNNING MODE : ORDER+PRIO  $$-----\r\n\r\n");
-#define OSDisp_oson()                OSprintf("\r\n -----$$ OS AWAKEN  $$-----\r\n\r\n");
-#define OSDisp_osoff()               OSprintf("\r\n -----$$ OS SLEEP  $$-----\r\n\r\n");
-#define OSDisp_hardreset()           OSprintf("\r\n -----$$ HardReset $$-----\r\n\r\n");
-#define OSDisp_osoff_delaytime()     OSprintf("\r\n OS ShutDown Time: %dÄê%dÔÂ%dÈÕ%dÊ±%d·Ö%dÃë\r\n\r\n",\
+#define OSDisp_runmode_order()       OSCMDprintf("\r\n -----$$ OS RUNNING MODE : ORDER $$-----\r\n\r\n");
+#define OSDisp_runmode_prio()        OSCMDprintf("\r\n -----$$ OS RUNNING MODE : PRIO  $$-----\r\n\r\n");
+#define OSDisp_runmode_order_prio()  OSCMDprintf("\r\n -----$$ OS RUNNING MODE : ORDER+PRIO  $$-----\r\n\r\n");
+#define OSDisp_oson()                OSCMDprintf("\r\n -----$$ OS AWAKEN  $$-----\r\n\r\n");
+#define OSDisp_osoff()               OSCMDprintf("\r\n -----$$ OS SLEEP  $$-----\r\n\r\n");
+#define OSDisp_hardreset()           OSCMDprintf("\r\n -----$$ HardReset $$-----\r\n\r\n");
+#define OSDisp_osoff_delaytime()     OSCMDprintf("\r\n OS ShutDown Time: %dÄê%dÔÂ%dÈÕ%dÊ±%d·Ö%dÃë\r\n\r\n",\
 																																			 OS_System.ShutDownTime_year,\
 																																			 OS_System.ShutDownTime_mouth,\
 																																			 OS_System.ShutDownTime_day,\
@@ -364,90 +369,132 @@ void OSDispMsg(void){}  //¿Õº¯Êı
 																																			 OS_System.ShutDownTime_minute,\
 																																			 OS_System.ShutDownTime_second);
 #else 
-#define OSDisp_runmode_order()         OSDispMsg();
-#define OSDisp_runmode_prio()          OSDispMsg();
-#define OSDisp_runmode_order_prio()    OSDispMsg();
-#define OSDisp_oson()                  OSDispMsg();
-#define OSDisp_osoff()                 OSDispMsg();
-#define OSDisp_hardreset()             OSDispMsg();
-#define OSDisp_osoff_delaytime()       OSDispMsg();
+#define OSDisp_runmode_order()      OSDispMsg();
+#define OSDisp_runmode_prio()       OSDispMsg();
+#define OSDisp_oson()               OSDispMsg();
+#define OSDisp_osoff()              OSDispMsg();
+#define OSDisp_runmode_order_prio() OSDispMsg();
+#define OSDisp_hardreset()          OSDispMsg();
+#define OSDisp_osoff_delaytime()    OSDispMsg();
 #endif
+void OS_CmdHelp_Process(void)
+{
+	OSCMDprintf("=====================================================\r\n");
+  OSCMDprintf("------------------FSC Cmd Help System----------------\r\n");
+	OSCMDprintf("%s            Ö¸Áî°ïÖú\r\n",cmd_help);
+	OSCMDprintf("%s           ´ò¿ªÖ¸ÁîÏµÍ³\r\n",cmd_enter);
+	OSCMDprintf("%s            ¹Ø±ÕÖ¸ÁîÏµÍ³\r\n",cmd_exit);
+	OSCMDprintf("----------------------Ö¸ÁîÏµÍ³Ö¸Áî-------------------\r\n");	
+	OSCMDprintf("*ÏµÍ³ÓĞ¹ØÖ¸Áî£º\r\n");
+	OSCMDprintf("%s       ÏµÍ³×´Ì¬ĞÅÏ¢\r\n",cmd_osinformation);
+	OSCMDprintf("%s       Ë³ĞòÔËĞĞÄ£Ê½\r\n",cmd_runmode_order);
+	OSCMDprintf("%s        ÓÅÏÈ¼¶ÔËĞĞÄ£Ê½\r\n",cmd_runmode_prio);
+	OSCMDprintf("%s  »ìºÏÔËĞĞÄ£Ê½\r\n",cmd_runmode_order_prio);
+	OSCMDprintf("%s                ÏµÍ³´ò¿ª\r\n",cmd_oson);
+	OSCMDprintf("%s               ÏµÍ³¹Ø±Õ\r\n",cmd_osoff);
+	OSCMDprintf("%s           Ó²¼şÖØÆô\r\n",cmd_hardreset);
+  OSCMDprintf("%s ÉèÖÃÏµÍ³¹Ø±Õµ¹¼ÆÊ±Ê±¼ä(Äê/ÔÂ/ÈÕ/Ê±.·Ö.Ãë)\r\n",cmd_osoff_delaytime_set);
+	OSCMDprintf("-----------------------------------------------------\r\n");
+	OSCMDprintf("*ÏµÍ³ÎŞ¹ØÖ¸Áî£º\r\n");
+	OSCMDprintf("ÈÎÎñÃû/open//         ÈÎÎñ´ò¿ª\r\n");
+	OSCMDprintf("ÈÎÎñÃû/close//        ÈÎÎñ¹Ø±Õ\r\n");
+	OSCMDprintf("ÈÎÎñÃû/prio=%%d//      ÈÎÎñÓÅÏÈ¼¶ÉèÖÃÎª%%d(´ú±íÊı×Ö)\r\n");
+	OSCMDprintf("ÈÎÎñÃû/timeslice=%%d// ÈÎÎñÊ±¼äÆ¬ÉèÖÃÎª%%d(´ú±íÊı×Ö)\r\n");
+	OSCMDprintf("=====================================================\r\n");
+}
+void Cmd_RxBuff_Clean(void)
+{
+  INT8U i;
+	for(i=0;i<strlen(OS_Cmd.RX_BUFF);i++)
+	{
+	  OS_Cmd.RX_BUFF[i]=0;
+	}
+}
 void Cmd_Process(void)
 {
 		if(OS_Cmd.RXOK_Flag==OS_TRUE)
-		{			
-#if (OS_CMD_NSY_ENABLE == 1)
-      /********************************************ÈÎÎñ´ò¿ª****************************************/	//ÈÎÎñ1¶ÔÓ¦TCB[2]		
-			if(CompareCmd(cmd_task_open_01)==0) { OSTaskStateSet((void*)OSTCBTbl[2].TaskAdd,TASK_RUNNING);OSDisp_task1open(); }                     
-			if(CompareCmd(cmd_task_open_02)==0) { OSTaskStateSet((void*)OSTCBTbl[3].TaskAdd,TASK_RUNNING);OSDisp_task2open(); }																		
-			if(CompareCmd(cmd_task_open_03)==0) { OSTaskStateSet((void*)OSTCBTbl[4].TaskAdd,TASK_RUNNING);OSDisp_task3open(); }                                    
-			if(CompareCmd(cmd_task_open_04)==0) { OSTaskStateSet((void*)OSTCBTbl[5].TaskAdd,TASK_RUNNING);OSDisp_task4open(); }	                                    
-			if(CompareCmd(cmd_task_open_05)==0) { OSTaskStateSet((void*)OSTCBTbl[6].TaskAdd,TASK_RUNNING);OSDisp_task5open(); }			                                  
-			//ÈçÈÎÎñ³¬¹ı5¸öÇë×ÔĞĞÔö¼Ó
-			
-			/*******************************************************************************************/	
-			/********************************************ÈÎÎñ¹Ø±Õ****************************************/	
-			if(CompareCmd(cmd_task_close_01)==0) { OSTaskStateSet((void*)OSTCBTbl[2].TaskAdd,TASK_PAUSING);OSDisp_task1close(); }
-			if(CompareCmd(cmd_task_close_02)==0) { OSTaskStateSet((void*)OSTCBTbl[3].TaskAdd,TASK_PAUSING);OSDisp_task2close(); }
-			if(CompareCmd(cmd_task_close_03)==0) { OSTaskStateSet((void*)OSTCBTbl[4].TaskAdd,TASK_PAUSING);OSDisp_task3close(); }
-			if(CompareCmd(cmd_task_close_04)==0) { OSTaskStateSet((void*)OSTCBTbl[5].TaskAdd,TASK_PAUSING);OSDisp_task4close(); }
-			if(CompareCmd(cmd_task_close_05)==0) { OSTaskStateSet((void*)OSTCBTbl[6].TaskAdd,TASK_PAUSING);OSDisp_task5close(); }
-			//ÈçÈÎÎñ³¬¹ı5¸öÇë×ÔĞĞÔö¼Ó
-			
-			/*******************************************************************************************/		
-			/*******************************************ÈÎÎñÓÅÏÈ¼¶***************************************/	
-			if(CompareCmdDig('=',cmd_task_prio_01)==0) { OSTaskPrioSet((void*)OSTCBTbl[2].TaskAdd,GrabCmdDig(1));OSTask1PrioSet(); }	                                                                            
-			if(CompareCmdDig('=',cmd_task_prio_02)==0) { OSTaskPrioSet((void*)OSTCBTbl[3].TaskAdd,GrabCmdDig(1));OSTask2PrioSet(); }		                                       
-			if(CompareCmdDig('=',cmd_task_prio_03)==0) { OSTaskPrioSet((void*)OSTCBTbl[4].TaskAdd,GrabCmdDig(1));OSTask3PrioSet(); }	                                       
-			if(CompareCmdDig('=',cmd_task_prio_04)==0) { OSTaskPrioSet((void*)OSTCBTbl[5].TaskAdd,GrabCmdDig(1));OSTask4PrioSet(); }	                                      
-			if(CompareCmdDig('=',cmd_task_prio_05)==0) { OSTaskPrioSet((void*)OSTCBTbl[6].TaskAdd,GrabCmdDig(1));OSTask5PrioSet(); }	                                       
-			//ÈçÈÎÎñ³¬¹ı5¸öÇë×ÔĞĞÔö¼Ó
-			/*******************************************************************************************/		
-			/*******************************************ÈÎÎñÊ±¼äÆ¬***************************************/	
-			if(CompareCmdDig('=',cmd_task_timeslice_01)==0){ OSTCBTbl[2].TaskTimeSlice=GrabCmdDig(1);OSDisp_Task1TimeSlice();}
-			if(CompareCmdDig('=',cmd_task_timeslice_02)==0){ OSTCBTbl[3].TaskTimeSlice=GrabCmdDig(1);OSDisp_Task2TimeSlice();}
-			if(CompareCmdDig('=',cmd_task_timeslice_03)==0){ OSTCBTbl[4].TaskTimeSlice=GrabCmdDig(1);OSDisp_Task3TimeSlice();}
-			if(CompareCmdDig('=',cmd_task_timeslice_04)==0){ OSTCBTbl[5].TaskTimeSlice=GrabCmdDig(1);OSDisp_Task4TimeSlice();}
-			if(CompareCmdDig('=',cmd_task_timeslice_05)==0){ OSTCBTbl[6].TaskTimeSlice=GrabCmdDig(1);OSDisp_Task5TimeSlice();}
-			//ÈçÈÎÎñ³¬¹ı5¸öÇë×ÔĞĞÔö¼Ó
-			/****************************************ÓÃ»§×Ô¶¨ÒåÖ¸ÁîÇø*************************************/
-	    
+		{	
+			OSCMDprintf("%s\r\n",OS_Cmd.RX_BUFF);
+			if(CompareCmd(cmd_help)==0)		{ OS_CmdHelp_Process(); }			
+			if(CompareCmd(cmd_enter)==0)  { OS_Cmd.Enter_Flag=OS_TRUE; }		
+      if(CompareCmd(cmd_exit)==0)   { OS_Cmd.Enter_Flag=OS_FALSE; }	
+      if(OS_Cmd.Enter_Flag==OS_TRUE)
+			{				
+	#if (OS_CMD_NSY_ENABLE == 1)
+				/********************************************ÈÎÎñ´ò¿ª****************************************/	//ÈÎÎñ1¶ÔÓ¦TCB[2]		
+				if(CompareCmd(cmd_task_open_01)==0) { OSTaskStateSet((void*)OSTCBTbl[2].TaskAdd,TASK_RUNNING);OSDisp_task1open(); }                     
+				if(CompareCmd(cmd_task_open_02)==0) { OSTaskStateSet((void*)OSTCBTbl[3].TaskAdd,TASK_RUNNING);OSDisp_task2open(); }																		
+				if(CompareCmd(cmd_task_open_03)==0) { OSTaskStateSet((void*)OSTCBTbl[4].TaskAdd,TASK_RUNNING);OSDisp_task3open(); }                                    
+				if(CompareCmd(cmd_task_open_04)==0) { OSTaskStateSet((void*)OSTCBTbl[5].TaskAdd,TASK_RUNNING);OSDisp_task4open(); }	                                    
+				if(CompareCmd(cmd_task_open_05)==0) { OSTaskStateSet((void*)OSTCBTbl[6].TaskAdd,TASK_RUNNING);OSDisp_task5open(); }			                                  
+				//ÈçÈÎÎñ³¬¹ı5¸öÇë×ÔĞĞÔö¼Ó
+				
+				/*******************************************************************************************/	
+				/********************************************ÈÎÎñ¹Ø±Õ****************************************/	
+				if(CompareCmd(cmd_task_close_01)==0) { OSTaskStateSet((void*)OSTCBTbl[2].TaskAdd,TASK_PAUSING);OSDisp_task1close(); }
+				if(CompareCmd(cmd_task_close_02)==0) { OSTaskStateSet((void*)OSTCBTbl[3].TaskAdd,TASK_PAUSING);OSDisp_task2close(); }
+				if(CompareCmd(cmd_task_close_03)==0) { OSTaskStateSet((void*)OSTCBTbl[4].TaskAdd,TASK_PAUSING);OSDisp_task3close(); }
+				if(CompareCmd(cmd_task_close_04)==0) { OSTaskStateSet((void*)OSTCBTbl[5].TaskAdd,TASK_PAUSING);OSDisp_task4close(); }
+				if(CompareCmd(cmd_task_close_05)==0) { OSTaskStateSet((void*)OSTCBTbl[6].TaskAdd,TASK_PAUSING);OSDisp_task5close(); }
+				//ÈçÈÎÎñ³¬¹ı5¸öÇë×ÔĞĞÔö¼Ó
+				
+				/*******************************************************************************************/		
+				/*******************************************ÈÎÎñÓÅÏÈ¼¶***************************************/	
+				if(CompareCmdDig('=',cmd_task_prio_01)==0) { OSTaskPrioSet((void*)OSTCBTbl[2].TaskAdd,GrabCmdDig(1));OSTask1PrioSet(); }	                                                                            
+				if(CompareCmdDig('=',cmd_task_prio_02)==0) { OSTaskPrioSet((void*)OSTCBTbl[3].TaskAdd,GrabCmdDig(1));OSTask2PrioSet(); }		                                       
+				if(CompareCmdDig('=',cmd_task_prio_03)==0) { OSTaskPrioSet((void*)OSTCBTbl[4].TaskAdd,GrabCmdDig(1));OSTask3PrioSet(); }	                                       
+				if(CompareCmdDig('=',cmd_task_prio_04)==0) { OSTaskPrioSet((void*)OSTCBTbl[5].TaskAdd,GrabCmdDig(1));OSTask4PrioSet(); }	                                      
+				if(CompareCmdDig('=',cmd_task_prio_05)==0) { OSTaskPrioSet((void*)OSTCBTbl[6].TaskAdd,GrabCmdDig(1));OSTask5PrioSet(); }	                                       
+				//ÈçÈÎÎñ³¬¹ı5¸öÇë×ÔĞĞÔö¼Ó
+				/*******************************************************************************************/		
+				/*******************************************ÈÎÎñÊ±¼äÆ¬***************************************/	
+				if(CompareCmdDig('=',cmd_task_timeslice_01)==0){ OSTCBTbl[2].TaskTimeSlice=GrabCmdDig(1);OSDisp_Task1TimeSlice();}
+				if(CompareCmdDig('=',cmd_task_timeslice_02)==0){ OSTCBTbl[3].TaskTimeSlice=GrabCmdDig(1);OSDisp_Task2TimeSlice();}
+				if(CompareCmdDig('=',cmd_task_timeslice_03)==0){ OSTCBTbl[4].TaskTimeSlice=GrabCmdDig(1);OSDisp_Task3TimeSlice();}
+				if(CompareCmdDig('=',cmd_task_timeslice_04)==0){ OSTCBTbl[5].TaskTimeSlice=GrabCmdDig(1);OSDisp_Task4TimeSlice();}
+				if(CompareCmdDig('=',cmd_task_timeslice_05)==0){ OSTCBTbl[6].TaskTimeSlice=GrabCmdDig(1);OSDisp_Task5TimeSlice();}
+				//ÈçÈÎÎñ³¬¹ı5¸öÇë×ÔĞĞÔö¼Ó
+				/****************************************ÓÃ»§×Ô¶¨ÒåÖ¸ÁîÇø*************************************/
+				
 
-			/*******************************************************************************************/
-#endif	
-			/*******************************************************************************************/
-#if (OS_SYSTIME_ENABLE== 1)			
-			if(CompareCmdDig('=',cmd_systime_set)==0) { RTC_SetTimes(GrabCmdDig(0),\
-				                                                  GrabCmdDig(1),\
-			                                                    GrabCmdDig(2),\
-			                                                    GrabCmdDig(3),\
-			                                                    GrabCmdDig(4),\
-			                                                    GrabCmdDig(5)
-			                                                   );
-				                                                  OSDisp_systimeset(); }		
-#endif			
-			/*******************************************************************************************/	
-#if (OS_TIMECOUNTSYS_ENABLE == 1)			
-      if(CompareCmdDig('=',cmd_osoff_delaytime_set)==0) { OS_ShutDown_DelayTime_Set_YMDHMS(\
-				                                                  GrabCmdDig(0),\
-				                                                  GrabCmdDig(1),\
-			                                                    GrabCmdDig(2),\
-			                                                    GrabCmdDig(3),\
-			                                                    GrabCmdDig(4),\
-			                                                    GrabCmdDig(5)
-			                                                   );
-				                                                  OSDisp_osoff_delaytime(); }	
-#endif
-			/*******************************************************************************************/	
-			if(CompareCmd(cmd_osmanager)==0)     { OS_Information_Process(); }
-      if(CompareCmd(cmd_runmode_order)==0) { OS_System.RuningMode=0; OSDisp_runmode_order(); }
-			if(CompareCmd(cmd_runmode_prio)==0)  { OS_System.RuningMode=1; OSDisp_runmode_prio();  }
-			if(CompareCmd(cmd_runmode_order_prio)==0){ OS_System.RuningMode=2; OSDisp_runmode_order_prio();  }			
-			if(CompareCmd(cmd_oson)==0)          { OSAwaken();  OSDisp_oson(); }
-			if(CompareCmd(cmd_osoff)==0)         { OSDisp_osoff();  OSSleep(); }
-			if(CompareCmd(cmd_hardreset)==0)     { OSDisp_hardreset();  HardReset(); }
-			/*******************************************************************************************/	
-		}	
+				/*******************************************************************************************/
+	#endif	
+				/*******************************************************************************************/
+	#if (OS_SYSTIME_ENABLE== 1)			
+				if(CompareCmdDig('=',cmd_systime_set)==0) { RTC_SetTimes(GrabCmdDig(0),\
+																														GrabCmdDig(1),\
+																														GrabCmdDig(2),\
+																														GrabCmdDig(3),\
+																														GrabCmdDig(4),\
+																														GrabCmdDig(5)
+																													 );
+																														OSDisp_systimeset(); }		
+	#endif			
+				/*******************************************************************************************/	
+	#if (OS_TIMECOUNTSYS_ENABLE == 1)			
+				if(CompareCmdDig('=',cmd_osoff_delaytime_set)==0) { OS_ShutDown_DelayTime_Set_YMDHMS(\
+																														GrabCmdDig(0),\
+																														GrabCmdDig(1),\
+																														GrabCmdDig(2),\
+																														GrabCmdDig(3),\
+																														GrabCmdDig(4),\
+																														GrabCmdDig(5)
+																													 );
+																														OSDisp_osoff_delaytime(); }		
+	#endif																													
+				/*******************************************************************************************/	
+				if(CompareCmd(cmd_osinformation)==0) { OS_Information_Process();  }																											
+				if(CompareCmd(cmd_runmode_order)==0) { OS_System.RuningMode=0; OSDisp_runmode_order(); }
+				if(CompareCmd(cmd_runmode_prio)==0)  { OS_System.RuningMode=1; OSDisp_runmode_prio();  }
+				if(CompareCmd(cmd_runmode_order_prio)==0){ OS_System.RuningMode=2; OSDisp_runmode_order_prio();  }			
+				if(CompareCmd(cmd_oson)==0)          { OSAwaken();  OSDisp_oson(); }
+				if(CompareCmd(cmd_osoff)==0)         { OSDisp_osoff();  OSSleep(); }
+				if(CompareCmd(cmd_hardreset)==0)     { OSDisp_hardreset();  HardReset(); }
+				/*******************************************************************************************/	
+				Cmd_RxBuff_Clean();
+				OSCMDprintf("cmd->");
+			}		
+	  }
     OS_Cmd.RX_COUNT=0;
     OS_Cmd.RXOK_Flag=OS_FALSE;		 	
 }	
@@ -491,8 +538,8 @@ void OS_Information_Process(void)
 	}
 	OS_INT_EXIT();
 #if (OS_CMD_DISP_SYS_ENABLE == 1)
-  OSprintf("+++++++++++++++++++++++++++++++++++ÏµÍ³×´Ì¬ĞÅÏ¢++++++++++++++++++++++++++++++++++++\r\n");
-	OSprintf("===================================================================================\r\n");
+  OSCMDprintf("+++++++++++++++++++++++++++++++++++ÏµÍ³×´Ì¬ĞÅÏ¢++++++++++++++++++++++++++++++++++++\r\n");
+	OSCMDprintf("===================================================================================\r\n");
 	switch(OS_System.RuningMode)
 	{
 	  case 0:pf="Order     "; break;
@@ -502,7 +549,7 @@ void OS_Information_Process(void)
 #if (OS_TIMECOUNTSYS_ENABLE == 1)	
 	if(OS_System.ShutDownTime_second>0) ShutDownTime_Second=OS_System.ShutDownTime_second-1;
 #endif	
-  OSprintf("  ÔËĞĞÄ£Ê½ £º%s                     ÔËĞĞÊ±¼ä£º%dÄê%dÔÂ%dÈÕ %dÊ±%d·Ö%dÃë %dms\r\n",
+  OSCMDprintf("  ÔËĞĞÄ£Ê½ £º%s                     ÔËĞĞÊ±¼ä£º%dÄê%dÔÂ%dÈÕ %dÊ±%d·Ö%dÃë %dms\r\n",
 	                                           pf,
 #if (OS_TIMECOUNTSYS_ENABLE == 1)	
 																						 OS_System.RunTime_year,
@@ -521,7 +568,7 @@ void OS_Information_Process(void)
 																						 0,
 	                                           0);
 #endif	
-	OSprintf("  Ê±ÖÓ½ÚÅÄ £º%dms                            ÏµÍ³¹Ø±Õµ¹¼ÆÊ±£º%dÄê%dÔÂ%dÈÕ %dÊ±%d·Ö%dÃë\r\n",\
+	OSCMDprintf("  Ê±ÖÓ½ÚÅÄ £º%dms                            ÏµÍ³¹Ø±Õµ¹¼ÆÊ±£º%dÄê%dÔÂ%dÈÕ %dÊ±%d·Ö%dÃë\r\n",\
 	                                           OSTIMER_LOAD/OSTIMER_CONT_1us/1000,
 #if (OS_TIMECOUNTSYS_ENABLE == 1)
                                              OS_System.ShutDownTime_year,\
@@ -538,19 +585,19 @@ void OS_Information_Process(void)
 																						 0,\
 																						 0); 
 #endif	
-	OSprintf("  CPUÕ¼ÓÃÂÊ£º%04.1f%%                          CPU×î´óÕ¼ÓÃÂÊ£º%04.1f%% \r\r\n",100-(OSTCBTbl[0].TaskCPUOccRateCounter*100.0/OS_System.TaskTimeSliceCounter),OS_System.TaskCPUOccRateMax/10.0);
-	OSprintf("  ÄÚ´æÈİÁ¿ £º%dByte\r\r\n",OS_MEMORYPOOL_SIZE);      
-	OSprintf("  ÒÑÓÃÄÚ´æ £º%dByte                       Ê£ÓàÄÚ´æ£º%dByte \r\r\n",OS_MEMORYPOOL_SIZE-FSC_MemoryFreeSizeGet(),FSC_MemoryFreeSizeGet());
-	OSprintf("-----------------------------------------------------------------------------------\r\n");
-	OSprintf("ÀûÓÃÂÊ   »îÔ¾¶È   Ê¹ÓÃÕ»   ¿ÕÏĞÕ»   °Ù·Ö±È   Ê±¼äÆ¬    ÓÅÏÈ¼¶    ×´Ì¬    ÈÎÎñÃû    \r\n");
-	OSprintf("  CPU    Active    Used     Free     Per    TimeSlice   Prio    State   Taskname   \r\n\r\n");
+	OSCMDprintf("  CPUÕ¼ÓÃÂÊ£º%04.1f%%                          CPU×î´óÕ¼ÓÃÂÊ£º%04.1f%% \r\r\n",100-(OSTCBTbl[0].TaskCPUOccRateCnt*100.0/OS_System.TaskTimeSliceCnt),OS_System.TaskCPUOccRateMax/10.0);
+	OSCMDprintf("  ÄÚ´æÈİÁ¿ £º%dByte\r\r\n",OS_MEMORYPOOL_SIZE);      
+	OSCMDprintf("  ÒÑÓÃÄÚ´æ £º%dByte                       Ê£ÓàÄÚ´æ£º%dByte \r\r\n",OS_MEMORYPOOL_SIZE-FSC_MemoryFreeSizeGet(),FSC_MemoryFreeSizeGet());
+	OSCMDprintf("-----------------------------------------------------------------------------------\r\n");
+	OSCMDprintf("ÀûÓÃÂÊ   »îÔ¾¶È   Ê¹ÓÃÕ»   ¿ÕÏĞÕ»   °Ù·Ö±È   Ê±¼äÆ¬    ÓÅÏÈ¼¶    ×´Ì¬    ÈÎÎñÃû    \r\n");
+	OSCMDprintf("  CPU    Active    Used     Free     Per    TimeSlice   Prio    State   Taskname   \r\n\r\n");
 	for(TaskCount = 0; TaskCount < OS_MAX_TASKS; TaskCount++) 
 	{
 		if(OSTCBTbl[TaskCount].StkPtr!=(STK32U*)0)
 		{	
-			OSprintf(" %04.1f%%    %03d       %-3d     %-3d     %04.1f%%     %04d     %05d     %d:%d    %s \r\n",\
-									OSTCBTbl[TaskCount].TaskCPUOccRateCounter*100.0/OS_System.TaskTimeSliceCounter,\
-			            OSTCBTbl[TaskCount].TaskCPUOccRateCounter*1000/OS_System.ClockCounter,\
+			OSCMDprintf(" %04.1f%%    %03d       %-3d     %-3d     %04.1f%%     %04d     %05d     %d:%d    %s \r\n",\
+									OSTCBTbl[TaskCount].TaskCPUOccRateCnt*100.0/OS_System.TaskTimeSliceCnt,\
+			            OSTCBTbl[TaskCount].TaskCPUOccRateCnt*1000/OS_System.ClockCnt,\
 									OSTCBTbl[TaskCount].StkUsed,\
 									OSTCBTbl[TaskCount].StkFree,\
 									OSTCBTbl[TaskCount].StkUsed*100.0/OSTCBTbl[TaskCount].StkSize,\
@@ -560,25 +607,25 @@ void OS_Information_Process(void)
 									OSTCBTbl[TaskCount].TaskStr  );			                 
 		}
 	}	
-	OSprintf("===================================================================================\r\n");
+	OSCMDprintf("===================================================================================\r\n");
 #endif
 }
 void OSTaskCPUOccRateCount_Process(void) //ÈÎÎñÕ¼ÓÃÂÊÍ³¼Æ³ÌĞò
 {
 	 INT16U TaskCount;	
-	 OSTCBCur->TaskCPUOccRateCounter++;
-	 OS_System.TaskTimeSliceCounter++;
-	 if(OS_System.ClockCounter==0) OS_System.TaskTimeSliceCounter=0;
-	 if(OS_System.TaskTimeSliceCounter==0)
+	 OSTCBCur->TaskCPUOccRateCnt++;
+	 OS_System.TaskTimeSliceCnt++;
+	 if(OS_System.ClockCnt==0) OS_System.TaskTimeSliceCnt=0;
+	 if(OS_System.TaskTimeSliceCnt==0)
 	 {
 		 for(TaskCount = 0; TaskCount < OS_MAX_TASKS; TaskCount++)
 		 {
 			 if(OSTCBTbl[OS_System.TaskNext].StkPtr != (STK32U*)0)
 			 {
-				 OSTCBTbl[TaskCount].TaskCPUOccRateCounter=0;
+				 OSTCBTbl[TaskCount].TaskCPUOccRateCnt=0;
 			 }
 		 }
-		 OS_System.TaskTimeSliceCounter=1;//´Ó1¿ªÊ¼¼ÆÊı(0²»ÄÜ×÷³ıÊı)		 
+		 OS_System.TaskTimeSliceCnt=1;//´Ó1¿ªÊ¼¼ÆÊı(0²»ÄÜ×÷³ıÊı)		 
 	 }  
 }
 INT32U OS_GetStringLength(char* p)//»ñÈ¡×Ö·û´®pµÄ³¤¶È
@@ -650,6 +697,7 @@ void OSCmdRxByte(INT8U RxByte)
 				if((OS_Cmd.RX_BUFF[OS_Cmd.RX_COUNT-1]=='/')&&(OS_Cmd.RX_BUFF[OS_Cmd.RX_COUNT-2]=='/'))
 				{
 				  OS_Cmd.RXOK_Flag=OS_TRUE;	
+					OS_Cmd.RX_BUFF[OS_Cmd.RX_COUNT]='\0';
 					OSTCBTbl[1].TaskDelayMs=0;
 					if(OS_System.RuningMode>0)
 					{
@@ -1003,7 +1051,7 @@ void OSInit(void) //ÏµÍ³³õÊ¹»¯£¬³õÊ¹»¯¸÷¸öÈÎÎñµÄÈÎÎñ¿ØÖÆ¿é±äÁ¿µÄ²ÎÊı
 			  OSTCBTbl[i].StkSize=0;		
 			  OSTCBTbl[i].StkUsed=0;
 			  OSTCBTbl[i].StkFree=0;
-			  OSTCBTbl[i].TaskCPUOccRateCounter=0; 
+			  OSTCBTbl[i].TaskCPUOccRateCnt=0; 
 			  OSTCBTbl[i].TaskStr[0]='\0';
 #endif		   			
 			  OSTCBTbl[i].TaskAdd=0;
@@ -1014,10 +1062,11 @@ void OSInit(void) //ÏµÍ³³õÊ¹»¯£¬³õÊ¹»¯¸÷¸öÈÎÎñµÄÈÎÎñ¿ØÖÆ¿é±äÁ¿µÄ²ÎÊı
     }
 		OS_System.RuningMode=OS_RINNING_MODE;
 		OS_System.Error=OS_FALSE;
-#if (OS_CMD_ALL_ENABLE== 1)		
+#if (OS_CMD_ALL_ENABLE== 1)	
+    OS_Cmd.Enter_Flag=OS_FALSE;
 		OS_Cmd.RXOK_Flag=OS_FALSE;
 		OS_System.TaskCPUOccRateMax=0;
-		OS_System.TaskTimeSliceCounter=1; //´Ó1¿ªÊ¼¼ÆÊı(0²»ÄÜ×÷³ıÊı)
+		OS_System.TaskTimeSliceCnt=1; //´Ó1¿ªÊ¼¼ÆÊı(0²»ÄÜ×÷³ıÊı)
 		OS_Cmd.RX_COUNT=0;
 #endif
 #if (OS_GET_SET_SW_ENABLE == 1)			
@@ -1040,11 +1089,10 @@ void OSInit(void) //ÏµÍ³³õÊ¹»¯£¬³õÊ¹»¯¸÷¸öÈÎÎñµÄÈÎÎñ¿ØÖÆ¿é±äÁ¿µÄ²ÎÊı
 		OS_System.RunOneRound=OS_FALSE;
 		OS_System.FirstEnter=OS_TRUE;
 		OS_System.TaskNextRunFlag=OS_TRUE;
-		OS_System.TaskContinuRunTimeCounter=0;
+		OS_System.TaskContinuRunTimeCnt=0;
 		OS_System.RunTime_ms=0;
-		OS_System.ClockCounter=0;
-		OS_System.ClockOverCounter=0;
-		OS_System.TimeSliceCounter=0;
+		OS_System.ClockCnt=0;
+		OS_System.TimeSliceCnt=0;
 		OS_System.RunLastTask=0;//³õÊ¹»¯ÎªÈÎÎñ0
 		OS_System.TaskHighestPrioLast=0;//³õÊ¹»¯×î¸ßÈÎÎñÓÅ¼¶ÎªÈÎÎñ0µÄÓÅÏÈ¼¶
 		OS_System.TaskNext=0;    //NextÈÎÎñ¼ÆÊı³õÊ¹»¯
@@ -1225,9 +1273,9 @@ void OSTaskCPUOccRateCounter_Process(void)
 /*------------------------------------------ÏµÍ³×´Ì¬ÓĞ¹Ø´úÂë---------------------------------------------------*/		
 #if (OS_CMD_ALL_ENABLE == 1)	
     INT16U CupOccRate;	
-		if(OS_System.TaskTimeSliceCounter>1000)
+		if(OS_System.TaskTimeSliceCnt>1000)
 		{
-			CupOccRate=(INT16U)(OSTCBTbl[0].TaskCPUOccRateCounter*1000/OS_System.TaskTimeSliceCounter);
+			CupOccRate=(INT16U)(OSTCBTbl[0].TaskCPUOccRateCnt*1000/OS_System.TaskTimeSliceCnt);
 			if(CupOccRate<(1000-OS_System.TaskCPUOccRateMax))
 			{
 				OS_System.TaskCPUOccRateMax=1000-CupOccRate;
@@ -1250,8 +1298,8 @@ void OS_TaskIdle(void) //¿ÕÏĞÈÎÎñÄÚÈİº¯Êı(½ûÖ¹µ÷ÓÃOS_delayMsº¯Êı)  (ÓÃÒÔ·ÀÖ¹0¸öÈ
 void OS_TaskManager(void) //ÈÎÎñ¹ÜÀíÆ÷ÈÎÎñÄÚÈİº¯Êı
 {	
 	u32 i;
-	OSprintf("-@FSC_STOS_V4.9.2 Inside\r\n");
-	OSprintf("OS Information£¬Please Send: cmd/osmanage//\r\n\r\n");
+	OSprintf("-@FSC_STOS_V4.9.4 Inside\r\n");
+	OSprintf("OS Cmd System£¬Please Send: cmd/help//\r\n\r\n");
   while(1) 
 	{
 		OSSchedLock();
@@ -1284,20 +1332,20 @@ INT8U OSTaskStateSet(void* Taskx,INT8U TaskState) //ÈÎÎñ×´Ì¬ÉèÖÃº¯Êı(ÓÃ»§¿Éµ÷ÓÃ)
 	 INT16U i ;
 #if (OS_SIGN_PP_ENABLE == 1)	
 	 INT16U j;
-#endif
+#endif	
 	 INT8U  result=OS_FALSE;  
 	 if(OSTCBCur->TaskAdd==(INT32U)Taskx) //Èç¹ûÊÇÉèÖÃ±¾ÈÎÎñ£¬Í£Ö¹±¾ÈÎÎñ£¬Á¢¼´ÇĞ»»µ½ÆäËûÈÎÎñÔËĞĞ
 		{
 #if (OS_SIGN_PP_ENABLE == 1)			
 			 for(j=0;j<MUTEX_SIZE;j++)//²éÕÒµ±Ç°ÈÎÎñÊÇ·ñ´¦ÓÚMutexÕ¼ÓÃÖĞ
-			 { 
+			 {
 				 if(OS_System.MutexTaskNum[j]==OSTCBCur->TaskNum)
 				 {
 					 OS_INT_EXIT();  
            return OS_FALSE;
 				 } 
 			 }
-#endif				 
+#endif			
 			 OSTCBTbl[OSTCBCur->TaskNum].TaskState &= 0xF0;
 			 OSTCBTbl[OSTCBCur->TaskNum].TaskState |= TaskState&0x0F; 
 			 OSTCBCur = OSTCBNext;	 
@@ -1312,9 +1360,9 @@ INT8U OSTaskStateSet(void* Taskx,INT8U TaskState) //ÈÎÎñ×´Ì¬ÉèÖÃº¯Êı(ÓÃ»§¿Éµ÷ÓÃ)
 				{  
 					 if( OSTCBTbl[i].TaskAdd == (INT32U)Taskx ) 
 					 {
-#if (OS_SIGN_PP_ENABLE == 1)						 
+#if (OS_SIGN_PP_ENABLE == 1)							 
 						 do
-						 {
+						 {						 
 							 for(j=0;j<MUTEX_SIZE;j++) //²éÕÒÉèÖÃÄ¿±êÈÎÎñÊÇ·ñ´¦ÓÚMutexÕ¼ÓÃÖĞ
 							 {
 								 if(OS_System.MutexTaskNum[j]==OSTCBTbl[i].TaskNum)
@@ -1390,11 +1438,11 @@ void OSTaskPrioBackupSet(void* Taskx,INT16U Taskprio) //ÈÎÎñ±¸·İÓÅÏÈ¼¶ÉèÖÃº¯Êı(Ó
 }
 void OSTimeSliceValSet(INT32U time) //ÉèÖÃÊ±¼äÇĞÆ¬½ÚÅÄ¼ÆÊıÖµ
 {
-   OS_System.TaskTimeSliceCounter=time;
+   OS_System.TaskTimeSliceCnt=time;
 }
 void OSClockValSet(INT32U time)    //ÉèÖÃÏµÍ³½ÚÅÄ¼ÆÊıÖµ
 {
-  OS_System.ClockCounter=time;
+  OS_System.ClockCnt=time;
 }
 #endif
 /*-------------------------------------------------------------------------------------------------------------*/
@@ -1471,11 +1519,11 @@ INT16U OSTaskPrioBackupGet(void* Taskx) //»ñÈ¡ÈÎÎñ±¸·İÓÅÏÈ¼¶
 }
 INT32U OSTimeSliceValGet(void) //»ñÈ¡Ê±¼äÇĞÆ¬½ÚÅÄ¼ÆÊıÖµ
 {
-    return OS_System.TaskTimeSliceCounter;
+    return OS_System.TaskTimeSliceCnt;
 }
 INT32U OSClockValGet(void)    //»ñÈ¡ÏµÍ³½ÚÅÄ¼ÆÊıÖµ
 {
-  return OS_System.ClockCounter;
+  return OS_System.ClockCnt;
 }
 INT32U OSTimerValGet(void) //»ñÈ¡ÏµÍ³¶¨Ê±Æ÷µ±Ç°¼ÆÊıÖµ(Ä¬ÈÏÎª9MHz£¬Ã¿´Î¼ÆÊıÓÃÊ±1/9 us)
 {
@@ -1597,10 +1645,25 @@ INT32U OSTimerValueGet(INT16U TNum) //·µ»Øµ±Ç°¼ÆÊıÖµ
 {
   return OS_System.TIMER[TNum];
 }
-INT8U OSTimerStateGet(INT16U TNum) //·µ»Ø0 £º¶¨Ê±Î´Íê³É£¬  1£ºÍê³É  2:³¬Ê±(³¬¹ı1¸öÊ±ÖÓ½ÚÅÄ)
+INT8U OSTimerStateGet(INT16U TNum) //·µ»ØOS_TRUE £º¶¨Ê±Íê³É£¬  OS_FALSE£ºÎ´Íê³É
 {
   if(OS_System.TIMER[TNum]==0) return OS_TRUE;
 	else return OS_FALSE;
+}
+void OSTimerCount_Process(void)
+{	
+	INT16U Count;
+	for(Count = 0; Count < TIMER_SIZE; Count++)
+	{
+		 if(OS_System.TIMER[Count]>0) OS_System.TIMER[Count]--;
+		 if(OS_System.TIMER[Count]==0) 
+		 {
+			 if(OS_System.TIMER_RELOAD[Count]!=0) 
+			 {
+				 OS_System.TIMER[Count]=OS_System.TIMER_RELOAD[Count];
+			 }
+		 }
+	}
 }
 #endif
 /*-------------------------------------------------------------------------------------------------------------*/
@@ -1612,7 +1675,7 @@ void OSFlagPost(INT16U FNum) //·¢ËÍ±êÖ¾Á¿
 	INT16U i,j;
 	for(i=0;i<OS_MAX_TASKS;i++)
 	{ 
-    if(OSTCBTbl[i].TaskFlagBit&_BIT_Flag)//µ¥¸öOSFlag´¦ÓÚµÈ´ıĞÅºÅ±êÖ¾×´Ì¬
+    if(OSTCBTbl[i].TaskFlagBit&(1<<_BIT_Flag))//µ¥¸öOSFlag´¦ÓÚµÈ´ıĞÅºÅ±êÖ¾×´Ì¬
 		{ 
 			if(OSTCBTbl[i].FlagName==FNum)//ÅĞ¶Ï¸ÃµÈ´ıÈÎÎñµÈ´ıµÄOSFlagÊÇ·ñÊÇµ±Ç°×¼±¸·¢ËÍµÄOSFlag
 			{ 
@@ -1620,12 +1683,12 @@ void OSFlagPost(INT16U FNum) //·¢ËÍ±êÖ¾Á¿
 				OS_System.POST_FLAG_COUNT[FNum]++;//µÈ´ı´¦ÀíĞÅºÅ´ÎÊıÀÛ¼Ó
 				if((OS_System.FLAGPendType[FNum][i]!=OSFlag_NBPC)&&(OS_System.FLAGPendType[FNum][i]!=OSFlag_NBPN))
 				{
-					OSTCBTbl[i].TaskFlagBit&=~_BIT_Flag;//Çå³ıĞÅºÅ±êÖ¾×´Ì¬
+					OSTCBTbl[i].TaskFlagBit&=~(1<<_BIT_Flag);//Çå³ıĞÅºÅ±êÖ¾×´Ì¬
 				  OSTCBTbl[i].TaskDelayMs=1;  //µÈ´ıÑÓÊ±ÖÃ1£¬È¡ÏûµÈ´ıOSFlagÈÎÎñµÄµÈ´ıÑÓÊ± 
 				}
 			}
 		}
-		if(OSTCBTbl[i].TaskFlagBit&_BIT_FlagGroup)//ÈºOSFlag´¦ÓÚµÈ´ıĞÅºÅ±êÖ¾×´Ì¬
+		if(OSTCBTbl[i].TaskFlagBit&(1<<_BIT_FlagGroup))//ÈºOSFlag´¦ÓÚµÈ´ıĞÅºÅ±êÖ¾×´Ì¬
 		{
 			for(j=0;j<FLAG_GROUP_SIZE;j++)
 			{
@@ -1644,7 +1707,7 @@ INT8U OSFlagPend(INT8U pendtype,INT16U FNum,INT32U timeout_ms) //µÈ´ı±êÖ¾Á¿ ´ø³¬
 	INT8U result;
 	OSSchedLock();
 	OSTCBCur->FlagName=FNum;
-	OSTCBCur->TaskFlagBit|=_BIT_Flag;
+	OSTCBCur->TaskFlagBit|=(1<<_BIT_Flag);
 	OS_System.FLAGPendType[FNum][OSTCBCur->TaskNum]=pendtype;
 	OSSchedUnlock();
 	switch(pendtype)
@@ -1653,11 +1716,11 @@ INT8U OSFlagPend(INT8U pendtype,INT16U FNum,INT32U timeout_ms) //µÈ´ı±êÖ¾Á¿ ´ø³¬
 		{
 			OS_System.FLAG[FNum][OSTCBCur->TaskNum]=OS_FALSE;//Çå³ı¾É±êÖ¾Á¿,µÈ´ıĞÂµÄ±êÖ¾Á¿·¢ËÍ
 			OS_delayMs(timeout_ms);
-			OSTCBCur->TaskFlagBit&=~_BIT_Flag;
-			if(OSTCBCur->TaskFlagBit&_BIT_TimeOut) //³¬Ê±¼ì²â
+			OSTCBCur->TaskFlagBit&=~(1<<_BIT_Flag);
+			if(OSTCBCur->TaskFlagBit&(1<<_BIT_TimeOut)) //³¬Ê±¼ì²â
 			{
 				OS_System.FLAG[FNum][OSTCBCur->TaskNum]=OS_FALSE;//Çå³ı±¾ÈÎÎñµÄ±êÖ¾Á¿
-				OSTCBCur->TaskFlagBit&=~_BIT_TimeOut;//Çå³ı³¬Ê±±êÖ¾Î»
+				OSTCBCur->TaskFlagBit&=~(1<<_BIT_TimeOut);//Çå³ı³¬Ê±±êÖ¾Î»
 				result = OS_FALSE;
 			}
 			else
@@ -1678,7 +1741,7 @@ INT8U OSFlagPend(INT8U pendtype,INT16U FNum,INT32U timeout_ms) //µÈ´ı±êÖ¾Á¿ ´ø³¬
 		{
 			if(OS_System.FLAG[FNum][OSTCBCur->TaskNum]==OS_TRUE)
 			{
-				OSTCBCur->TaskFlagBit&=~_BIT_Flag;
+				OSTCBCur->TaskFlagBit&=~(1<<_BIT_Flag);
 				OS_System.FLAG[FNum][OSTCBCur->TaskNum]=OS_FALSE;//Çå³ı±¾ÈÎÎñµÄ±êÖ¾Á¿
 				result = OS_TRUE; 
 			}
@@ -1693,11 +1756,11 @@ INT8U OSFlagPend(INT8U pendtype,INT16U FNum,INT32U timeout_ms) //µÈ´ı±êÖ¾Á¿ ´ø³¬
 		  if(OS_System.FLAG[FNum][OSTCBCur->TaskNum]==OS_FALSE)//¼ì²â¾É±êÖ¾
 			{
 				OS_delayMs(timeout_ms);
-				OSTCBCur->TaskFlagBit&=~_BIT_Flag;
-				if(OSTCBCur->TaskFlagBit&_BIT_TimeOut) //³¬Ê±¼ì²â
+				OSTCBCur->TaskFlagBit&=~(1<<_BIT_Flag);
+				if(OSTCBCur->TaskFlagBit&(1<<_BIT_TimeOut)) //³¬Ê±¼ì²â
 				{
 					OS_System.FLAG[FNum][OSTCBCur->TaskNum]=OS_FALSE;//Çå³ı±¾ÈÎÎñµÄ±êÖ¾Á¿
-					OSTCBCur->TaskFlagBit&=~_BIT_TimeOut;//Çå³ı³¬Ê±±êÖ¾Î»
+					OSTCBCur->TaskFlagBit&=~(1<<_BIT_TimeOut);//Çå³ı³¬Ê±±êÖ¾Î»
 					result = OS_FALSE;
 				}
 				else
@@ -1708,7 +1771,7 @@ INT8U OSFlagPend(INT8U pendtype,INT16U FNum,INT32U timeout_ms) //µÈ´ı±êÖ¾Á¿ ´ø³¬
 			}
 			else
 			{
-				OSTCBCur->TaskFlagBit&=~_BIT_Flag;
+				OSTCBCur->TaskFlagBit&=~(1<<_BIT_Flag);
 				OSTCBCur->TaskDelayMs=0;//ÈÃÆä´¦ÓÚ¾ÍĞ÷×´Ì¬
 				OS_System.FLAG[FNum][OSTCBCur->TaskNum]=OS_FALSE;//Çå³ı±¾ÈÎÎñµÄ±êÖ¾Á¿
 				result = OS_TRUE;
@@ -1720,11 +1783,11 @@ INT8U OSFlagPend(INT8U pendtype,INT16U FNum,INT32U timeout_ms) //µÈ´ı±êÖ¾Á¿ ´ø³¬
 		  if(OS_System.POST_FLAG_COUNT[FNum]==0)//¼ì²â±êÖ¾ÀÛ¼ÆÊıÁ¿
 			{
 				OS_delayMs(timeout_ms);
-				OSTCBCur->TaskFlagBit&=~_BIT_Flag;
-				if(OSTCBCur->TaskFlagBit&_BIT_TimeOut) //³¬Ê±¼ì²â
+				OSTCBCur->TaskFlagBit&=~(1<<_BIT_Flag);
+				if(OSTCBCur->TaskFlagBit&(1<<_BIT_TimeOut)) //³¬Ê±¼ì²â
 				{
 					OS_System.FLAG[FNum][OSTCBCur->TaskNum]=OS_FALSE;//Çå³ı±¾ÈÎÎñµÄ±êÖ¾Á¿
-					OSTCBCur->TaskFlagBit&=~_BIT_TimeOut;//Çå³ı³¬Ê±±êÖ¾Î»
+					OSTCBCur->TaskFlagBit&=~(1<<_BIT_TimeOut);//Çå³ı³¬Ê±±êÖ¾Î»
 					result = OS_FALSE;
 				}
 				else
@@ -1736,7 +1799,7 @@ INT8U OSFlagPend(INT8U pendtype,INT16U FNum,INT32U timeout_ms) //µÈ´ı±êÖ¾Á¿ ´ø³¬
 			}
 			else
 			{
-				OSTCBCur->TaskFlagBit&=~_BIT_Flag;
+				OSTCBCur->TaskFlagBit&=~(1<<_BIT_Flag);
 				OS_System.POST_FLAG_COUNT[FNum]--;//µÈ´ı´¦ÀíĞÅºÅ´ÎÊı-1(ÒÑ´¦Àí)
 				OSTCBCur->TaskDelayMs=0;//ÈÃÆä´¦ÓÚ¾ÍĞ÷×´Ì¬
 				OS_System.FLAG[FNum][OSTCBCur->TaskNum]=OS_FALSE;//Çå³ı±¾ÈÎÎñµÄ±êÖ¾Á¿
@@ -1774,23 +1837,23 @@ INT8U OSFlagGroupPend(INT8U pendtype,INT16U FGNum,INT32U timeout_ms) //µÈ´ı±êÖ¾Á
 	OSSchedLock();
 	OSTCBCur->FlagGroupName=FGNum;
 	OS_System.FlagGroupNameInTask[OSTCBCur->TaskNum]=FGNum;
-	OSTCBCur->TaskFlagBit|=_BIT_FlagGroup;
+	OSTCBCur->TaskFlagBit|=(1<<_BIT_FlagGroup);
 	OSSchedUnlock();
 	switch(pendtype)
 	{
 		case OSFGroup_BPN:
 		{
 			OS_delayMs(timeout_ms);	
-			OSTCBCur->TaskFlagBit&=~_BIT_FlagGroup;	
-			if(OSTCBCur->TaskFlagBit&_BIT_TimeOut) //³¬Ê±¼ì²â
+			OSTCBCur->TaskFlagBit&=~(1<<_BIT_FlagGroup);	
+			if(OSTCBCur->TaskFlagBit&(1<<_BIT_TimeOut)) //³¬Ê±¼ì²â
 			{
-				OSTCBCur->TaskFlagBit&=~_BIT_TimeOut;//Çå³ı³¬Ê±±êÖ¾Î»
+				OSTCBCur->TaskFlagBit&=~(1<<_BIT_TimeOut);//Çå³ı³¬Ê±±êÖ¾Î»
 				result = OS_FALSE;
 			}
 			else
 			{
 				OS_System.POST_FGROUP_COUNT[FGNum]--;
-				OSTCBCur->TaskFlagBit&=~_BIT_FlagGroup;//Çå³ı±¾ÈÎÎñFlagGroupÈºµÈ´ı±êÖ¾
+				OSTCBCur->TaskFlagBit&=~(1<<_BIT_FlagGroup);//Çå³ı±¾ÈÎÎñFlagGroupÈºµÈ´ı±êÖ¾
 				result = OS_TRUE;
 			}
 		}
@@ -1800,7 +1863,7 @@ INT8U OSFlagGroupPend(INT8U pendtype,INT16U FGNum,INT32U timeout_ms) //µÈ´ı±êÖ¾Á
 			if(OS_System.GROUPRXFLAG[FGNum][OSTCBCur->TaskNum]==OS_TRUE)
 			{
 				OS_System.POST_FGROUP_COUNT[FGNum]--;
-				OSTCBCur->TaskFlagBit&=~_BIT_FlagGroup;
+				OSTCBCur->TaskFlagBit&=~(1<<_BIT_FlagGroup);
 				OS_System.GROUPRXFLAG[FGNum][OSTCBCur->TaskNum]=OS_FALSE;
 				result = OS_TRUE;
 			}
@@ -1814,12 +1877,12 @@ INT8U OSFlagGroupPend(INT8U pendtype,INT16U FGNum,INT32U timeout_ms) //µÈ´ı±êÖ¾Á
 	return result;
 }
 
-void OSMutexUnlockPost(INT16U MNum) //·¢ËÍ»¥³âÁ¿ £¨Ö÷ÒªÓÃÓÚ½â³ımutexËø¶¨×´Ì¬,½â³ıºóËùÓĞmutexµÈ´ıÈÎÎñ½«ÖØĞÂ¾ºÕùmutexÈ¨ÏŞ£©
+void OSMutexPost(INT16U MNum) //·¢ËÍ»¥³âÁ¿ £¨Ö÷ÒªÓÃÓÚ½â³ımutexËø¶¨×´Ì¬,½â³ıºóËùÓĞmutexµÈ´ıÈÎÎñ½«ÖØĞÂ¾ºÕùmutexÈ¨ÏŞ£©
 {
 	OSSchedLock();
 	if(OSTCBCur->TaskNum==OS_System.MutexTaskNum[MNum])//ÅĞ¶Ïµ±Ç°ÈÎÎñÊÇ·ñ¾ßÓĞPostÈ¨ÏŞ
 	{
-		if((OSTCBCur->TaskFlagBit&_BIT_Mutex)==0)//ÅĞ¶Ïµ±Ç°ÈÎÎñÊÇ·ñ´¦ÓÚ·ÇµÈ´ımutex×´Ì¬ÖĞ
+		if((OSTCBCur->TaskFlagBit&(1<<_BIT_Mutex))==0)//ÅĞ¶Ïµ±Ç°ÈÎÎñÊÇ·ñ´¦ÓÚ·ÇµÈ´ımutex×´Ì¬ÖĞ
 		{
 			if(OS_System.MUTEX[MNum]==OS_TRUE) //ÅĞ¶ÏmutexÊÇ·ñÎªtrue(Ã¦)
 			{
@@ -1830,28 +1893,50 @@ void OSMutexUnlockPost(INT16U MNum) //·¢ËÍ»¥³âÁ¿ £¨Ö÷ÒªÓÃÓÚ½â³ımutexËø¶¨×´Ì¬,½â³
 	}
 	OSSchedUnlock();
 }
-INT8U OSMutexLockPend(INT16U MNum,INT32U timeout_ms) //µÈ´ı»¥³âÁ¿ ´ø³¬Ê±Ê±¼ä  £¬·µ»ØOS_TRUE£ºµÈ´ıÎ´³¬Ê±  OS_FALSE£ºµÈ´ı³¬Ê±
+INT8U OSMutexPend(INT8U pendtype,INT16U MNum,INT32U timeout_ms) //µÈ´ı»¥³âÁ¿ ´ø³¬Ê±Ê±¼ä  £¬·µ»ØOS_TRUE£ºµÈ´ıÎ´³¬Ê±  OS_FALSE£ºµÈ´ı³¬Ê±
 {
+	INT8U result;
 	OSSchedLock();
 	OSTCBCur->MutexName=MNum;
 	OS_System.MutexNameInTask[OSTCBCur->TaskNum]=MNum;
 	if(OS_System.MutexTaskNum[MNum]==0) OS_System.MutexTaskNum[MNum]=OSTCBCur->TaskNum;//ÈÎÎñ»ñµÃPostÈ¨ÏŞ
-	OSTCBCur->TaskFlagBit|=_BIT_Mutex;//ÖÃÎ»mutex±êÖ¾
+	OSTCBCur->TaskFlagBit|=(1<<_BIT_Mutex);//ÖÃÎ»µÈ´ımutex±êÖ¾
 	OSSchedUnlock();
-	OS_delayMs(timeout_ms);
-	OSTCBCur->TaskFlagBit&=~_BIT_Mutex;//Çå³ımutex±êÖ¾
-	if(OSTCBCur->TaskFlagBit&_BIT_TimeOut) //³¬Ê±¼ì²â
-	{	
-		OSTCBCur->TaskFlagBit&=~_BIT_TimeOut;//Çå³ı³¬Ê±±êÖ¾Î»
-		return OS_FALSE;
-	}
-	else
+	switch(pendtype)
 	{
-		OSTCBCur->TaskFlagBit&=~_BIT_TimeLess;//È¡ÏûÎŞÏŞµÈ´ı±êÖ¾
-		OS_System.MUTEX[MNum]=OS_TRUE;	
-		OS_System.MutexTaskNum[MNum]=OSTCBCur->TaskNum;//ÈÎÎñ»ñµÃPostÈ¨ÏŞ
-		return OS_TRUE;
+		case OSMutex_BPN:
+		{
+			OS_delayMs(timeout_ms);
+			OSTCBCur->TaskFlagBit&=~(1<<_BIT_Mutex);//Çå³ıµÈ´ımutex±êÖ¾
+			if(OSTCBCur->TaskFlagBit&(1<<_BIT_TimeOut)) //³¬Ê±¼ì²â
+			{	
+				OSTCBCur->TaskFlagBit&=~(1<<_BIT_TimeOut);//Çå³ı³¬Ê±±êÖ¾Î»
+				result = OS_FALSE;
+			}
+			else
+			{
+				OSTCBCur->TaskFlagBit&=~(1<<_BIT_TimeLess);//È¡ÏûÎŞÏŞµÈ´ı±êÖ¾
+				OS_System.MutexTaskNum[MNum]=OSTCBCur->TaskNum;//ÈÎÎñ»ñµÃPostÈ¨ÏŞ(±ØĞë´æÔÚ)
+				result = OS_TRUE;
+			}
+		}
+		break;
+		case OSMutex_NBPN:
+		{
+		  if(OS_System.MutexTaskNum[MNum]==OSTCBCur->TaskNum)
+			{
+				OSTCBCur->TaskFlagBit&=~(1<<_BIT_Mutex);//Çå³ıµÈ´ımutex±êÖ¾
+				OS_System.MUTEX[MNum]=OS_TRUE;
+			  result = OS_TRUE;
+			}
+			else
+			{
+			  result = OS_FALSE;
+			}
+		}
+		break;
 	}
+	return result;
 }
 void OSMboxPost(INT16U MNum,void* fp)  //·¢ËÍÓÊ¼ş
 {
@@ -1859,7 +1944,7 @@ void OSMboxPost(INT16U MNum,void* fp)  //·¢ËÍÓÊ¼ş
 	INT16U i;
 	for(i=0;i<OS_MAX_TASKS;i++)
 	{
-		if(OSTCBTbl[i].TaskFlagBit&_BIT_MBox)//ÅĞ¶Ï¸ÃÈÎÎñÊÇ·ñ´¦ÓÚµÈ´ımbox×´Ì¬
+		if(OSTCBTbl[i].TaskFlagBit&(1<<_BIT_MBox))//ÅĞ¶Ï¸ÃÈÎÎñÊÇ·ñ´¦ÓÚµÈ´ımbox×´Ì¬
 		{
 			if(OSTCBTbl[i].MBoxName==MNum)//ÅĞ¶ÏµÈ´ıµÄmboxÊÇ·ñÊÇµ±Ç°×¼±¸·¢ËÍµÄMNum
 			{
@@ -1869,7 +1954,7 @@ void OSMboxPost(INT16U MNum,void* fp)  //·¢ËÍÓÊ¼ş
 				if(OS_System.POST_MBQ_COUNT[MNum]<MBQ_SIZE-1) OS_System.POST_MBQ_COUNT[MNum]++;
 				if((OS_System.MBOXPendType[MNum][i]!=OSMBox_NBPN)&&(OS_System.MBOXPendType[MNum][i]!=OSMBox_NBPQ))
 				{
-					OSTCBCur->TaskFlagBit&=~_BIT_MBox;
+					OSTCBCur->TaskFlagBit&=~(1<<_BIT_MBox);
 				  OSTCBTbl[i].TaskDelayMs=0;//µÈ´ıÑÓÊ±Çå0
 				}
 			}
@@ -1884,7 +1969,7 @@ void* OSMboxPend(INT8U pendtype,INT16U MNum,INT32U timeout_ms) //µÈ´ıÓÊÏä ´ø³¬Ê±
 	INT16U MBQCount;
 	INT32U* _mbox;	
 	OSTCBCur->MBoxName=MNum;
-	OSTCBCur->TaskFlagBit|=_BIT_MBox;
+	OSTCBCur->TaskFlagBit|=(1<<_BIT_MBox);
 	OS_System.MBOXPendType[MNum][OSTCBCur->TaskNum]=pendtype;
 	OSSchedUnlock();
 	switch(pendtype)
@@ -1892,11 +1977,11 @@ void* OSMboxPend(INT8U pendtype,INT16U MNum,INT32U timeout_ms) //µÈ´ıÓÊÏä ´ø³¬Ê±
 		case OSMBox_BPN:
 		{
 			OS_delayMs(timeout_ms);	
-			OSTCBCur->TaskFlagBit&=~_BIT_MBox;
+			OSTCBCur->TaskFlagBit&=~(1<<_BIT_MBox);
 			_mbox=(INT32U*)OS_System.MBOX[MNum*OS_MAX_TASKS+OSTCBCur->TaskNum];
-			if(OSTCBCur->TaskFlagBit&_BIT_TimeOut) //³¬Ê±¼ì²â
+			if(OSTCBCur->TaskFlagBit&(1<<_BIT_TimeOut)) //³¬Ê±¼ì²â
 			{
-				OSTCBCur->TaskFlagBit&=~_BIT_TimeOut;//Çå³ı³¬Ê±±êÖ¾Î»
+				OSTCBCur->TaskFlagBit&=~(1<<_BIT_TimeOut);//Çå³ı³¬Ê±±êÖ¾Î»
 				_mbox=(void*)0;
 			}
 			else
@@ -1917,11 +2002,11 @@ void* OSMboxPend(INT8U pendtype,INT16U MNum,INT32U timeout_ms) //µÈ´ıÓÊÏä ´ø³¬Ê±
 		  if(OS_System.POST_MBQ_COUNT[MNum]==0)
 			{
 				OS_delayMs(timeout_ms);	
-				OSTCBCur->TaskFlagBit&=~_BIT_MBox;
+				OSTCBCur->TaskFlagBit&=~(1<<_BIT_MBox);
 				_mbox=(INT32U*)OS_System.MBOX[MNum*OS_MAX_TASKS+OSTCBCur->TaskNum];
-				if(OSTCBCur->TaskFlagBit&_BIT_TimeOut) //³¬Ê±¼ì²â
+				if(OSTCBCur->TaskFlagBit&(1<<_BIT_TimeOut)) //³¬Ê±¼ì²â
 				{
-					OSTCBCur->TaskFlagBit&=~_BIT_TimeOut;//Çå³ı³¬Ê±±êÖ¾Î»
+					OSTCBCur->TaskFlagBit&=~(1<<_BIT_TimeOut);//Çå³ı³¬Ê±±êÖ¾Î»
 					_mbox=(void*)0;
 				}
 				else
@@ -1958,7 +2043,7 @@ void* OSMboxPend(INT8U pendtype,INT16U MNum,INT32U timeout_ms) //µÈ´ıÓÊÏä ´ø³¬Ê±
 			if(_mbox!=(void*)0)
 			{
 				OS_System.POST_MBOX_COUNT[MNum]--;
-				OSTCBCur->TaskFlagBit&=~_BIT_MBox;
+				OSTCBCur->TaskFlagBit&=~(1<<_BIT_MBox);
 				OS_System.MBOX[MNum*OS_MAX_TASKS+OSTCBCur->TaskNum]=(void*)0;  //Çå¿Õ±¾ÈÎÎñÓÊÏäÎª(void*)0	
 			}
 			else
@@ -1997,7 +2082,7 @@ void OSFlagGroupHandler(void)
 	INT16U TaskCount,Count,NCount;
 	for(TaskCount=1; TaskCount < OS_MAX_TASKS; TaskCount++)
 	{
-		if(OSTCBTbl[TaskCount].TaskFlagBit&_BIT_FlagGroup)//¼ì²âÓĞFlagGroupµÈ´ıµÄÈÎÎñ
+		if(OSTCBTbl[TaskCount].TaskFlagBit&(1<<_BIT_FlagGroup))//¼ì²âÓĞFlagGroupµÈ´ıµÄÈÎÎñ
 		{	
 			NCount=0;
 			for(Count=0; Count < FLAG_SIZE; Count++)
@@ -2018,7 +2103,7 @@ void OSFlagGroupHandler(void)
 					}
 				}
 				OSTCBTbl[TaskCount].TaskDelayMs=1;//×¼±¸ÍË³öÑÓÊ±£¬½øÈëµÈ´ıÔËĞĞµÄ×´Ì¬(ÓÉÓÅÏÈ¼¶¿ØÖÆ)
-				OSTCBTbl[TaskCount].TaskFlagBit&=~_BIT_TimeOut;//Çå³ı³¬Ê±±êÖ¾
+				OSTCBTbl[TaskCount].TaskFlagBit&=~(1<<_BIT_TimeOut);//Çå³ı³¬Ê±±êÖ¾
 			}
 		}
 	}
@@ -2029,13 +2114,23 @@ void OSMutexHandler_Order(void)
 	for(TaskCount=OS_System.TaskNext; TaskCount < OS_MAX_TASKS; TaskCount++)//¼ì²âNextTaskÒÔºóµÄ×î¿¿Ç°µÄÈÎÎñÊÇ·ñÓĞµÈ´ımutex
 	{
 		if((OSTCBTbl[TaskCount].TaskState==TASK_RUNNING)&&(OSTCBTbl[TaskCount].StkPtr!=(STK32U*)0)&&\
-			 (OSTCBTbl[TaskCount].TaskFlagBit&_BIT_Mutex)&&(OS_System.MUTEX[OS_System.MutexNameInTask[TaskCount]]==OS_FALSE) )
+			 (OSTCBTbl[TaskCount].TaskFlagBit&(1<<_BIT_Mutex))&&(OS_System.MUTEX[OS_System.MutexNameInTask[TaskCount]]==OS_FALSE) )
 			{
-				OSTCBTbl[TaskCount].TaskFlagBit&=~_BIT_Mutex;//È¡ÏûµÈ´ımutex±êÖ¾
-				OSTCBTbl[TaskCount].TaskFlagBit&=~_BIT_TimeLess;//È¡ÏûÎŞÏŞµÈ´ı±êÖ¾
-				OSTCBTbl[TaskCount].TaskFlagBit&=~_BIT_TimeOut;//È¡ÏûÑÓÊ±±êÖ¾
-				OSTCBTbl[TaskCount].TaskDelayMs=1;//½øÈë×¼±¸ÔËĞĞ×´Ì¬(ÄÜ·ñÄÜÁ¢¼´ÔËĞĞÈ¡¾öÓÚÓÅÏÈ¼¶)
-				OS_System.MUTEX[OS_System.MutexNameInTask[TaskCount]]=OS_TRUE;//µ±Ç°ÈÎÎñµÄmutexÖÃÃ¦	
+				if(OS_System.MutexPendType[OS_System.MutexNameInTask[TaskCount]][TaskCount]==OSMutex_BPN)
+				{				
+					OSTCBTbl[TaskCount].TaskFlagBit&=~(1<<_BIT_TimeLess);//È¡ÏûÎŞÏŞµÈ´ı±êÖ¾
+					OSTCBTbl[TaskCount].TaskFlagBit&=~(1<<_BIT_TimeOut);//È¡ÏûÑÓÊ±±êÖ¾
+					OSTCBTbl[TaskCount].TaskDelayMs=1;//½øÈë×¼±¸ÔËĞĞ×´Ì¬(ÄÜ·ñÄÜÁ¢¼´ÔËĞĞÈ¡¾öÓÚÓÅÏÈ¼¶)
+				  OSTCBTbl[TaskCount].TaskFlagBit&=~(1<<_BIT_Mutex);//È¡ÏûµÈ´ımutex±êÖ¾
+				  OS_System.MUTEX[OS_System.MutexNameInTask[TaskCount]]=OS_TRUE;//µ±Ç°ÈÎÎñµÄmutexÖÃÃ¦					
+				}
+				else
+				{
+					if(OSTCBTbl[TaskCount].TaskDelayMs<=1)
+					{
+						 OS_System.MutexTaskNum[OS_System.MutexNameInTask[TaskCount]]=OSTCBCur->TaskNum;//ÈÎÎñ»ñµÃPostÈ¨ÏŞ				
+					}
+				}
 				break;
 			}		
 	}
@@ -2048,7 +2143,7 @@ void OSMutexHandler_Prio(void)
 		if(OSTCBTbl[Count].TaskPrio<OSTCBTbl[TaskCount].TaskPrio) 
 		{
 			if((OSTCBTbl[TaskCount].TaskState==TASK_RUNNING)&&(OSTCBTbl[TaskCount].StkPtr!=(STK32U*)0)&&\
-				 (OSTCBTbl[TaskCount].TaskFlagBit&_BIT_Mutex)&&(OS_System.MUTEX[OS_System.MutexNameInTask[TaskCount]]==OS_FALSE) )
+				 (OSTCBTbl[TaskCount].TaskFlagBit&(1<<_BIT_Mutex))&&(OS_System.MUTEX[OS_System.MutexNameInTask[TaskCount]]==OS_FALSE) )
 				{
 					Count=TaskCount; //CountÓÃÀ´¼ÇÂ¼ÓĞmutexµÈ´ıµÄ×î´óÓÅÏÈ¼¶ÈÎÎñ
 				}
@@ -2056,11 +2151,21 @@ void OSMutexHandler_Prio(void)
 	}
 	if(Count!=0)
 	{
-		OSTCBTbl[Count].TaskFlagBit&=~_BIT_Mutex;//È¡ÏûµÈ´ımutex±êÖ¾
-		OSTCBTbl[Count].TaskFlagBit&=~_BIT_TimeLess;//È¡ÏûÎŞÏŞµÈ´ı±êÖ¾
-		OSTCBTbl[Count].TaskFlagBit&=~_BIT_TimeOut;//È¡ÏûÑÓÊ±±êÖ¾
-		OSTCBTbl[Count].TaskDelayMs=1;//½øÈë×¼±¸ÔËĞĞ×´Ì¬(ÄÜ·ñÄÜÁ¢¼´ÔËĞĞÈ¡¾öÓÚÓÅÏÈ¼¶)
-		OS_System.MUTEX[OS_System.MutexNameInTask[Count]]=OS_TRUE;//µ±Ç°ÈÎÎñµÄmutexÖÃÃ¦
+		if(OS_System.MutexPendType[OS_System.MutexNameInTask[Count]][Count]==OSMutex_BPN)
+		{				
+			OSTCBTbl[Count].TaskFlagBit&=~(1<<_BIT_TimeLess);//È¡ÏûÎŞÏŞµÈ´ı±êÖ¾
+			OSTCBTbl[Count].TaskFlagBit&=~(1<<_BIT_TimeOut);//È¡ÏûÑÓÊ±±êÖ¾
+			OSTCBTbl[Count].TaskDelayMs=1;//½øÈë×¼±¸ÔËĞĞ×´Ì¬(ÄÜ·ñÄÜÁ¢¼´ÔËĞĞÈ¡¾öÓÚÓÅÏÈ¼¶)
+			OSTCBTbl[Count].TaskFlagBit&=~(1<<_BIT_Mutex);//È¡ÏûµÈ´ımutex±êÖ¾
+			OS_System.MUTEX[OS_System.MutexNameInTask[Count]]=OS_TRUE;//µ±Ç°ÈÎÎñµÄmutexÖÃÃ¦					
+		}
+		else
+		{
+			if(OSTCBTbl[Count].TaskDelayMs<=1)
+			{
+				 OS_System.MutexTaskNum[OS_System.MutexNameInTask[Count]]=OSTCBCur->TaskNum;//ÈÎÎñ»ñµÃPostÈ¨ÏŞ				
+			}
+		}
 	}
 }
 #endif
@@ -2162,7 +2267,7 @@ void OSRunTimeCount_Process(void) //ÏµÍ³ÔËĞĞÊ±¼äÍ³¼Æ(ÓÃ»§²»¿ÉÓÃ)
 /*--------------------------------------------------²»¿É¼ô²Ãº¯Êı PageUp-----------------------------------------*/
 void OSTimeSliceCounterReset(void) //Ê±¼äÇĞÆ¬¼ÆÊıÆ÷Çå0
 {
-	OS_System.TimeSliceCounter=0; //Ê±¼äÇĞÆ¬¼ÆÊıÆ÷Çå0£¬×¼±¸ÖØĞÂ¼ÆÊı
+	OS_System.TimeSliceCnt=0; //Ê±¼äÇĞÆ¬¼ÆÊıÆ÷Çå0£¬×¼±¸ÖØĞÂ¼ÆÊı
 }
 /*--------------------------------------ÈÎÎñÇĞ»»º¯Êı--------------------------------*/
 void OSSchedSwitch(void) //ÈÎÎñµ÷¶È²¢ÇĞ»»ÈÎÎñ
@@ -2250,7 +2355,6 @@ void OSRunModeProcess_Order(void) //Ë³ĞòÄ£Ê½·şÎñ³ÌĞò
 }
 INT16U OSHighestPrioTaskNumGet(void)//»ñÈ¡ÒÑ´´½¨µÄËùÓĞ×´Ì¬ÈÎÎñÖĞµÄ×î¸ßÓÅÏÈ¼¶ÈÎÎñ
 {
-#if (OS_HighSpeed_MODE == 0)	
   INT16U TaskCount,Count;	
 	for(Count=0,TaskCount=1; TaskCount < OS_MAX_TASKS; TaskCount++) //²éÕÒÕıÔÚÔËĞĞµÄ³£¹æ×î¸ßÓÅÏÈ¼¶ÈÎÎñ
 	{ 
@@ -2263,13 +2367,9 @@ INT16U OSHighestPrioTaskNumGet(void)//»ñÈ¡ÒÑ´´½¨µÄËùÓĞ×´Ì¬ÈÎÎñÖĞµÄ×î¸ßÓÅÏÈ¼¶ÈÎÎñ
 		}				
 	}	
 	return Count;
-#elif (OS_HighSpeed_MODE == 1)	
-	return TaskPrioGroup[OS_System.TaskAllStateHighestPrio].TaskTable[0];
-#endif	
 }
 INT16U OSRunStateHighestPrioTaskNumGet(void)//»ñÈ¡´¦ÓÚÔËĞĞÌ¬µÄ×î¸ßÓÅÏÈ¼¶ÈÎÎñ
 {
-#if (OS_HighSpeed_MODE == 0)	
   INT16U TaskCount,HighestPrioTask;	
 	for(HighestPrioTask=0,TaskCount=1; TaskCount < OS_MAX_TASKS; TaskCount++) //²éÕÒÕıÔÚÔËĞĞµÄ³£¹æ×î¸ßÓÅÏÈ¼¶ÈÎÎñ
 	{ 
@@ -2282,29 +2382,22 @@ INT16U OSRunStateHighestPrioTaskNumGet(void)//»ñÈ¡´¦ÓÚÔËĞĞÌ¬µÄ×î¸ßÓÅÏÈ¼¶ÈÎÎñ
 		}				
 	}	
 	return HighestPrioTask;
-#elif (OS_HighSpeed_MODE == 1)	
-	return TaskPrioGroup[OS_System.TaskRunStateHighestPrio].TaskTable[0];
-#endif	
 }
 INT16U OSRdyHighestPrioTaskNumGet(void)//»ñÈ¡×¼±¸ÔËĞĞ¾ÍĞ÷×î¸ßÓÅÏÈ¼¶ÈÎÎñ(·µ»ØÏÈ´´½¨µÄ×î¸ßÓÅÏÈ¼¶ÈÎÎñ(ÈçÓĞÍ¬¼¶´æÔÚ))
 {
-#if (OS_HighSpeed_MODE == 0)	
   INT16U TaskCount,HighestPrioTask;	
 	for(HighestPrioTask=0,TaskCount=1; TaskCount < OS_MAX_TASKS; TaskCount++) //²éÕÒÕıÔÚÔËĞĞµÄ³£¹æ×î¸ßÓÅÏÈ¼¶ÈÎÎñ
 	{ 
 		if(OSTCBTbl[HighestPrioTask].TaskPrio<OSTCBTbl[TaskCount].TaskPrio) 
 		{
 			if((OSTCBTbl[TaskCount].TaskState==TASK_RUNNING)&&(OSTCBTbl[OS_System.TaskNext].StkPtr!=(STK32U*)0)&&\
-				 (OSTCBTbl[TaskCount].TaskDelayMs <= 1)&&((OSTCBTbl[TaskCount].TaskFlagBit&_BIT_TimeLess)==0) )
+				 (OSTCBTbl[TaskCount].TaskDelayMs <= 1)&&((OSTCBTbl[TaskCount].TaskFlagBit&(1<<_BIT_TimeLess))==0) )
 				{
 					HighestPrioTask=TaskCount; //HighestPrioÓÃÀ´¼ÇÂ¼×î´óÓÅÏÈ¼¶
 				}
 		}				
 	}	
 	return HighestPrioTask;
-#elif (OS_HighSpeed_MODE == 1)	
-	return TaskPrioGroup[OS_System.TaskRdyHighestPrio].TaskTable[0];
-#endif	
 }
 
 /***************************************************************************************
@@ -2315,14 +2408,13 @@ INT16U OSRdyHighestPrioTaskNumGet(void)//»ñÈ¡×¼±¸ÔËĞĞ¾ÍĞ÷×î¸ßÓÅÏÈ¼¶ÈÎÎñ(·µ»ØÏÈ´´
 ***************************************************************************************/
 INT16U OSNextRdyHighestPrioTaskNumGet(void)//»ñÈ¡ÔËĞĞ¾ÍĞ÷×î¸ßÓÅÏÈ¼¶ÈÎÎñ(·µ»ØÎ´ÔËĞĞ¹ıµÄ×î¸ßÓÅÏÈ¼¶ÈÎÎñ(¸ÃÓÅÏÈ¼¶Ò»¸öÂÖÑ¯ÖÜÆÚÄÚ)))
 {
-#if (OS_HighSpeed_MODE == 0)	
   INT16U TaskCount,HighestPrioTask,LastPrioTaskCount=0,SecdyHigestPrioTask,SecdyCheckFlag=0,MainCheckFlag=0;	
 	for(HighestPrioTask=0,TaskCount=1; TaskCount < OS_MAX_TASKS; TaskCount++) //²éÕÒÕıÔÚÔËĞĞµÄ³£¹æ×î¸ßÓÅÏÈ¼¶ÈÎÎñ
 	{ 
 		if(OSTCBTbl[HighestPrioTask].TaskPrio<OSTCBTbl[TaskCount].TaskPrio) 
 		{
 			if((OSTCBTbl[TaskCount].TaskState==TASK_RUNNING)&&(OSTCBTbl[OS_System.TaskNext].StkPtr!=(STK32U*)0)&&\
-				 (OSTCBTbl[TaskCount].TaskDelayMs <= 1)&&((OSTCBTbl[TaskCount].TaskFlagBit&_BIT_TimeLess)==0) )
+				 (OSTCBTbl[TaskCount].TaskDelayMs <= 1)&&((OSTCBTbl[TaskCount].TaskFlagBit&(1<<_BIT_TimeLess))==0) )
 				{
 					HighestPrioTask=TaskCount; //HighestPrioTaskÓÃÀ´¼ÇÂ¼É¨Ãèµ½µÄ×î´óÓÅÏÈ¼¶ÈÎÎñ
 				}
@@ -2355,7 +2447,7 @@ INT16U OSNextRdyHighestPrioTaskNumGet(void)//»ñÈ¡ÔËĞĞ¾ÍĞ÷×î¸ßÓÅÏÈ¼¶ÈÎÎñ(·µ»ØÎ´ÔË
 				if(OSTCBTbl[HighestPrioTask].TaskPrio==OSTCBTbl[TaskCount].TaskPrio) 
 				{
 					if((OSTCBTbl[TaskCount].TaskState==TASK_RUNNING)&&(OSTCBTbl[OS_System.TaskNext].StkPtr!=(STK32U*)0)&&\
-						 (OSTCBTbl[TaskCount].TaskDelayMs <= 1)&&((OSTCBTbl[TaskCount].TaskFlagBit&_BIT_TimeLess)==0) )
+						 (OSTCBTbl[TaskCount].TaskDelayMs <= 1)&&((OSTCBTbl[TaskCount].TaskFlagBit&(1<<_BIT_TimeLess))==0) )
 						{
 							if(SecdyCheckFlag==0)
 							{
@@ -2378,15 +2470,11 @@ INT16U OSNextRdyHighestPrioTaskNumGet(void)//»ñÈ¡ÔËĞĞ¾ÍĞ÷×î¸ßÓÅÏÈ¼¶ÈÎÎñ(·µ»ØÎ´ÔË
 		}
 	}
 	return HighestPrioTask;
-#elif (OS_HighSpeed_MODE==1)
-  return TaskPrioGroup[OS_System.TaskRdyHighestPrio].NextRunTaskNum;
-#endif
 }
 void OSRunModeProcess_Prio(void)//ÓÅÏÈ¼¶Ä£Ê½·şÎñ³ÌĞò
 {
 	INT16U HighestPrioTask;
 	HighestPrioTask=OSNextRdyHighestPrioTaskNumGet();
-#if (OS_HighSpeed_MODE == 0)		
 	if(OS_System.TaskHighestPrioLast!=OSTCBTbl[HighestPrioTask].TaskPrio)
 	{
 		OS_System.TaskHighestPrioLast=OSTCBTbl[HighestPrioTask].TaskPrio;
@@ -2398,9 +2486,6 @@ void OSRunModeProcess_Prio(void)//ÓÅÏÈ¼¶Ä£Ê½·şÎñ³ÌĞò
 	  OS_System.RunLastTask=HighestPrioTask;
 		OS_System.TaskHighestRunLast[OS_System.TaskHighestPrioLast]=OS_System.RunLastTask;
 	}
-#elif (OS_HighSpeed_MODE==1)
-
-#endif	
 	OSTCBCur=&OSTCBTbl[HighestPrioTask];//OSTCBCurÖ¸Ïò×î¸ßÓÅÏÈ¼¶ÈÎÎñ
 	OSTCBTbl[HighestPrioTask].TaskDelayMs=0;//ÑÓÊ±Çå0	
 	if(HighestPrioTask==0) OS_System.RunOneRound=OS_TRUE;
@@ -2473,10 +2558,10 @@ void OSTaskTimeDelayCount_Process(void) //ÈÎÎñÑÓÊ±¼ÆÊı³ÌĞò
 #if (OS_FAULT_ENABLE == 1)		 
 		 FSC_FAULT_SYSTEM_OS_Timer_Handler(TaskCount);
 #endif		 
-		 if(( OSTCBTbl[TaskCount].TaskDelayMs >1 )&&((OSTCBTbl[TaskCount].TaskFlagBit&_BIT_TimeLess)==0)) 
+		 if(( OSTCBTbl[TaskCount].TaskDelayMs >1 )&&((OSTCBTbl[TaskCount].TaskFlagBit&(1<<_BIT_TimeLess))==0)) 
 		 {
 			 OSTCBTbl[TaskCount].TaskDelayMs--;
-			 if(OSTCBTbl[TaskCount].TaskDelayMs==1) OSTCBTbl[TaskCount].TaskFlagBit|=_BIT_TimeOut;//±ê¼ÇÑÓÊ±Íê³É
+			 if(OSTCBTbl[TaskCount].TaskDelayMs==1) OSTCBTbl[TaskCount].TaskFlagBit|=(1<<_BIT_TimeOut);//±ê¼ÇÑÓÊ±Íê³É
 		 }
 	 }	
 }
@@ -2484,17 +2569,20 @@ void OS_SysTick_Handler(void) //ÈÎÎñÇĞ»»ºËĞÄº¯Êı
 {
 	 if(OS_System.Running==OS_TRUE)//ÏµÍ³×´Ì¬¼ì²â
 	 {
-		 OS_System.ClockCounter++;       //ÏµÍ³Ê±ÖÓ½ÚÅÄ¼ÆÊıÆ÷ÀÛ¼Ó
-		 if(OS_System.ClockCounter==0) OS_System.ClockOverCounter++;
+		 OS_System.ClockCnt++;       //ÏµÍ³Ê±ÖÓ½ÚÅÄ¼ÆÊıÆ÷ÀÛ¼Ó
      OSTaskTimeDelayCount_Process();//ÈÎÎñÑÓÊ±¼ÆÊı³ÌĞò
 		 
 #if (OS_TIMECOUNTSYS_ENABLE == 1)		 
 		 OSRunTimeCount_Process();   //ÏµÍ³ÔËĞĞÊ±¼äÍ³¼Æ³ÌĞò
-#endif			 			 
-		 OS_System.TimeSliceCounter++;   //Ê±¼äÇĞÆ¬¼ÆÊıÆ÷(ÒÔÊ±ÖÓ½ÚÅÄÎª»ù×¼)
-		 if(OS_System.TimeSliceCounter>=OSTCBCur->TaskTimeSlice)//Ê±¼äÇĞÆ¬Òç³öÅĞ¶Ï(¾ö¶¨Ò»¸öÊ±¼äÇĞÆ¬µÈÓÚ¶àÉÙ¸öÊ±ÖÓ½ÚÅÄ)
+#endif			 
+#if (OS_TIM_SYS_ENABLE == 1)
+     OSTimerCount_Process();     //ĞéÄâ¶¨Ê±Æ÷¼ÆÊı³ÌĞò
+#endif	
+		 
+		 OS_System.TimeSliceCnt++;   //Ê±¼äÇĞÆ¬¼ÆÊıÆ÷(ÒÔÊ±ÖÓ½ÚÅÄÎª»ù×¼)
+		 if(OS_System.TimeSliceCnt>=OSTCBCur->TaskTimeSlice)//Ê±¼äÇĞÆ¬Òç³öÅĞ¶Ï(¾ö¶¨Ò»¸öÊ±¼äÇĞÆ¬µÈÓÚ¶àÉÙ¸öÊ±ÖÓ½ÚÅÄ)
 		 {
-			 OS_System.TimeSliceCounter=0; //Ê±¼äÇĞÆ¬¼ÆÊıÆ÷Çå0£¬×¼±¸ÖØĞÂ¼ÆÊı
+			 OS_System.TimeSliceCnt=0; //Ê±¼äÇĞÆ¬¼ÆÊıÆ÷Çå0£¬×¼±¸ÖØĞÂ¼ÆÊı
 			 if(OS_System.RuningMode!=1)//·Ç´¿ÓÅÏÈ¼¶ÔËĞĞÄ£Ê½Çé¿öÏÂ
 			 {
          OSSchedSwitch(); //µ÷¶È²¢ÇĞ»»ÈÎÎñ 
