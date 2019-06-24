@@ -1987,14 +1987,28 @@ void OSTaskSwitchCheck_Prio(void)
 /*------------------------------------系统不常用有关函数（Page Down)-------------------------------------------*/
 
 
+
+
 /*-----------------------------------系统虚拟定时器有关函数（Page Up)-------------------------------------------*/
 #if (OS_TIM_SYS_ENABLE == 1)
 INT16U OSTimerCreate(void)   //创建OSTimer，返回Timer_ID
 {
-	INT16U Timer_ID=0;
-  Timer_ID=OS_System.TIMER_APPLY_COUNT;
-	OS_System.TIMER_APPLY_COUNT++;
+	INT16U i,Timer_ID;
+	for(i=0;i<OS_System.TIMER_APPLY_COUNT+1;i++)
+	{
+	  if((OS_System.TIMER_BitFreeFlag[i/8]&(1<<(i%8)))==0)
+		{	
+			OS_System.TIMER_BitFreeFlag[i/8]|=(1<<(i%8));
+			Timer_ID=i;
+			if(OS_System.TIMER_APPLY_COUNT<TIMER_SIZE-1) OS_System.TIMER_APPLY_COUNT++;
+		  break;
+		}
+	}
 	return Timer_ID;
+}
+void OSTimerDelete(INT16U Timer_ID)   //删除OSTimer，输入：Timer_ID
+{
+	OS_System.TIMER_BitFreeFlag[Timer_ID/8]&=~(1<<(Timer_ID%8));	
 }
 void OSTimerReloadSet(INT16U TNum,INT32U time)//重装载定时值设置 
 {
@@ -2057,34 +2071,84 @@ void OSTimerCount_Process(void)
 
 /*--------------------------------------系统信号量有关函数（Page Up)--------------------------------------------*/
 #if (OS_SIGN_PP_ENABLE == 1)
-INT16U OSFlagCreate(void)     //创建OSFlag，返回Flag_ID
+INT16U OSFlagCreate(void)   //创建OSFlag，返回Flag_ID
 {
-	INT16U Flag_ID=0;
-	Flag_ID=OS_System.FLAG_APPLY_COUNT;
-  OS_System.FLAG_APPLY_COUNT++;
+	INT16U i,Flag_ID;
+	for(i=0;i<OS_System.FLAG_APPLY_COUNT+1;i++)
+	{
+	  if((OS_System.FLAG_BitFreeFlag[i/8]&(1<<(i%8)))==0)
+		{	
+			OS_System.FLAG_BitFreeFlag[i/8]|=(1<<(i%8));
+			Flag_ID=i;
+			if(OS_System.FLAG_APPLY_COUNT<FLAG_SIZE-1) OS_System.FLAG_APPLY_COUNT++;
+		  break;
+		}
+	}
 	return Flag_ID;
-}	
-INT16U OSFlagGroupCreate(void)     //创建OSFlagGroup，返回FlagGroup_ID
+}
+INT16U OSFlagGroupCreate(void)   //创建OSFlagGroup，返回FlagGroup_ID
 {
-	INT16U FlagGroup_ID=0;
-	FlagGroup_ID=OS_System.FLAGGROUP_APPLY_COUNT;
-  OS_System.FLAGGROUP_APPLY_COUNT++;
+	INT16U i,FlagGroup_ID;
+	for(i=0;i<OS_System.FLAGGROUP_APPLY_COUNT+1;i++)
+	{
+	  if((OS_System.FLAGGROUP_BitFreeFlag[i/8]&(1<<(i%8)))==0)
+		{	
+			OS_System.FLAGGROUP_BitFreeFlag[i/8]|=(1<<(i%8));
+			FlagGroup_ID=i;
+			if(OS_System.FLAGGROUP_APPLY_COUNT<FLAG_SIZE-1) OS_System.FLAGGROUP_APPLY_COUNT++;
+		  break;
+		}
+	}
 	return FlagGroup_ID;
-}	
-INT16U OSMutexCreate(void)     //创建OSMutex，返回Mutex_ID
+}
+INT16U OSMutexCreate(void)   //创建OSMutex，返回Mutex_ID
 {
-	INT16U Mutex_ID=0;
-	Mutex_ID=OS_System.MUTEX_APPLY_COUNT;
-  OS_System.MUTEX_APPLY_COUNT++;
+	INT16U i,Mutex_ID;
+	for(i=0;i<OS_System.MUTEX_APPLY_COUNT+1;i++)
+	{
+	  if((OS_System.MUTEX_BitFreeFlag[i/8]&(1<<(i%8)))==0)
+		{	
+			OS_System.MUTEX_BitFreeFlag[i/8]|=(1<<(i%8));
+			Mutex_ID=i;
+			if(OS_System.MUTEX_APPLY_COUNT<FLAG_SIZE-1) OS_System.MUTEX_APPLY_COUNT++;
+		  break;
+		}
+	}
 	return Mutex_ID;
 }	
-INT16U OSMBoxCreate(void)     //创建OSMBox，返回MBox_ID
+INT16U OSMBoxCreate(void)   //创建OSMBox，返回MBox_ID
 {
-	INT16U MBox_ID=0;
-	MBox_ID=OS_System.MBOX_APPLY_COUNT;
-  OS_System.MBOX_APPLY_COUNT++;
+	INT16U i,MBox_ID;
+	for(i=0;i<OS_System.MBOX_APPLY_COUNT+1;i++)
+	{
+	  if((OS_System.MBOX_BitFreeFlag[i/8]&(1<<(i%8)))==0)
+		{	
+			OS_System.MBOX_BitFreeFlag[i/8]|=(1<<(i%8));
+			MBox_ID=i;
+			if(OS_System.MBOX_APPLY_COUNT<FLAG_SIZE-1) OS_System.MBOX_APPLY_COUNT++;
+		  break;
+		}
+	}
 	return MBox_ID;
-}	
+}
+
+void OSFlagDelete(INT16U Flag_ID)   //删除OSFlag，输入：Flag_ID
+{
+	OS_System.FLAG_BitFreeFlag[Flag_ID/8]&=~(1<<(Flag_ID%8));	
+}
+void OSFlagGroupDelete(INT16U FlagGroup_ID)   //删除OSFlagGroup，输入：FlagGroup_ID
+{
+	OS_System.FLAGGROUP_BitFreeFlag[FlagGroup_ID/8]&=~(1<<(FlagGroup_ID%8));	
+}
+void OSMutexDelete(INT16U Mutex_ID)   //删除OSMutex，输入：Mutex_ID
+{
+	OS_System.MUTEX_BitFreeFlag[Mutex_ID/8]&=~(1<<(Mutex_ID%8));	
+}
+void OSMBoxDelete(INT16U MBox_ID)   //删除OSMBox，输入：MBox_ID
+{
+	OS_System.MBOX_BitFreeFlag[MBox_ID/8]&=~(1<<(MBox_ID%8));	
+}
+
 void OSFlagPost(INT16U FNum) //发送标志量
 {
 	OSSchedLock();

@@ -217,8 +217,13 @@ typedef struct
   INT16U TIMER_APPLY_COUNT;
 	INT32U TIMER[TIMER_SIZE]; 
 	INT32U TIMER_RELOAD[TIMER_SIZE]; 
+	INT8U  TIMER_BitFreeFlag[TIMER_SIZE/8+1];
 #endif		
 #if (OS_SIGN_PP_ENABLE == 1)	
+  INT8U   FLAG_BitFreeFlag[FLAG_SIZE/8+1];
+	INT8U   FLAGGROUP_BitFreeFlag[FLAG_GROUP_SIZE/8+1];
+	INT8U   MUTEX_BitFreeFlag[MUTEX_SIZE/8+1];
+	INT8U   MBOX_BitFreeFlag[MBOX_SIZE/8+1];
 	INT16U  FLAG_APPLY_COUNT;
 	INT16U  FLAGGROUP_APPLY_COUNT;
 	INT16U  MUTEX_APPLY_COUNT;
@@ -392,7 +397,8 @@ void FSC_Free(void* ptr);                       //ÄÚ´æÊÍ·Å(ÊäÈëµØÖ·±ØÐëÊÇÉêÇëµÃµ
 INT32U FSC_MemoryFreeSizeGet(void);             //»ñÈ¡ÄÚ´æ³ØÊ£ÓàÄÚ´æ(µ¥Î»£ºByte)
 
 /*--------------ÐéÄâ¶¨Ê±Æ÷º¯Êý---------------*/
-INT16U OSTimerCreate(void);                     //´´½¨OSTimer£¬·µ»ØTimer_ID
+INT16U OSTimerCreate(void);                     //´´½¨OSTimer£¬·µ»ØTimer_ID(Çë²»ÒªÖØ¸´´´½¨£¬ÔÚ×Óº¯ÊýÖÐ´´½¨ÊôÓÚÖØ¸´´´½¨)
+void OSTimerDelete(INT16U Timer_ID);            //É¾³ýOSTimer£¬ÊäÈë£ºTimer_ID(ÖØ¸´´´½¨Ê±£¬Çë¿¼ÂÇÊ¹ÓÃÍê³ÉºóÉ¾³ý)
 void OSTimerReloadSet(INT16U TNum,INT32U time); //ÉèÖÃÐéÄâÏµÍ³¶¨Ê±Æ÷×Ô¶¯ÖØ×°ÔØ¶¨Ê±Öµ(ÐéÄâÏµÍ³¶¨Ê±Æ÷ÖÐ¶ÏÖÐ²»¿ÉÓÃ)
 void OSTimerValueSet(INT16U TNum,INT32U time);  //ÉèÖÃÐéÄâÏµÍ³¶¨Ê±Æ÷¶¨Ê±Öµ
 void OSTimerReloadSetDHMS(INT16U TNum,INT8U day,INT8U hour,INT8U min,INT8U sec);//ÐéÄâÏµÍ³¶¨Ê±Æ÷×Ô¶¯ÖØ×°ÔØ¶¨Ê±ÖµÈÕÊ±·ÖÃëÉèÖÃ,<=49Ìì17Ê±2·Ö47Ãë
@@ -405,6 +411,10 @@ INT16U OSFlagCreate(void);                      //´´½¨OSFlag£¬·µ»ØFlag_ID
 INT16U OSFlagGroupCreate(void);                 //´´½¨OSFlagGroup£¬·µ»ØFlagGroup_ID
 INT16U OSMutexCreate(void);                     //´´½¨OSMutex£¬·µ»ØMutex_ID
 INT16U OSMBoxCreate(void);                      //´´½¨OSMBox£¬·µ»ØMBox_ID
+void OSFlagDelete(INT16U Flag_ID);              //É¾³ýOSFlag£¬ÊäÈë£ºFlag_ID
+void OSFlagGroupDelete(INT16U FlagGroup_ID);    //É¾³ýOSFlagGroup£¬ÊäÈë£ºFlagGroup_ID
+void OSMutexDelete(INT16U Mutex_ID);            //É¾³ýOSMutex£¬ÊäÈë£ºMutex_ID
+void OSMBoxDelete(INT16U MBox_ID);              //É¾³ýOSMBox£¬ÊäÈë£ºMBox_ID
 void OSFlagPost(INT16U FNum);                   //·¢ËÍ±êÖ¾Á¿
 INT8U OSFlagPend(OSFlagPendMode pendtype,INT16U FNum,INT32U timeout);//µÈ´ý±êÖ¾Á¿,·µ»ØOS_FALSE-µÈ´ý³¬Ê±£¬OS_TRUE-½ÓÊÕµ½Post (NBPCÄ£Ê½Ê±·µ»ØÐÅºÅÁ¿ÀÛ¼ÆÊý´Î)
 void OSFlagAddToGroup(INT16U FGNum,INT16U FNum);//Ìí¼Ó±êÖ¾Á¿³ÉÔ±ÖÁ±êÖ¾Èº
