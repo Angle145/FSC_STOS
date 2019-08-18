@@ -1,0 +1,17 @@
+os_tcb* os_tcb_highest_prio_next_rdy_get(void)//获取从优先级分类tcb列表中找出的已就绪最高优先级中的下个要运行的同级优先级线程
+{
+	os_tcb_prio_sort_table *os_tcb_prio_sort_table_highestrio;
+
+	os_tcb_prio_sort_table_highestrio=os_tcb_prio_sort_table_highest_prio_rdy_get();
+	if(os_tcb_prio_sort_table_highestrio->list_same_prio_cur->next!=NULL)  os_tcb_prio_sort_table_highestrio->list_same_prio_cur=os_tcb_prio_sort_table_highestrio->list_same_prio_cur->next;
+	else os_tcb_prio_sort_table_highestrio->list_same_prio_cur=os_tcb_prio_sort_table_highestrio->list_same_prio_front;
+	return os_tcb_prio_sort_table_highestrio->list_same_prio_cur;
+}
+os_tcb* os_tcb_same_prio_next_rdy_get(void)
+{
+	os_tcb_prio_sort_table *os_tcb_prio_sort_table_highestrio=os_p.os_tcb_highest_prio_sort_table;
+
+	if(os_tcb_prio_sort_table_highestrio->list_same_prio_cur->next!=NULL)  os_tcb_prio_sort_table_highestrio->list_same_prio_cur=os_tcb_prio_sort_table_highestrio->list_same_prio_cur->next;
+	else os_tcb_prio_sort_table_highestrio->list_same_prio_cur=os_tcb_prio_sort_table_highestrio->list_same_prio_front;
+	return os_tcb_prio_sort_table_highestrio->list_same_prio_cur;
+}
