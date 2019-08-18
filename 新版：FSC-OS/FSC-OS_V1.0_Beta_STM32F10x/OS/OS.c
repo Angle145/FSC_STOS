@@ -375,7 +375,7 @@ void os_app_new_create(os_type_app_id* app_id)
   
 	os_app_p.acb_list_len++;
 }
-os_type_thread_id* os_thread_new_create(os_type_app_id* app,void* thread,os_str8 *str_name,os_u32 stk_size,os_u32 slice_tick,os_u32 prio,void *para)//任务创建函数
+os_type_thread_id* os_thread_new_create(os_type_app_id* app,void* thread,os_str8 *str_name,os_u32 stk_size,os_u32 slice_tick,os_u32 prio,os_thread_state state,void *para)//任务创建函数
 {
 	  os_u32 i=0;
 	  os_tcb_prio_sort_table *os_tcb_prio_sort_table_temp=NULL;
@@ -396,6 +396,7 @@ os_type_thread_id* os_thread_new_create(os_type_app_id* app,void* thread,os_str8
 		os_tcb_thread->prio=prio+app->prio;
 		os_tcb_thread->timeslice=slice_tick;
 	  os_tcb_thread->delaytime=1;
+		os_tcb_thread->state=state;
 	  os_tcb_thread->id=os_thread_p.id_counter;
 	  os_tcb_thread->global_id=os_thread_p.global_id_counter;
     os_tcb_thread->state = os_thread_state_readying;//创建时为就绪态(也可为其他态,调度器检测到就绪条件时再转为运行态)

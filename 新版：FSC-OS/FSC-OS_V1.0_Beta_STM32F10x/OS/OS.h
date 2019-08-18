@@ -61,7 +61,7 @@ void os_timer_counter_process(void);                  //系统定时器程序
 stk32* os_thread_stk_init(void* thread,stk32 *topstkptr); //线程堆栈初使化函数
 os_type_app_id* os_app_new_init(void);
 void os_app_new_create(os_type_app_id* app_id);
-os_type_thread_id* os_thread_new_create(os_type_app_id* app,void* thread,os_str8 *str_name,os_u32 stk_size,os_u32 slice_tick,os_u32 prio,void *para);     //任务创建函数                           
+os_type_thread_id* os_thread_new_create(os_type_app_id* app,void* thread,os_str8 *str_name,os_u32 stk_size,os_u32 slice_tick,os_u32 prio,os_thread_state state,void *para);     //任务创建函数                           
 void os_thread_sched_lock(void);                             //线程切换锁定函数                         
 void os_thread_sched_unlock (void);                          //线程切换解锁函数
 void os_tcb_ptr_init(void);

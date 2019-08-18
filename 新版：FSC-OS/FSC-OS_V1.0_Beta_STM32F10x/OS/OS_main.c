@@ -15,10 +15,10 @@ os_type_app_id* os_app_create__App_System(void) //创建App_System （系统APP）
 	  os_app_prio_set(app_id,0);
 	  os_app_state_set(app_id,os_app_state_creating);
 	
-    //                    (不变)   (线程函数名)  (线程名称)  (线程堆栈大小)(时间片)(优先级) (参数)  //时间片和参数暂时没用
-	  //                    app_id   app_thread app_thread_name stk_size slice  prio    para
-    thread_idle=os_thread_new_create( app_id, os_thread_idle, "thread_idle", 128, 1, 0, (void*)0 ); //创建空闲线程 
-	  thread_manager=os_thread_new_create( app_id, os_thread_manager, "thread_manager", 256, 1, (os_u32)-1, (void*)0 ); //创建系统管理线程 
+    //                                (不变)   (线程函数名)  (线程名称)  (线程堆栈大小)(时间片)(优先级)    (状态)       (参数)  //时间片和参数暂时没用
+	  //                                app_id   app_thread app_thread_name stk_size slice  prio         state       para
+    thread_idle=os_thread_new_create( app_id, os_thread_idle, "thread_idle", 128, 1, 0, os_thread_state_readying, (void*)0 ); //创建空闲线程 
+	  thread_manager=os_thread_new_create( app_id, os_thread_manager, "thread_manager", 256, 1, (os_u32)-1, os_thread_state_readying, (void*)0 ); //创建系统管理线程 
 	
 	  os_app_new_create(app_id);
 	  return app_id;
