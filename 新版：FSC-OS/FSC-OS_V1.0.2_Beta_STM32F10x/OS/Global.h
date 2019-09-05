@@ -10,6 +10,8 @@ extern os_type_thread_id *thread_idle;
 extern os_type_thread_id *thread_manager;
 
 
-
+extern os_mbox *os_mbox_01;
+extern os_mbox *os_mbox_02;
+extern os_mbox *os_mbox_03;
 
 #endif

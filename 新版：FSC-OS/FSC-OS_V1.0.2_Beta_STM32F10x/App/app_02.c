@@ -46,11 +46,13 @@ static void thread_02(void)  //APP_02的线程02
 
 static void thread_03(void) //APP_02的线程03
 {
-	
+	os_u8 *p;
 	while(1) 
 	 {
 		  os_printf("APP_02  thread_03\r\n");	
-		  os_thread_delay(6000);  
+		  os_thread_delay(2000);  
+		  p=os_mbox_pend(os_mbox_01,pend_type__block,0);
+		  if(p!=(void*)0) { os_printf("%s\r\n",p);}	
 	 }			
 }
 

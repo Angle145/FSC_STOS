@@ -16,10 +16,9 @@ typedef unsigned long  os_u64;
 
 typedef unsigned int   stk32;
 
-typedef unsigned char  os_mem;
-
-/*-----------------------------------*/
+#define os_mem __align(8) os_u8
 #define  os_stk32 __align(8) stk32
+/*-----------------------------------*/
 
 //错误代码
 typedef enum{
@@ -35,7 +34,7 @@ typedef enum{
 	os_app_state_delaying,                         //延时态	
 	os_app_state_blocking,                         //阻塞态
   os_app_state_backrunning,                      //后台运行态
-	os_app_state_frontrunning,                     //前台运行态
+	os_app_state_headrunning,                     //前台运行态
 	os_app_state_stopping,                         //停止运行态
   os_app_state_deleting,                         //删除态
 }os_app_state;
@@ -47,7 +46,7 @@ typedef enum{
 	os_thread_state_delaying,                       //延时态
 	os_thread_state_blocking,                       //阻塞态
   os_thread_state_backrunning,                    //后台运行态
-	os_thread_state_frontrunning,                   //前台运行态
+	os_thread_state_headrunning,                   //前台运行态
 	os_thread_state_stopping,                       //停止运行态
   os_thread_state_deleting,                       //删除态
 }os_thread_state;
@@ -57,7 +56,7 @@ typedef enum{
   os_thread_prio_state_running,                        //运行态
   os_thread_prio_state_pausing,                        //暂停态
   os_thread_prio_state_backrunning,                    //后台运行态
-	os_thread_prio_state_frontrunning,                   //前台运行态
+	os_thread_prio_state_headrunning,                   //前台运行态
 	os_thread_prio_state_stopping,                       //停止运行态
   os_thread_prio_state_deleting,                       //删除态
 }os_thread_prio_state;
@@ -116,6 +115,8 @@ typedef enum
 {
   pend_type__block,
 	pend_type__unblock,	
+	pend_type__queue_block,
+	pend_type__queue_unblock,
 }os_pend_type;
 
 struct os_timer_struct
@@ -166,7 +167,7 @@ struct os_tcb_prio_sort_table_struct
   os_u32 prio;
 	os_u32 list_same_prio_len;
 	os_tcb *list_same_prio_cur;
-	os_tcb *list_same_prio_front;	
+	os_tcb *list_same_prio_head;	
 	os_tcb *list_same_prio_rear;
 	struct os_tcb_prio_sort_table_struct *last;//上个线程
 	struct os_tcb_prio_sort_table_struct *next;//下个线程
@@ -211,6 +212,14 @@ struct os_signal_tcb_struct
 };
 typedef struct os_signal_tcb_struct os_signal_tcb;
 
+struct os_signal_mail_struct
+{
+	os_u32 value;
+	os_u8 *pointer;
+	struct os_signal_mail_struct *next;
+};
+typedef struct os_signal_mail_struct os_signal_mail_list;
+
 struct os_sem_struct
 {
 	os_signal_tcb *os_tcb_id_list;
@@ -222,7 +231,7 @@ typedef struct os_sem_struct os_sem;
 struct os_flag_struct 
 {
 	os_tcb *os_tcb_id;
-	os_u32 value;
+	os_u32 vbool;
 	struct os_flag_struct *next;	
 };
 typedef struct os_flag_struct os_flag;
@@ -238,9 +247,12 @@ typedef struct os_mutex_struct os_mutex;
 
 struct os_mbox_struct 
 {
+	os_pend_type pend_type; 
 	os_tcb *os_tcb_id;
-	os_u32 value;
-	os_u32 *pointer;
+	os_u32 vbool;
+	os_u32 mail_list_len;   
+	os_signal_mail_list *mail_list_head;
+	os_signal_mail_list *mail_list_rear;
 	struct os_mbox_struct *next;
 };
 typedef struct os_mbox_struct os_mbox;

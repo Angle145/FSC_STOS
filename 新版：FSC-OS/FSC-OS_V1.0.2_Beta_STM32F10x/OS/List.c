@@ -3,16 +3,16 @@
 
 void os_timer_list_init(void) //定时器链表初使化
 {
-		os_timer_list_front->last=NULL;      
-	  os_timer_list_front->next=os_timer_list_rear; 
-    os_timer_list_rear->last=os_timer_list_front;
+		os_timer_list_head->last=NULL;      
+	  os_timer_list_head->next=os_timer_list_rear; 
+    os_timer_list_rear->last=os_timer_list_head;
     os_timer_list_rear->next=NULL;     
 }
 void os_thread_timer_list_init(void)
 {
-		os_thread_timer_list_front->last=NULL;      
-	  os_thread_timer_list_front->next=os_thread_timer_list_rear;  
-    os_thread_timer_list_rear->last=os_thread_timer_list_front;  
+		os_thread_timer_list_head->last=NULL;      
+	  os_thread_timer_list_head->next=os_thread_timer_list_rear;  
+    os_thread_timer_list_rear->last=os_thread_timer_list_head;  
     os_thread_timer_list_rear->next=NULL; 
 }
 void os_thread_timer_create(void) //thread定时器创建
@@ -31,9 +31,9 @@ void os_thread_timer_create(void) //thread定时器创建
 	 os_timer_p.thread_timer_list_len++;
 }
 //os_tcb链表
-void os_tcb_list_base_front_insert(os_tcb *list_front,os_tcb *base_tcb,os_tcb *add_tcb)//在参考对象之前增加os_tcb节点
+void os_tcb_list_base_head_insert(os_tcb *list_head,os_tcb *base_tcb,os_tcb *add_tcb)//在参考对象之前增加os_tcb节点
 {
-  os_tcb *os_tcb_temp=list_front;
+  os_tcb *os_tcb_temp=list_head;
 	while(os_tcb_temp!=NULL)
 	{
 	  if(os_tcb_temp==base_tcb)
@@ -47,9 +47,9 @@ void os_tcb_list_base_front_insert(os_tcb *list_front,os_tcb *base_tcb,os_tcb *a
 		os_tcb_temp=os_tcb_temp->next;
 	}
 }
-void os_tcb_list_base_behind_insert(os_tcb *list_front,os_tcb *base_tcb,os_tcb *add_tcb)//在参考对象之后增加os_tcb节点
+void os_tcb_list_base_behind_insert(os_tcb *list_head,os_tcb *base_tcb,os_tcb *add_tcb)//在参考对象之后增加os_tcb节点
 {
-  os_tcb *os_tcb_temp=list_front;
+  os_tcb *os_tcb_temp=list_head;
 	while(os_tcb_temp!=NULL)
 	{
 	  if(os_tcb_temp==base_tcb)
@@ -63,9 +63,9 @@ void os_tcb_list_base_behind_insert(os_tcb *list_front,os_tcb *base_tcb,os_tcb *
 		os_tcb_temp=os_tcb_temp->next;
 	}
 }
-void os_tcb_list_erase(os_tcb *list_front,os_tcb *del_tcb)//os_tcb节点删除
+void os_tcb_list_erase(os_tcb *list_head,os_tcb *del_tcb)//os_tcb节点删除
 {
-  os_tcb *os_tcb_temp=list_front;
+  os_tcb *os_tcb_temp=list_head;
 	while(os_tcb_temp!=NULL)
 	{
 	  if(os_tcb_temp==del_tcb)
@@ -96,13 +96,13 @@ void os_tcb_prio_sort_table_list_struct_erase(os_tcb_prio_sort_table *os_tcb_pri
 
 	  os_thread_p.tcb_list_len--;
 }
-void os_tcb_prio_sort_table_list_push_front(os_tcb_prio_sort_table *os_tcb_prio_sort_table_struct)//头部插入
+void os_tcb_prio_sort_table_list_push_head(os_tcb_prio_sort_table *os_tcb_prio_sort_table_struct)//头部插入
 {	  
 
 	
 	  os_thread_p.tcb_list_len++;
 }
-void os_tcb_prio_sort_table_list_pop_front(void)//头部删除
+void os_tcb_prio_sort_table_list_pop_head(void)//头部删除
 {	
 
 	  os_thread_p.tcb_list_len--;
@@ -124,7 +124,7 @@ void os_tcb_prio_sort_table_list_pop_rear(void)//尾部删除
 void os_timer_list_insert(os_timer *os_timer_struct,os_u32 num) //任意位置插入
 {	
 	  os_u32 list_len=0,i=0;
-	  os_timer *os_timer_temp=os_timer_list_front->next;
+	  os_timer *os_timer_temp=os_timer_list_head->next;
 	  while(os_timer_temp!=os_timer_list_rear)
 		{
 			 list_len++;
@@ -133,7 +133,7 @@ void os_timer_list_insert(os_timer *os_timer_struct,os_u32 num) //任意位置插入
 		//if(num>list_len) while(1){os_printf("os_timer_list_insert error\r\n");} 
 		if(num<=list_len)
 		{
-			os_timer_temp=os_timer_list_front->next;
+			os_timer_temp=os_timer_list_head->next;
 			while(os_timer_temp!=os_timer_list_rear)
 			{
 				 if(i==num)
@@ -145,10 +145,10 @@ void os_timer_list_insert(os_timer *os_timer_struct,os_u32 num) //任意位置插入
 			}
 			if(num==0)
 			{	
-				os_timer_struct->last=os_timer_list_front;
-				os_timer_struct->next=os_timer_list_front->next;
-				os_timer_list_front->next->last=os_timer_struct;
-				os_timer_list_front->next=os_timer_struct;
+				os_timer_struct->last=os_timer_list_head;
+				os_timer_struct->next=os_timer_list_head->next;
+				os_timer_list_head->next->last=os_timer_struct;
+				os_timer_list_head->next=os_timer_struct;
 				
 				os_timer_p.timer_list_len++;
 			}
@@ -175,7 +175,7 @@ void os_timer_list_insert(os_timer *os_timer_struct,os_u32 num) //任意位置插入
 void os_timer_list_erase(os_u32 num) //任意位置删除
 {	
 	  os_u32 i;
-	  os_timer *os_timer_temp=os_timer_list_front->next;
+	  os_timer *os_timer_temp=os_timer_list_head->next;
 	  i=0;
 	  while(i<num)
 		{
@@ -189,7 +189,7 @@ void os_timer_list_erase(os_u32 num) //任意位置删除
 }
 void os_timer_list_strutc_erase(os_timer *os_timer_struct) //任意结构体删除
 {	
-	  os_timer *os_timer_temp=os_timer_list_front->next;
+	  os_timer *os_timer_temp=os_timer_list_head->next;
 	  while(os_timer_temp!=os_timer_list_rear)
 		{
 			if(os_timer_temp==os_timer_struct)
@@ -203,19 +203,19 @@ void os_timer_list_strutc_erase(os_timer *os_timer_struct) //任意结构体删除
 			os_timer_temp=os_timer_temp->next;
 		}
 }
-void os_timer_list_push_front(os_timer *os_timer_struct)//头部插入
+void os_timer_list_push_head(os_timer *os_timer_struct)//头部插入
 {	
-		os_timer_struct->last=os_timer_list_front;
-		os_timer_struct->next=os_timer_list_front->next;
-	  os_timer_list_front->next->last=os_timer_struct;
-	  os_timer_list_front->next=os_timer_struct;
+		os_timer_struct->last=os_timer_list_head;
+		os_timer_struct->next=os_timer_list_head->next;
+	  os_timer_list_head->next->last=os_timer_struct;
+	  os_timer_list_head->next=os_timer_struct;
 	
 	  os_timer_p.timer_list_len++;
 }
-void os_timer_list_pop_front(void)//头部删除
+void os_timer_list_pop_head(void)//头部删除
 {	
-	  os_timer_list_front->next=os_timer_list_front->next->next;
-    os_timer_list_front->next->next->last=os_timer_list_front;
+	  os_timer_list_head->next=os_timer_list_head->next->next;
+    os_timer_list_head->next->next->last=os_timer_list_head;
 	
 	  os_timer_p.timer_list_len--;
 }
@@ -238,7 +238,7 @@ void os_timer_list_pop_rear(void)//尾部删除
 
 void os_thread_timer_erase(os_timer* os_thread_timer_struct) //app延时定时器删除
 {
-	  os_timer *os_thread_timer_temp=os_thread_timer_list_front->next;
+	  os_timer *os_thread_timer_temp=os_thread_timer_list_head->next;
 	
 	  //if(os_app_timer_struct==os_thread_timer_list_rear) while(1){os_printf("os_app_timer_erase() error\r\n");}
 		while(os_thread_timer_temp!=os_thread_timer_list_rear)
@@ -254,7 +254,7 @@ void os_thread_timer_erase(os_timer* os_thread_timer_struct) //app延时定时器删除
 }
 os_timer* os_thread_timer_free_get(void) //app延时定时器空闲获取
 {
-	  os_timer *os_thread_timer_temp=os_thread_timer_list_front->next;
+	  os_timer *os_thread_timer_temp=os_thread_timer_list_head->next;
 	  if(os_thread_timer_temp!=os_thread_timer_list_rear) os_thread_timer_erase(os_thread_timer_temp);
 	  //else while(1){os_printf("os_app_timer_free_get() error\r\n");};
 	  else os_thread_timer_temp=os_thread_timer_list_rear->last;//注意!!!!!!!!!!
@@ -262,10 +262,10 @@ os_timer* os_thread_timer_free_get(void) //app延时定时器空闲获取
 }
 void os_thread_timer_recycle(os_timer *os_thread_timer_struct) //app延时定时器回收
 {
-		os_thread_timer_struct->last=os_thread_timer_list_front;
-	  os_thread_timer_struct->next=os_thread_timer_list_front->next;
-	  os_thread_timer_list_front->next->last=os_thread_timer_struct;
-	  os_thread_timer_list_front->next=os_thread_timer_struct;
+		os_thread_timer_struct->last=os_thread_timer_list_head;
+	  os_thread_timer_struct->next=os_thread_timer_list_head->next;
+	  os_thread_timer_list_head->next->last=os_thread_timer_struct;
+	  os_thread_timer_list_head->next=os_thread_timer_struct;
 }
 
 void os_timer_add(os_timer_type timer_id,os_u32* para,os_u32 time_ticks)
@@ -275,7 +275,8 @@ void os_timer_add(os_timer_type timer_id,os_u32* para,os_u32 time_ticks)
 
 	  os_thread_sched_lock();
 		os_timer *os_timer_insert=os_thread_timer_free_get();
-	  os_timer *os_timer_temp=os_timer_list_front->next;
+	  os_timer *os_timer_temp=os_timer_list_head->next;
+	  os_timer_insert->type=timer_id;
 		for(i=0;i<8;i++){
 			os_timer_insert->para[i]=para[i];
 		}	
@@ -303,7 +304,7 @@ void os_timer_add(os_timer_type timer_id,os_u32* para,os_u32 time_ticks)
 			if(os_timer_temp==os_timer_list_rear)
 			{	
 				i=0;
-				os_timer_temp=os_timer_list_front->next;
+				os_timer_temp=os_timer_list_head->next;
 				while(os_timer_temp!=os_timer_list_rear)
 				{	
 					i++;

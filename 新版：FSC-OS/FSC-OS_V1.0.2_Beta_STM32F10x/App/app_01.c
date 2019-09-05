@@ -42,10 +42,12 @@ static void thread_02(void)  //APP_01的线程02
 
 static void thread_03(void) //APP_01的线程03
 {
+	os_u8 arr[]="hello world!";
 	while(1) 
 	 {
 		 os_printf("APP_01  thread_03\r\n");	
-		 os_thread_delay(2000);			//2000ms执行一次任务				
+		 os_thread_delay(3000);			//2000ms执行一次任务	
+     os_mbox_post(os_mbox_01,arr,sizeof(arr));		 
 	 }			
 }
 

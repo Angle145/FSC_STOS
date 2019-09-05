@@ -10,4 +10,8 @@ os_type_thread_id *thread_idle;
 os_type_thread_id *thread_manager;
 
 
+os_mbox *os_mbox_01;
+os_mbox *os_mbox_02;
+os_mbox *os_mbox_03;
+
 

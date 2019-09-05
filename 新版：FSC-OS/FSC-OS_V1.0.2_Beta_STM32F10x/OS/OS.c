@@ -1,25 +1,25 @@
 #include "os.h"
 
 //ACBÁ´±í
-os_acb *os_acb_list_front;
+os_acb *os_acb_list_head;
 os_acb *os_acb_list_rear;
 os_acb *os_acb_cur; 
 os_acb *os_acb_rdy;
 
 //TCBÁ´±í(prio_sort->°´ÓÅÏÈ¼¶·Ö×éµÄTCBÁÐ±í)
-os_tcb_prio_sort_table *os_tcb_prio_sort_table_list_front;
+os_tcb_prio_sort_table *os_tcb_prio_sort_table_list_head;
 os_tcb_prio_sort_table *os_tcb_prio_sort_table_list_rear; 
 os_tcb *os_tcb_cur; 
 os_tcb *os_tcb_rdy; 
 
 //timer¶¨Ê±Æ÷Á´±í
-os_timer os_thread_timer_struct_list_front;
+os_timer os_thread_timer_struct_list_head;
 os_timer os_thread_timer_struct_list_rear;
-os_timer os_timer_struct_list_front;
+os_timer os_timer_struct_list_head;
 os_timer os_timer_struct_list_rear;
-os_timer *os_timer_list_front=&os_timer_struct_list_front;
+os_timer *os_timer_list_head=&os_timer_struct_list_head;
 os_timer *os_timer_list_rear=&os_timer_struct_list_rear;
-os_timer *os_thread_timer_list_front=&os_thread_timer_struct_list_front;
+os_timer *os_thread_timer_list_head=&os_thread_timer_struct_list_head;
 os_timer *os_thread_timer_list_rear=&os_thread_timer_struct_list_rear;
 
 //ÏµÍ³±äÁ¿
@@ -98,7 +98,7 @@ void SysTick_Handler(void)
 os_bool os_tcb_prio_sort_table_rdy_check(os_tcb_prio_sort_table * os_tcb_prio_sort_table_struct)//¼ì²âÊäÈëµÄtcbÁÐ±íÊÇ·ñÖÁÉÙÒ»¸öÏß³Ì´¦ÓÚ¾ÍÐ÷×´Ì¬
 {
 	os_bool result=os_false;
-  os_tcb *os_tcb_temp=os_tcb_prio_sort_table_struct->list_same_prio_front;
+  os_tcb *os_tcb_temp=os_tcb_prio_sort_table_struct->list_same_prio_head;
   while(os_tcb_temp!=NULL)
 	{
 		if(os_tcb_temp->state==os_thread_state_readying)
@@ -112,12 +112,12 @@ os_bool os_tcb_prio_sort_table_rdy_check(os_tcb_prio_sort_table * os_tcb_prio_so
 }
 os_tcb_prio_sort_table* os_tcb_prio_sort_table_highest_prio_rdy_get(void)//´ÓÓÅÏÈ¼¶·Ö×éµÄtcbÁÐ±íÖÐ²éÕÒÒÑ¾ÍÐ÷µÄ×î¸ßÓÅÏÈ¼¶Ïß³Ì
 {
-	os_tcb_prio_sort_table *os_tcb_prio_sort_table_highestrio=os_tcb_prio_sort_table_list_front;
-	os_tcb_prio_sort_table *os_tcb_prio_sort_table_temp=os_tcb_prio_sort_table_list_front;
+	os_tcb_prio_sort_table *os_tcb_prio_sort_table_highestrio=os_tcb_prio_sort_table_list_head;
+	os_tcb_prio_sort_table *os_tcb_prio_sort_table_temp=os_tcb_prio_sort_table_list_head;
 
 	while(os_tcb_prio_sort_table_temp!=NULL)
 	{
-		if(os_tcb_prio_sort_table_temp->list_same_prio_front!=NULL)
+		if(os_tcb_prio_sort_table_temp->list_same_prio_head!=NULL)
 		{
 			if(os_tcb_prio_sort_table_rdy_check(os_tcb_prio_sort_table_temp)==os_true)//¼ì²â¸ÃÓÅÏÈ¼¶·Ö×éÊÇ·ñÖÁÉÙÓÐÒ»¸öÏß³Ì´¦ÓÚ¾ÍÐ÷×´Ì¬(Ò»¸ö¶¼Ã»ÓÐ±íÊ¾¸Ã·Ö×éÃ»ÓÐÏß³ÌÔÚÔËÐÐ£¬ÎÞÐèÒª´ÓÖÐ²éÕÒ×î¸ßÓÅÏÈ¼¶)
 			{
@@ -145,7 +145,7 @@ os_tcb* os_tcb_same_prio_next_rdy_get(void)//´Óµ±Ç°×î¸ßÓÅÏÈ¼¶×éÖÐ»ñÈ¡ÏÂ¸öË³ÐòÔËÐ
 		}	
 		os_tcb_temp=os_tcb_temp->next;
 	}
-	if(os_tcb_temp==NULL) os_tcb_prio_sort_table_highestrio->list_same_prio_cur=os_tcb_prio_sort_table_highestrio->list_same_prio_front;
+	if(os_tcb_temp==NULL) os_tcb_prio_sort_table_highestrio->list_same_prio_cur=os_tcb_prio_sort_table_highestrio->list_same_prio_head;
 	return os_tcb_prio_sort_table_highestrio->list_same_prio_cur;
 }
 os_tcb* os_tcb_highest_prio_next_rdy_get(void)//ÏÈ´Ó×î¸ßÓÅÏÈ¼¶×éÖÐ²éÕÒ×î¸ßÓÅÏÈ¼¶·Ö×é£¬ÔÙ´Ó×î¸ßÓÅÏÈ¼¶·Ö×éÖÐ»ñÈ¡ÏÂ¸öË³ÐòÔËÐÐµÄÏß³Ì
@@ -207,17 +207,17 @@ void os_thread_highest_prio_sched_and_switch(void)//Ïß³Ìµ÷¶È²¢ÇÐ»»º¯Êý
 
 void os_timer_timeout_handle(void) //¶¨Ê±Æ÷¶¨Ê±Íê³É´¦Àí
 {
-	os_tcb_prio_sort_table *os_tcb_prio_sort_table_temp=os_tcb_prio_sort_table_list_front;
+	os_tcb_prio_sort_table *os_tcb_prio_sort_table_temp=os_tcb_prio_sort_table_list_head;
 	os_tcb *os_tcb_temp=NULL;
 	while(os_tcb_prio_sort_table_temp!=NULL)
 	{
-		if(os_timer_list_front->next->para[0]==os_tcb_prio_sort_table_temp->prio) break;
+		if(os_timer_list_head->next->para[0]==os_tcb_prio_sort_table_temp->prio) break;
 		os_tcb_prio_sort_table_temp=os_tcb_prio_sort_table_temp->next;
 	}
-	os_tcb_temp=os_tcb_prio_sort_table_temp->list_same_prio_front;
+	os_tcb_temp=os_tcb_prio_sort_table_temp->list_same_prio_head;
 	while(os_tcb_temp!=NULL)
 	{
-	 if(os_timer_list_front->next->para[1]==os_tcb_temp->global_id)
+	 if(os_timer_list_head->next->para[1]==os_tcb_temp->global_id)
 		{	
 		 break;
 		}
@@ -225,7 +225,7 @@ void os_timer_timeout_handle(void) //¶¨Ê±Æ÷¶¨Ê±Íê³É´¦Àí
 	}
 	if(os_tcb_temp!=NULL)
 	{
-		switch(os_timer_list_front->next->type)
+		switch(os_timer_list_head->next->type)
 		{
 			case timer_type__app: 
 			{
@@ -240,7 +240,6 @@ void os_timer_timeout_handle(void) //¶¨Ê±Æ÷¶¨Ê±Íê³É´¦Àí
 				 }
 				 os_tcb_temp->delaytime=1;
 				 os_p.thread_time_slice = THREAD_TIME_SLICE;//ÖØÖÃÊ±¼äÆ¬³õÖµ
-				 os_thread_highest_prio_sched_and_switch(); 
       }
 			break;		
 			case timer_type__softtimer: 
@@ -257,7 +256,6 @@ void os_timer_timeout_handle(void) //¶¨Ê±Æ÷¶¨Ê±Íê³É´¦Àí
 						 os_tcb_temp->state=os_thread_state_readying;
 						 os_tcb_temp->delaytime=1;
 						 os_p.thread_time_slice = THREAD_TIME_SLICE;//ÖØÖÃÊ±¼äÆ¬³õÖµ
-						 os_thread_highest_prio_sched_and_switch(); 
 					 }
 				 }
 			}
@@ -270,37 +268,45 @@ void os_timer_timeout_handle(void) //¶¨Ê±Æ÷¶¨Ê±Íê³É´¦Àí
 
 void os_timer_counter_process(void) //ÏµÍ³¶¨Ê±Æ÷³ÌÐò
 {
-	os_timer *os_timer_temp=os_timer_list_front->next;
+	os_timer *os_timer_temp=os_timer_list_head->next;
 
-	if(os_timer_list_front->next->clock_counter>1) os_timer_list_front->next->clock_counter--;//×îÐ¡ÖµÉè¼ÆÎª1
+	if(os_timer_list_head->next->clock_counter>1) os_timer_list_head->next->clock_counter--;//×îÐ¡ÖµÉè¼ÆÎª1
 	else 
 	{
-		while(os_timer_list_front->next->clock_counter==1)
+		while(os_timer_list_head->next->clock_counter==1)
 		{	
-			os_timer_list_front->next->clock_counter=0;
+			os_timer_list_head->next->clock_counter=0;
 		  os_timer_timeout_handle();  		
-      switch(os_timer_list_front->next->type)		
+      switch(os_timer_list_head->next->type)		
 			{	
 				case timer_type__app: 
 				{
-					os_timer_list_strutc_erase(os_timer_list_front->next);//´Ó¶¨Ê±Æ÷¶¨Ê±ÁÐ±íÖÐÉ¾³ý	    
+					os_timer_list_strutc_erase(os_timer_list_head->next);//´Ó¶¨Ê±Æ÷¶¨Ê±ÁÐ±íÖÐÉ¾³ý	    
 				}
         case timer_type__thread:
 				{					
-					os_timer_temp=os_timer_list_front->next;//±¸·Ýtimer_list_front	
-					os_timer_list_strutc_erase(os_timer_list_front->next);//´Ó¶¨Ê±Æ÷¶¨Ê±ÁÐ±íÖÐÉ¾³ý	
+					os_timer_temp=os_timer_list_head->next;//±¸·Ýtimer_list_head	
+					os_timer_list_strutc_erase(os_timer_list_head->next);//´Ó¶¨Ê±Æ÷¶¨Ê±ÁÐ±íÖÐÉ¾³ý	
 					os_thread_timer_recycle(os_timer_temp);//½« ´Ó¶¨Ê±Æ÷¶¨Ê±ÁÐ±íÖÐÉ¾³ýµÄ¶¨Ê±Æ÷»ØÊÕµ½appÑÓÊ±¶¨Ê±Æ÷ÁÐ±íÖÐ		
 				}
 				break;				
 				case timer_type__softtimer: 
 				{
-					os_timer_list_strutc_erase(os_timer_list_front->next);//´Ó¶¨Ê±Æ÷¶¨Ê±ÁÐ±íÖÐÉ¾³ý	
+					os_timer_list_strutc_erase(os_timer_list_head->next);//´Ó¶¨Ê±Æ÷¶¨Ê±ÁÐ±íÖÐÉ¾³ý	
 				}
 				break;
-				default: os_timer_list_strutc_erase(os_timer_list_front->next);//´Ó¶¨Ê±Æ÷¶¨Ê±ÁÐ±íÖÐÉ¾³ý	
+				case timer_type__signal: //ÓÉÓÚÐÅºÅÑÓÊ±Ê¹ÓÃµÄÊÇÏß³ÌµÄ×¨ÓÃÑÓÊ±£¬Í¬timer_type__threadÒ»ÑùÐèÒª»ØÊÕ
+				{
+					os_timer_temp=os_timer_list_head->next;//±¸·Ýtimer_list_head	
+					os_timer_list_strutc_erase(os_timer_list_head->next);//´Ó¶¨Ê±Æ÷¶¨Ê±ÁÐ±íÖÐÉ¾³ý	
+					os_thread_timer_recycle(os_timer_temp);//½« ´Ó¶¨Ê±Æ÷¶¨Ê±ÁÐ±íÖÐÉ¾³ýµÄ¶¨Ê±Æ÷»ØÊÕµ½appÑÓÊ±¶¨Ê±Æ÷ÁÐ±íÖÐ		
+				}
 				break;
-			}				
-			if(os_timer_list_front->next==os_timer_list_rear) break;
+				default: os_timer_list_strutc_erase(os_timer_list_head->next);//´Ó¶¨Ê±Æ÷¶¨Ê±ÁÐ±íÖÐÉ¾³ý	
+				break;
+			}		
+      os_thread_highest_prio_sched_and_switch(); 			
+			if(os_timer_list_head->next==os_timer_list_rear) break;
     }
 	}
 }
@@ -325,11 +331,11 @@ void os_tcb_ptr_init(void)
 	  //os_tcb_cur=os_tcb_prio_sort_table_highest_prio_rdy_get()->list_same_prio_cur;//¿ª»úÖ±½ÓÔËÐÐ×î¸ßÓÅÏÈ¼¶Ïß³Ì
 	  //os_tcb_rdy = os_tcb_cur;
 	//¿ª»úÏÈÔËÐÐ¿ÕÏÐÏß³Ì
-    //os_tcb_cur = os_tcb_prio_sort_table_list_front->list_same_prio_front; //¿ª»úÏÈÔËÐÐ¿ÕÏÐÏß³Ì
+    //os_tcb_cur = os_tcb_prio_sort_table_list_head->list_same_prio_head; //¿ª»úÏÈÔËÐÐ¿ÕÏÐÏß³Ì
     //os_tcb_rdy = os_tcb_cur;
 	
 	  
-	  os_tcb_cur=os_tcb_prio_sort_table_list_front->list_same_prio_front; //¿ª»úÏÈÔËÐÐ¿ÕÏÐÏß³Ì
+	  os_tcb_cur=os_tcb_prio_sort_table_list_head->list_same_prio_head; //¿ª»úÏÈÔËÐÐ¿ÕÏÐÏß³Ì
 	  os_tcb_rdy=os_tcb_cur;
 	  os_tcb_prio_sort_table_highest_prio_rdy_get();//¿ª»ú¿ÕÏÐÏß³ÌºóÔËÐÐ×î¸ßÓÅÏÈ¼¶Ïß³Ì
 }
@@ -363,7 +369,7 @@ void os_app_new_create(os_type_app_id* app_id)
 	{
 		app_id->last=NULL;
 		app_id->next=NULL;
-		os_acb_list_front=app_id;
+		os_acb_list_head=app_id;
 		os_acb_list_rear=	app_id;
 	}
 	else
@@ -413,10 +419,10 @@ os_type_thread_id* os_thread_new_create(os_type_app_id* app,void* thread,os_str8
 			os_tcb_prio_sort_table_struct=(os_tcb_prio_sort_table*)os_mem_malloc(sizeof(os_tcb_prio_sort_table));
 			os_tcb_prio_sort_table_struct->last=NULL;
 			os_tcb_prio_sort_table_struct->next=NULL;
-			os_tcb_prio_sort_table_list_front=os_tcb_prio_sort_table_struct;
+			os_tcb_prio_sort_table_list_head=os_tcb_prio_sort_table_struct;
 			os_tcb_prio_sort_table_list_rear=os_tcb_prio_sort_table_struct;
 	
-			os_tcb_prio_sort_table_struct->list_same_prio_front=os_tcb_thread;
+			os_tcb_prio_sort_table_struct->list_same_prio_head=os_tcb_thread;
 			os_tcb_prio_sort_table_struct->list_same_prio_rear=os_tcb_thread;
 			os_tcb_prio_sort_table_struct->list_same_prio_cur=os_tcb_prio_sort_table_struct->list_same_prio_rear;
 			
@@ -431,7 +437,7 @@ os_type_thread_id* os_thread_new_create(os_type_app_id* app,void* thread,os_str8
 		}
 		else
 		{
-			os_tcb_prio_sort_table_temp=os_tcb_prio_sort_table_list_front;
+			os_tcb_prio_sort_table_temp=os_tcb_prio_sort_table_list_head;
 			while(os_tcb_prio_sort_table_temp!=NULL)
 			{
 				if(os_tcb_thread->prio == os_tcb_prio_sort_table_temp->prio) break;
@@ -455,7 +461,7 @@ os_type_thread_id* os_thread_new_create(os_type_app_id* app,void* thread,os_str8
 				os_tcb_prio_sort_table_struct->last=os_tcb_prio_sort_table_list_rear;
 				os_tcb_prio_sort_table_list_rear=os_tcb_prio_sort_table_struct;
 			
-				os_tcb_prio_sort_table_struct->list_same_prio_front=os_tcb_thread;
+				os_tcb_prio_sort_table_struct->list_same_prio_head=os_tcb_thread;
 				os_tcb_prio_sort_table_struct->list_same_prio_rear=os_tcb_thread;
 				os_tcb_prio_sort_table_struct->list_same_prio_cur=os_tcb_prio_sort_table_struct->list_same_prio_rear;
 				

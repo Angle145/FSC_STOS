@@ -35,6 +35,8 @@ void os_user_init(void) //ำรปงด๚ย๋ณ๕สนปฏบฏสýฃจำรปงห๙ำะณ๕สนปฏบฏสýพ๙ทลิฺดหบฏสýฤฺ,ณ
 {
 	  USART1_Config(115200); //ดฎฟฺ1ณ๕สนปฏ
 	  printf("-@OS Inside\r\n");
+	
+	  os_mbox_01=os_mbox_create();
 }	
 void os_main(void)
 {                     

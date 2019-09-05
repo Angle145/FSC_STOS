@@ -81,7 +81,7 @@ void os_information_process(void)
 {	
 	os_u32 mem_free;
 	os_u32 mem_frag;
-	os_acb *os_acb_temp=os_acb_list_front;
+	os_acb *os_acb_temp=os_acb_list_head;
 	os_app_tcb *os_app_tcb_temp;
 	os_thread_sched_lock();
 	mem_free=os_mem_free_bytes_get();
@@ -92,7 +92,7 @@ void os_information_process(void)
 	
 	os_shell_printf("++++++++++++++++++++++++++++++++++++++++++系统状态信息+++++++++++++++++++++++++++++++++++++++++++\r\n");
 	os_shell_printf("=================================================================================================\r\n");
-	os_shell_printf("  Designed @Angle145\r\n");
+	os_shell_printf("  FSC-OS @Angle145\r\n");
 	os_shell_printf("  运行模式 ：oder+prio                                  运行时间：%-d年%-d月%-d日 %-d时%-d分%-d秒 %-dms\r\n",																				 
 																								 os_shell_time.runtime_year,
 																								 os_shell_time.runtime_mouth,
@@ -151,7 +151,7 @@ void os_information_process(void)
 void os_stk_calculation_process(void) //app/thread 栈占用率计算程序
 {
 	os_u32 i;
-	os_acb *os_acb_temp=os_acb_list_front;
+	os_acb *os_acb_temp=os_acb_list_head;
 	os_app_tcb *os_app_tcb_temp;
 	while(os_acb_temp!=NULL)
 	{
@@ -181,7 +181,7 @@ void os_stk_calculation_process(void) //app/thread 栈占用率计算程序
 }
 void os_cpu_occrate_calculation_process(void) //app/thread cou占用率计算程序
 {
-	os_acb *os_acb_temp=os_acb_list_front;
+	os_acb *os_acb_temp=os_acb_list_head;
 	os_app_tcb *os_app_tcb_temp;
 	if(os_p.os_clock_counter>1000)
 	{
@@ -192,7 +192,7 @@ void os_cpu_occrate_calculation_process(void) //app/thread cou占用率计算程序
 			while(os_app_tcb_temp!=NULL)
 			{
 				os_app_tcb_temp->thread->cpu_occrate_per100=os_app_tcb_temp->thread->cpu_occrate_counter*1000/os_p.cpu_occrate_counter;        
-				if((os_acb_temp==os_acb_list_front)&&(os_app_tcb_temp==os_acb_temp->tcb_list)) 
+				if((os_acb_temp==os_acb_list_head)&&(os_app_tcb_temp==os_acb_temp->tcb_list)) 
 				{
 					os_p.cpu_occrate_per100=1000-os_app_tcb_temp->thread->cpu_occrate_per100;
 					if(os_p.cpu_occrate_per100_max<os_p.cpu_occrate_per100) os_p.cpu_occrate_per100_max=os_p.cpu_occrate_per100;
@@ -206,7 +206,7 @@ void os_cpu_occrate_calculation_process(void) //app/thread cou占用率计算程序
 }
 void os_shell_cpu_occrate_counter_process(void) //app/thread cou占用率统计程序（放在systick中断中）
 {	
-	 os_acb *os_acb_temp=os_acb_list_front;
+	 os_acb *os_acb_temp=os_acb_list_head;
 	 os_app_tcb *os_app_tcb_temp;
 	 os_tcb_cur->cpu_occrate_counter++;
 	 os_p.cpu_occrate_counter++;

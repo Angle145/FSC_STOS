@@ -77,7 +77,7 @@ os_error_code_type os_app_state_set(os_acb *os_acb_app,os_app_state app_state)//
 		case os_app_state_pausing:      os_app_all_thread_state_set(os_acb_app,os_thread_state_pausing);      break;
 		case os_app_state_delaying:     os_app_all_thread_state_set(os_acb_app,os_thread_state_delaying);     break;
 		case os_app_state_backrunning:  os_app_all_thread_state_set(os_acb_app,os_thread_state_backrunning);  break;
-		case os_app_state_frontrunning: os_app_all_thread_state_set(os_acb_app,os_thread_state_frontrunning); break;
+		case os_app_state_headrunning: os_app_all_thread_state_set(os_acb_app,os_thread_state_headrunning); break;
 		case os_app_state_stopping:     os_app_all_thread_state_set(os_acb_app,os_thread_state_stopping);     break;
 		case os_app_state_deleting:     os_app_all_thread_state_set(os_acb_app,os_thread_state_deleting);     break;
 		default:break;

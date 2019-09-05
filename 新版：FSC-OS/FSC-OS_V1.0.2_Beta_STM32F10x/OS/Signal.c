@@ -1,25 +1,25 @@
 #include "signal.h"
 
-os_sem os_sem_struct_list_front;
-os_sem *os_sem_list_front=&os_sem_struct_list_front;
+os_sem os_sem_struct_list_head;
+os_sem *os_sem_list_head=&os_sem_struct_list_head;
 
-os_flag os_flag_struct_list_front;
-os_flag *os_flag_list_front=&os_flag_struct_list_front;
+os_flag os_flag_struct_list_head;
+os_flag *os_flag_list_head=&os_flag_struct_list_head;
 
-os_mutex os_mutex_struct_list_front;
-os_mutex *os_mutex_list_front=&os_mutex_struct_list_front;
+os_mutex os_mutex_struct_list_head;
+os_mutex *os_mutex_list_head=&os_mutex_struct_list_head;
 
-os_mbox os_mbox_struct_list_front;
-os_mbox *os_mbox_list_front=&os_mbox_struct_list_front;
+os_mbox os_mbox_struct_list_head;
+os_mbox *os_mbox_list_head=&os_mbox_struct_list_head;
 
 os_sem* os_sem_create(void)
 {
-	 os_sem *os_sem_temp=os_sem_list_front;
+	 os_sem *os_sem_temp=os_sem_list_head;
 	 os_sem *os_sem_id=(os_sem*)os_mem_malloc(sizeof(os_sem));
 	 os_sem_id->os_tcb_id_list=NULL;
 	 os_sem_id->value=0;
 	 os_sem_id->next=NULL;
-	 if(os_sem_temp==NULL) os_sem_list_front=os_sem_id;
+	 if(os_sem_temp==NULL) os_sem_list_head=os_sem_id;
 	 else
 	 {
 		 while(os_sem_temp->next!=NULL)
@@ -32,11 +32,11 @@ os_sem* os_sem_create(void)
 }
 os_flag* os_flag_create(void)
 {
-	 os_flag *os_flag_temp=os_flag_list_front;
+	 os_flag *os_flag_temp=os_flag_list_head;
 	 os_flag *os_flag_id=(os_flag*)os_mem_malloc(sizeof(os_flag));
-   os_flag_id->value=os_false;
+   os_flag_id->vbool=os_false;
 	 os_flag_id->next=NULL;
-	 if(os_flag_temp==NULL) os_flag_list_front=os_flag_id;
+	 if(os_flag_temp==NULL) os_flag_list_head=os_flag_id;
 	 else
 	 {
 		 while(os_flag_temp->next!=NULL)
@@ -49,13 +49,13 @@ os_flag* os_flag_create(void)
 }
 os_mutex* os_mutex_create(void)
 {
-	 os_mutex *os_mutex_temp=os_mutex_list_front;
+	 os_mutex *os_mutex_temp=os_mutex_list_head;
 	 os_mutex *os_mutex_id=(os_mutex*)os_mem_malloc(sizeof(os_mutex));
 	 os_mutex_id->using_tcb_id=NULL;
 	 os_mutex_id->os_tcb_id_list=NULL;
 	 os_mutex_id->lock=os_false;
 	 os_mutex_id->next=NULL;
-	 if(os_mutex_temp==NULL) os_mutex_list_front=os_mutex_id;
+	 if(os_mutex_temp==NULL) os_mutex_list_head=os_mutex_id;
 	 else
 	 {
 		 while(os_mutex_temp->next!=NULL)
@@ -68,20 +68,22 @@ os_mutex* os_mutex_create(void)
 }
 os_mbox* os_mbox_create(void)
 {
-	 os_mbox *os_mbox_temp=os_mbox_list_front->next;
+	 os_mbox *os_mbox_temp=os_mbox_list_head;
 	 os_mbox *os_mbox_id=(os_mbox*)os_mem_malloc(sizeof(os_mbox));
-	
 	 while(os_mbox_temp->next!=NULL)
 	 {
 		 os_mbox_temp=os_mbox_temp->next;
 	 }	
 	 os_mbox_temp->next=os_mbox_id;
+	 os_mbox_id->os_tcb_id=NULL;
 	 os_mbox_id->next=NULL;
+	 os_mbox_id->mail_list_head=NULL;
+	 os_mbox_id->mail_list_rear=NULL;
 	 return os_mbox_id;
 }
 void os_sem_delete(os_sem *os_sem_id)
 {
-	 os_sem *os_sem_temp=os_sem_list_front;
+	 os_sem *os_sem_temp=os_sem_list_head;
 
 	 while(os_sem_temp->next!=NULL)
 	 {
@@ -96,7 +98,7 @@ void os_sem_delete(os_sem *os_sem_id)
 }
 void os_flag_delete(os_flag *os_flag_id)
 {
-	 os_flag *os_flag_temp=os_flag_list_front;
+	 os_flag *os_flag_temp=os_flag_list_head;
 
 	 while(os_flag_temp->next!=NULL)
 	 {
@@ -111,7 +113,7 @@ void os_flag_delete(os_flag *os_flag_id)
 }
 void os_mutex_delete(os_mutex *os_mutex_id)
 {
-	 os_mutex *os_mutex_temp=os_mutex_list_front;
+	 os_mutex *os_mutex_temp=os_mutex_list_head;
 
 	 while(os_mutex_temp->next!=NULL)
 	 {
@@ -126,7 +128,7 @@ void os_mutex_delete(os_mutex *os_mutex_id)
 }
 void os_mbox_delete(os_mbox *os_mbox_id)
 {
-	 os_mbox *os_mbox_temp=os_mbox_list_front;
+	 os_mbox *os_mbox_temp=os_mbox_list_head;
 
 	 while(os_mbox_temp->next!=NULL)
 	 {
@@ -205,9 +207,9 @@ os_u32 os_flag_pend(os_flag *os_flag_id,os_pend_type ptype,os_u32 ptime)//一个Fl
 	 os_u32 os_timer_para[2];
 	 os_u32 Ptype=ptype;  
 	 os_flag_id->os_tcb_id=os_tcb_cur;//记录等待os_flag的任务
-	 if(os_flag_id->value==os_true) 
+	 if(os_flag_id->vbool==os_true) 
 	 {
-		 os_flag_id->value=os_false;
+		 os_flag_id->vbool=os_false;
 	   result=os_true;
 	 }
 	 else
@@ -229,7 +231,7 @@ os_u32 os_flag_pend(os_flag *os_flag_id,os_pend_type ptype,os_u32 ptime)//一个Fl
 			   os_thread_sched_unlock();
 			   os_thread_highest_prio_sched_and_switch();
 				 while(os_tcb_cur->delaytime!=1){}
-				 os_flag_id->value=os_false;
+				 os_flag_id->vbool=os_false;
 			   result=os_true;
 			 break;
 			 case pend_type__unblock: 
@@ -242,8 +244,8 @@ os_u32 os_flag_pend(os_flag *os_flag_id,os_pend_type ptype,os_u32 ptime)//一个Fl
 }
 void os_flag_post(os_flag *os_flag_id)
 {
-	os_flag_id->value=os_true;
-	os_flag_id->os_tcb_id->delaytime=0;
+	os_flag_id->vbool=os_true;
+	os_flag_id->os_tcb_id->delaytime=1;
 	os_flag_id->os_tcb_id->state=os_thread_state_readying;
 }
 os_u32 os_mutex_pend(os_mutex *os_mutex_id,os_pend_type ptype,os_u32 ptime)
@@ -306,6 +308,12 @@ os_u32 os_mutex_pend(os_mutex *os_mutex_id,os_pend_type ptype,os_u32 ptime)
 			 case pend_type__unblock: //非阻塞等待
 				 result=os_false;  
 			 break;
+			 case pend_type__queue_block:
+				 
+			 break;
+			 case pend_type__queue_unblock:
+				 
+			 break;			 
 			 default:break;
 		 }
 	 }
@@ -364,26 +372,141 @@ void os_mutex_post(os_mutex *os_mutex_id)
 }
 void* os_mbox_pend(os_mbox *os_mbox_id,os_pend_type ptype,os_u32 ptime)
 {
-	 void *p;
+	 os_u8 *p_mail=(void*)0;
+	 os_u32 os_timer_para[2];
 	 os_u32 Ptype=ptype;  
+	 os_mbox_id->pend_type=ptype;
 	 os_mbox_id->os_tcb_id=os_tcb_cur;//记录等待os_mbox的任务
-	 
-	 switch(Ptype)
+	 if(os_mbox_id->vbool==os_true) 
 	 {
-	   case pend_type__block: 
-			 
-		   os_thread_highest_prio_sched_and_switch();
-		 break;
-		 case pend_type__unblock: 
-			 
-		 break;
-		 default:break;
+			os_mbox_id->vbool=os_false;
+		 	p_mail=(os_u8*)(os_mbox_id->mail_list_head->pointer);//取队列最前项
+			os_mbox_id->mail_list_len--;
+		  if((Ptype==pend_type__queue_block)||(Ptype==pend_type__queue_unblock))
+			{
+				os_mem_free(os_mbox_id->mail_list_head->pointer);
+				os_mbox_id->mail_list_head=os_mbox_id->mail_list_head->next;//队列最前项指向下一项
+			}	
 	 }
-	 return p;
+	 else
+	 {
+		 switch(Ptype)
+		 {
+				case pend_type__block:
+				 os_thread_sched_lock();	
+				 os_tcb_cur->state=os_thread_state_blocking;
+				 os_tcb_cur->delaytime=ptime;		
+				 if(ptime>0)
+				 {
+					 ptime=ptime+1;
+					 os_tcb_cur->delaytime=ptime;			 
+					 os_timer_para[0]=os_tcb_cur->prio; //传递参数0:thread prio
+					 os_timer_para[1]=os_tcb_cur->global_id; //传递参数1:thread global_id
+					 os_timer_add(timer_type__signal,os_timer_para, ptime); 
+				 }
+					os_thread_sched_unlock();
+					os_thread_highest_prio_sched_and_switch();
+					while(os_tcb_cur->delaytime!=1){}
+					if(os_mbox_id->vbool==os_true)
+					{
+						os_mbox_id->vbool=os_false;
+						p_mail=(os_u8*)(os_mbox_id->mail_list_head->pointer);//取队列最前项	
+						os_mbox_id->mail_list_len--;	
+					}
+					else 
+					{
+					  p_mail=(void*)0;
+					}
+			 break;
+			 case pend_type__unblock: 
+						
+			 break;
+			 case pend_type__queue_block: 
+				 os_thread_sched_lock();	
+				 os_tcb_cur->state=os_thread_state_blocking;
+				 os_tcb_cur->delaytime=ptime;		
+				 if(ptime>0)
+				 {
+					 ptime=ptime+1;
+					 os_tcb_cur->delaytime=ptime;			 
+					 os_timer_para[0]=os_tcb_cur->prio; //传递参数0:thread prio
+					 os_timer_para[1]=os_tcb_cur->global_id; //传递参数1:thread global_id
+					 os_timer_add(timer_type__signal,os_timer_para, ptime); 
+				 }
+					os_thread_sched_unlock();
+					os_thread_highest_prio_sched_and_switch();
+					while(os_tcb_cur->delaytime!=1){}
+					if(os_mbox_id->vbool==os_true)
+					{
+						os_mbox_id->vbool=os_false;
+						if(os_mbox_id->mail_list_head!=NULL) 
+						{
+							p_mail=(os_u8*)(os_mbox_id->mail_list_head->pointer);//取队列最前项
+							os_mem_free(os_mbox_id->mail_list_head->pointer);
+							os_mbox_id->mail_list_head=os_mbox_id->mail_list_head->next;//队列最前项指向下一项
+							os_mbox_id->mail_list_len--;
+						}	
+						os_mbox_id->mail_list_len--;
+					}
+					else
+					{
+					  p_mail=(void*)0;
+					}
+			 break;		
+			 case pend_type__queue_unblock:
+				 
+			 break;				 
+			 default:break;
+		 }
+	 }
+	 os_mbox_id->os_tcb_id=NULL;
+	 return p_mail;
 }
-void os_mbox_post(os_mbox *os_mbox_id)
-{
-	
-	
+void os_mbox_post(os_mbox *os_mbox_id,os_u8 *mail,os_u32 mail_len)
+{ 
+	os_u32 i;
+	os_signal_mail_list *mail_struct;
+	os_u8 *p_mail;
+	if(os_mbox_id->mail_list_head==NULL)
+	{
+		mail_struct=(os_signal_mail_list*)os_mem_malloc(sizeof(os_signal_mail_list));
+		p_mail=(os_u8*)os_mem_malloc(mail_len);
+		i=0;
+		while(i<mail_len) //拷贝
+		{
+			p_mail[i]=mail[i];
+			i++;
+		}
+		mail_struct->pointer=p_mail;	
+		os_mbox_id->mail_list_head=mail_struct;	
+		os_mbox_id->mail_list_rear=mail_struct;	
+	}
+	else	
+	{
+		if((os_mbox_id->pend_type==pend_type__queue_block)||(os_mbox_id->pend_type==pend_type__queue_unblock))
+		{
+			mail_struct=(os_signal_mail_list*)os_mem_malloc(sizeof(os_signal_mail_list));
+			p_mail=(os_u8*)os_mem_malloc(mail_len);
+			i=0;
+			while(i<mail_len) //拷贝
+			{
+				p_mail[i]=mail[i];
+				i++;
+			}
+			mail_struct->pointer=p_mail;	
+			os_mbox_id->mail_list_rear->next=mail_struct;	
+			os_mbox_id->mail_list_rear=mail_struct;
+			os_mbox_id->mail_list_len++;			
+		}
+		else
+		{
+			os_mbox_id->mail_list_head->pointer=mail;			
+		}
+	}
+	if(os_mbox_id->os_tcb_id!=NULL)
+	{
+		os_mbox_id->vbool=os_true;
+		os_mbox_id->os_tcb_id->delaytime=1;
+		os_mbox_id->os_tcb_id->state=os_thread_state_readying;
+	}
 }
-

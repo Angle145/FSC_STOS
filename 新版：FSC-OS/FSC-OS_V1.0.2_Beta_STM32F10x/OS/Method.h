@@ -4,23 +4,23 @@
 #include "type.h"
 
 //timer链表
-extern os_timer os_timer_struct_list_front;
+extern os_timer os_timer_struct_list_head;
 extern os_timer os_timer_struct_list_rear;
-extern os_timer *os_timer_list_front;
+extern os_timer *os_timer_list_head;
 extern os_timer *os_timer_list_rear;
-extern os_timer *os_thread_timer_list_front;
+extern os_timer *os_thread_timer_list_head;
 extern os_timer *os_thread_timer_list_rear;
 
 
 //ACB链表
-extern os_acb *os_acb_list_front;
+extern os_acb *os_acb_list_head;
 extern os_acb *os_acb_list_rear;
 extern os_acb *os_acb_cur;  //当前正在运行的应用程序ACB
 extern os_acb *os_acb_rdy;  //下个即将运行的应用程序ACB
 
 
 //TCB链表
-extern os_tcb_prio_sort_table *os_tcb_prio_sort_table_list_front;
+extern os_tcb_prio_sort_table *os_tcb_prio_sort_table_list_head;
 extern os_tcb_prio_sort_table *os_tcb_prio_sort_table_list_rear;
 
 extern os_tcb *os_tcb_cur;  //当前正在运行的线程TCB
